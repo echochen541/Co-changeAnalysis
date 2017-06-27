@@ -8,9 +8,9 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.Commit;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.Repository;
-import cn.edu.fudan.se.cochange_analysis.git.dao.CommitDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitDAO;
 
 public class GitExtractor {
 	private Repository repository;
@@ -35,10 +35,10 @@ public class GitExtractor {
 				String committerEmail = revCommit.getCommitterIdent().getEmailAddress();
 				Date committedDate = revCommit.getCommitterIdent().getWhen();
 
-				Commit commit = new Commit(repositoryId, commitId, shortMessage, fullMessage, authorName, authorEmail,
+				GitCommit commit = new GitCommit(repositoryId, commitId, shortMessage, fullMessage, authorName, authorEmail,
 						authoredDate, committerName, committerEmail, committedDate);
 				System.out.println(commitId);
-				CommitDAO.insertCommit(commit);
+				GitCommitDAO.insertCommit(commit);
 
 				// current commit has more than zero parent
 				if (revCommit.getParentCount() > 0) {
@@ -61,7 +61,7 @@ public class GitExtractor {
 	}
 
 	public static void main(String[] args) {
-		Repository repository = new Repository(1, "camel", "D:/echo/lab/research/co-change/projects/camel/.git");
+		Repository repository = new Repository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
 		GitExtractor gitExtractor = new GitExtractor(repository);
 		gitExtractor.extractCommitHistory();
 	}

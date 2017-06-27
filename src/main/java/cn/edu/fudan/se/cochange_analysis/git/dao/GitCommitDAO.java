@@ -8,26 +8,26 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.Commit;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 
-public class CommitDAO {
+public class GitCommitDAO {
 	private static SqlSessionFactory sessionFactory;
 	private static Reader reader;
 	private static SqlSession sqlSession;
-	private static CommitMapper commitMapper;
+	private static GitCommitMapper commitMapper;
 
 	static {
 		try {
 			reader = Resources.getResourceAsReader("mybatis-config.xml");
 			sessionFactory = new SqlSessionFactoryBuilder().build(reader);
 			sqlSession = sessionFactory.openSession();
-			commitMapper = sqlSession.getMapper(CommitMapper.class);
+			commitMapper = sqlSession.getMapper(GitCommitMapper.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void insertCommit(Commit commit) {
+	public static void insertCommit(GitCommit commit) {
 		commitMapper.insert(commit);
 		sqlSession.commit();
 	}

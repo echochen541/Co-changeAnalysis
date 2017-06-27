@@ -46,23 +46,23 @@
 		</javaClientGenerator>
 
 		<!-- 要生成哪些表 -->
-		<table tableName="repository" domainObjectName="Repository"
+		<table tableName="repository" domainObjectName="GitRepository"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
-		<table tableName="commit" domainObjectName="Commit"
+		<table tableName="commit" domainObjectName="GitCommit"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
-		<table tableName="change_file" domainObjectName="ChangeFile"
+		<table tableName="change_file" domainObjectName="GitChangeFile"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
-		<table tableName="commit_parent" domainObjectName="CommitParent"
+		<table tableName="commit_parent" domainObjectName="GitCommitParent"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
-		<table tableName="commit_type" domainObjectName="CommitType"
+		<table tableName="commit_type" domainObjectName="GitCommitType"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
