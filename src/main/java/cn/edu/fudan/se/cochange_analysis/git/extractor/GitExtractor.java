@@ -9,13 +9,13 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
-import cn.edu.fudan.se.cochange_analysis.git.bean.Repository;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitDAO;
 
 public class GitExtractor {
-	private Repository repository;
+	private GitRepository repository;
 
-	public GitExtractor(Repository repository) {
+	public GitExtractor(GitRepository repository) {
 		this.repository = repository;
 	}
 
@@ -61,7 +61,7 @@ public class GitExtractor {
 	}
 
 	public static void main(String[] args) {
-		Repository repository = new Repository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
+		GitRepository repository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
 		GitExtractor gitExtractor = new GitExtractor(repository);
 		gitExtractor.extractCommitHistory();
 	}
