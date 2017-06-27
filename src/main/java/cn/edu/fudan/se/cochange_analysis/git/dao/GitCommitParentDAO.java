@@ -8,7 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParent;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
 
 public class GitCommitParentDAO {
 	private static SqlSessionFactory sessionFactory;
@@ -27,7 +27,7 @@ public class GitCommitParentDAO {
 		}
 	}
 
-	public static void insertCommitParent(GitCommitParent commitParent) {
+	public static void insertCommitParent(GitCommitParentKey commitParent) {
 		commitParentMapper.insert(commitParent);
 		sqlSession.commit();
 	}

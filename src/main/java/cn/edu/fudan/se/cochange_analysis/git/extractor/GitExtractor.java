@@ -22,7 +22,7 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
-import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParent;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitChangeFileDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitParentDAO;
@@ -71,7 +71,7 @@ public class GitExtractor {
 					// store parent commit
 					for (RevCommit parentRevCommit : parentRevCommits) {
 						String parentCommitId = parentRevCommit.getName();
-						GitCommitParent commitParent = new GitCommitParent(gitRepositoryId, commitId, parentCommitId);
+						GitCommitParentKey commitParent = new GitCommitParentKey(gitRepositoryId, commitId, parentCommitId);
 						GitCommitParentDAO.insertCommitParent(commitParent);
 						// System.out.println(commitId + " " + commitParent);
 					}
