@@ -25,6 +25,7 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitChangeFileDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitParentDAO;
 
 public class GitExtractor {
@@ -63,7 +64,7 @@ public class GitExtractor {
 				GitCommit commit = new GitCommit(gitRepositoryId, commitId, shortMessage, fullMessage, authorName,
 						authorEmail, authoredDate, committerName, committerEmail, committedDate);
 				// System.out.println(commitId);
-				// GitCommitDAO.insertCommit(commit);
+				GitCommitDAO.insertCommit(commit);
 
 				// current commit has more than zero parent
 				if (revCommit.getParentCount() > 0) {
@@ -95,7 +96,6 @@ public class GitExtractor {
 		try {
 			diffs = git.diff().setNewTree(currentTreeParser).setOldTree(prevTreeParser).call();
 		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -106,7 +106,7 @@ public class GitExtractor {
 			String changeType = diff.getChangeType().name();
 			if (ChangeType.DELETE.name().equals(changeType))
 				fileName = oldPath;
-			else
+			else 
 				fileName = newPath;
 
 			GitChangeFile changeFile = new GitChangeFile(gitRepository.getRepositoryId(), revCommit.getName(), fileName,
@@ -129,13 +129,10 @@ public class GitExtractor {
 			treeParser.reset(oldReader, tree.getId());
 			revWalk.dispose();
 		} catch (MissingObjectException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IncorrectObjectTypeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return treeParser;
@@ -145,6 +142,11 @@ public class GitExtractor {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		GitExtractor gitExtractor = new GitExtractor(gitRepository);
+		gitExtractor.extractCommitHistory();
+		
+		gitRepository = new GitRepository(2, "cassandra",
+				"D:/echo/lab/research/co-change/projects/cassandra/.git");
+		gitExtractor = new GitExtractor(gitRepository);
 		gitExtractor.extractCommitHistory();
 	}
 }
