@@ -63,7 +63,7 @@ public class GitExtractor {
 
 				GitCommit commit = new GitCommit(gitRepositoryId, commitId, shortMessage, fullMessage, authorName,
 						authorEmail, authoredDate, committerName, committerEmail, committedDate);
-				// System.out.println(commitId);
+				System.out.println(commitId);
 				GitCommitDAO.insertCommit(commit);
 
 				// current commit has more than zero parent
