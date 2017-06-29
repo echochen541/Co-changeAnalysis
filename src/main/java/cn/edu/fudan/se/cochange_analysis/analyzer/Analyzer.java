@@ -14,8 +14,9 @@ public class Analyzer {
 	public static void main(String[] args) {
 		StandardAnalyzer analyzer = new StandardAnalyzer();
 		List<String> result = new ArrayList<String>();
+		TokenStream stream = null;
 		try {
-			TokenStream stream = analyzer.tokenStream(null,
+			stream = analyzer.tokenStream(null,
 					"CAMEL-11072 Remove non-Maven plugin related exe......cutions from Salesforce Maven POM This removes `bundle-jar` execution from `maven-jar-plugin` plugin, and disables all known executions of `maven-bundle-plugin` and `camel-package-maven-plugin` -- these are not relevant to this module as it is a Maven plugin not a Camel component.");
 			stream.reset();
 			while (stream.incrementToken()) {
@@ -33,7 +34,7 @@ public class Analyzer {
 			stemmer.setCurrent(string);
 			stemmer.stem();
 			String stemmed = stemmer.getCurrent();
-			System.out.println(stemmed);
+			System.out.print(stemmed + " ");
 		}
 	}
 }
