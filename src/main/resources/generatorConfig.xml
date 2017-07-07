@@ -46,6 +46,7 @@
 		</javaClientGenerator>
 
 		<!-- 要生成哪些表 -->
+		<!--
 		<table tableName="repository" domainObjectName="GitRepository"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
@@ -66,7 +67,7 @@
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
-			
+		-->	
 		<table tableName="change_operation" domainObjectName="ChangeOperation"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
@@ -83,6 +84,11 @@
 			selectByExampleQueryId="false"></table>
 			
 		<table tableName="change_relation" domainObjectName="ChangeRelation"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false"></table>
+			
+		<table tableName="change_relation_commit" domainObjectName="ChangeRelationCommit"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
