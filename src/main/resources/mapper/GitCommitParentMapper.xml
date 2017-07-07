@@ -61,4 +61,11 @@
       </if>
     </trim>
   </insert>
+  
+  <select id="selectByRepositoryIdAndCommitId" resultMap="BaseResultMap">
+    select 
+	repository_id, commit_id, parent_commit_id
+    from commit_parent
+    where repository_id = #{repositoryId,jdbcType=INTEGER} and commit_id = #{commitId,jdbcType=VARCHAR}
+  </select>
 </mapper>

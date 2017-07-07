@@ -1,5 +1,9 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
 
 public interface GitCommitParentMapper {
@@ -26,4 +30,6 @@ public interface GitCommitParentMapper {
      * @mbg.generated
      */
     int insertSelective(GitCommitParentKey record);
+
+	List<GitCommitParentKey> selectByRepositoryIdAndCommitId(@Param("repositoryId") int repositoryId,@Param("commitId") String commitId);
 }

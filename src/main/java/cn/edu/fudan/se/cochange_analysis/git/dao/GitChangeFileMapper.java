@@ -1,5 +1,9 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFileKey;
 
@@ -51,4 +55,8 @@ public interface GitChangeFileMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(GitChangeFile record);
+
+	List<GitChangeFile> selectByRepositoryIdAndCommitId(@Param("repositoryId") int repositoryId,@Param("commitId") String commitId);
+	
+	int insertFilter(GitChangeFile record);
 }

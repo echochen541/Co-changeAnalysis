@@ -1,5 +1,7 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitKey;
 
@@ -51,4 +53,9 @@ public interface GitCommitMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(GitCommit record);
+    
+    
+    List<GitCommit> selectByRepositoryId(int repositoryId);
+
+	int insertFilter(GitCommit commit);
 }

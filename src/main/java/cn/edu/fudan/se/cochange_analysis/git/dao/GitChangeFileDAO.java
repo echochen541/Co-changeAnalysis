@@ -2,6 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.git.dao;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -29,6 +30,15 @@ public class GitChangeFileDAO {
 
 	public static void insertChangeFile(GitChangeFile changeFile) {
 		changeFileMapper.insert(changeFile);
+		sqlSession.commit();
+	}
+
+	public static List<GitChangeFile> selectByRepositoryIdAndCommitId(int repositoryId, String commitId) {
+		return changeFileMapper.selectByRepositoryIdAndCommitId(repositoryId, commitId);
+	}
+	
+	public static void insertChangeFileFilter(GitChangeFile changeFile) {
+		changeFileMapper.insertFilter(changeFile);
 		sqlSession.commit();
 	}
 }

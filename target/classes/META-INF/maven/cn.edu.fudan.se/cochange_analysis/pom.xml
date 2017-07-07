@@ -87,5 +87,10 @@
 			<artifactId>lucene-highlighter</artifactId>
 			<version>6.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.8.0-alpha2</version>
+		</dependency>
 	</dependencies>
 </project>

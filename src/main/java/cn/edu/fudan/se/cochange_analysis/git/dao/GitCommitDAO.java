@@ -2,6 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.git.dao;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -29,6 +30,15 @@ public class GitCommitDAO {
 
 	public static void insertCommit(GitCommit commit) {
 		commitMapper.insert(commit);
+		sqlSession.commit();
+	}
+	
+	public static List<GitCommit> selectByRepositoryId(int repositoryId){
+		return commitMapper.selectByRepositoryId(repositoryId);
+	}
+	
+	public static void insertFilteredCommit(GitCommit commit) {
+		commitMapper.insertFilter(commit);
 		sqlSession.commit();
 	}
 }

@@ -2,6 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.git.dao;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -30,5 +31,9 @@ public class GitCommitParentDAO {
 	public static void insertCommitParent(GitCommitParentKey commitParent) {
 		commitParentMapper.insert(commitParent);
 		sqlSession.commit();
+	}
+
+	public static List<GitCommitParentKey> selectByRepositoryIdAndCommitId(int repositoryId, String commitId) {
+		return commitParentMapper.selectByRepositoryIdAndCommitId(repositoryId, commitId);
 	}
 }
