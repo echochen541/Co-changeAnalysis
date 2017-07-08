@@ -47,4 +47,36 @@ public class FileUtils {
 		}
 		return file;
 	}
+
+	public static String parseFilePath(String filePath, String repositoryName) {
+		String fileName = null;
+		String matchString1 = "org/apache/" + repositoryName;
+		String matchString2 = "src/main/java/";
+		String matchString3 = "src/main/resources/";
+
+		// search matchString1
+		int index = filePath.indexOf(matchString1);
+		// found matchString1
+		if (index != -1) {
+			fileName = filePath.substring(index);
+		} else {
+			// matchString1 not found, search matchString2
+			index = filePath.indexOf(matchString2);
+			// found matchString2
+			if (index != -1) {
+				fileName = filePath.substring(index);
+			} else {
+				// matchString2 not found, search matchString3
+				index = filePath.indexOf(matchString3);
+				// matchString3 found
+				if (index != -1) {
+					fileName = filePath.substring(index);
+				} else {
+					// matchString1,2,3 not found, keep original path
+					fileName = filePath;
+				}
+			}
+		}
+		return fileName;
+	}
 }

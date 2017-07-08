@@ -2,7 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.filepair;
 
 import java.util.List;
 
-import cn.edu.fudan.se.cochange_analysis.change.extractor.ChangeExtractor;
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
@@ -61,7 +61,6 @@ public class FilePairExtractor {
 		int repositoryId = repository.getRepositoryId();
 		String repositoryName = repository.getRepositoryName();
 		List<GitCommit> filteredCommits = GitCommitDAO.selectFilteredByRepositoryId(repositoryId);
-		String matchString = "org/apache/" + repositoryName;
 		String splitString = "||";
 
 		for (GitCommit commit : filteredCommits) {
@@ -69,29 +68,38 @@ public class FilePairExtractor {
 			List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryIdAndCommitId(repositoryId,
 					commitId);
 			System.out.println(repositoryId + " : " + commitId);
-			
+
 			for (int i = 0; i < changeFiles.size() - 1; i++) {
 				GitChangeFile changeFile1 = changeFiles.get(i);
 				String filePath1 = changeFile1.getFileName();
-				// System.out.println(filePath1);
-				String fileName1 = filePath1.substring(filePath1.indexOf(matchString));
+				String fileName1 = FileUtils.parseFilePath(filePath1, repositoryName);
+
 				for (int j = i + 1; j < changeFiles.size(); j++) {
 					GitChangeFile changeFile2 = changeFiles.get(j);
 					String filePath2 = changeFile2.getFileName();
-					String fileName2 = filePath2.substring(filePath2.indexOf(matchString));
-					String filePair = null;
-					int compare = fileName1.compareTo(fileName2);
-					if (compare > 0)
-						filePair = fileName2 + splitString + fileName1;
-					else if (compare < 0)
-						filePair = fileName1 + splitString + fileName2;
-					else {
-						System.out.println("duplicated short names");
-						System.exit(0);
+					String fileName2 = FileUtils.parseFilePath(filePath2, repositoryName);
+
+					if (fileName1.equals(fileName2)) {
+						fileName1 = filePath1;
+						fileName2 = filePath2;
 					}
 
-					FilePairCommit filePairCommit = new FilePairCommit(repositoryId, commitId, filePath1, filePath2,
-							filePair);
+					String filePair = null;
+					FilePairCommit filePairCommit = null;
+
+					int compare = fileName1.compareTo(fileName2);
+					if (compare > 0) {
+						filePair = fileName2 + splitString + fileName1;
+						filePairCommit = new FilePairCommit(repositoryId, commitId, filePath2, filePath1, filePair);
+					} else if (compare < 0) {
+						filePair = fileName1 + splitString + fileName2;
+						filePairCommit = new FilePairCommit(repositoryId, commitId, filePath1, filePath2, filePair);
+					} else {
+						System.out.println("duplicated short names");
+						System.out.println(filePath1);
+						System.out.println(filePath2);
+						System.exit(0);
+					}
 					FilePairCommitDAO.insertFilePairCommit(filePairCommit);
 				}
 			}
