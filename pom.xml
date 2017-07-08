@@ -92,5 +92,18 @@
 			<artifactId>slf4j-nop</artifactId>
 			<version>1.8.0-alpha2</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.uzh.ifi.seal</groupId>
+			<artifactId>changedistiller</artifactId>
+		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>ch.uzh.ifi.seal</groupId>
+				<artifactId>changedistiller</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

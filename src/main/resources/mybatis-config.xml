@@ -21,6 +21,11 @@
 		<mapper resource="mapper/GitCommitMapper.xml" />
 		<mapper resource="mapper/GitChangeFileMapper.xml" />
 		<mapper resource="mapper/GitCommitParentMapper.xml" />
-		<mapper resource="mapper/GitCommitTypeMapper.xml" />
+
+		<mapper resource="mapper/ChangeOperationMapper.xml" />
+		<mapper resource="mapper/ChangeRelationCommitMapper.xml" />
+		<mapper resource="mapper/ChangeRelationMapper.xml" />
+		<mapper resource="mapper/FilePairCommitMapper.xml" />
+		<mapper resource="mapper/FilePairCountMapper.xml" />
 	</mappers>
 </configuration>

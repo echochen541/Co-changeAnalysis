@@ -41,4 +41,8 @@ public class GitChangeFileDAO {
 		changeFileMapper.insertFilter(changeFile);
 		sqlSession.commit();
 	}
+
+	public static List<GitChangeFile> selectByRepositoryId(int repositoryId) {
+		return changeFileMapper.selectByRepositoryId(repositoryId);
+	}
 }
