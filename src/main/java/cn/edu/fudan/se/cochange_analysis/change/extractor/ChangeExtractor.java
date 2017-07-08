@@ -24,6 +24,33 @@ public class ChangeExtractor {
 		// TODO Auto-generated constructor stub
 	}
 
+	public static void main(String[] args) {
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
+		changeExtractor.extracChange();
+
+		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
+		changeExtractor = new ChangeExtractor(gitRepository);
+		changeExtractor.extracChange();
+
+		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
+		changeExtractor = new ChangeExtractor(gitRepository);
+		changeExtractor.extracChange();
+
+		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		changeExtractor = new ChangeExtractor(gitRepository);
+		changeExtractor.extracChange();
+
+		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
+		changeExtractor = new ChangeExtractor(gitRepository);
+		changeExtractor.extracChange();
+
+		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
+		changeExtractor = new ChangeExtractor(gitRepository);
+		changeExtractor.extracChange();
+	}
+
 	public void extracChange() {
 		int repositoryId = repository.getRepositoryId();
 		// System.out.println(repositoryId);
@@ -34,7 +61,7 @@ public class ChangeExtractor {
 		File tempDir = new File(tempDirPath);
 		tempDir.mkdirs();
 
-		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectByRepositoryId(repositoryId);
+		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryId(repositoryId);
 
 		for (GitChangeFile changeFile : changeFiles) {
 			String commitId = changeFile.getCommitId();
@@ -48,7 +75,7 @@ public class ChangeExtractor {
 			String filePath = changeFile.getFileName();
 
 			System.out.println(repositoryId + "," + commitId + "," + filePath);
-			
+
 			byte[] content1 = gitExtractor.getFileContentByCommitId(parentCommitId, filePath);
 			byte[] content2 = gitExtractor.getFileContentByCommitId(commitId, filePath);
 			String randomString = UUID.randomUUID().toString();

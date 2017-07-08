@@ -41,4 +41,8 @@ public class GitCommitDAO {
 		commitMapper.insertFilter(commit);
 		sqlSession.commit();
 	}
+
+	public static List<GitCommit> selectFilteredByRepositoryId(int repositoryId) {
+		return commitMapper.selectFilteredByRepositoryId(repositoryId);
+	}
 }

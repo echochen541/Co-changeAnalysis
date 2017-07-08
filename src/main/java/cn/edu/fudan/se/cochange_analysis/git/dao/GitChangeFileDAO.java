@@ -45,4 +45,12 @@ public class GitChangeFileDAO {
 	public static List<GitChangeFile> selectByRepositoryId(int repositoryId) {
 		return changeFileMapper.selectByRepositoryId(repositoryId);
 	}
+
+	public static List<GitChangeFile> selectFilteredByRepositoryIdAndCommitId(int repositoryId, String commitId) {
+		return changeFileMapper.selectFilteredByRepositoryIdAndCommitId(repositoryId, commitId);
+	}
+
+	public static List<GitChangeFile> selectFilteredByRepositoryId(int repositoryId) {
+		return changeFileMapper.selectFilteredByRepositoryId(repositoryId);
+	}
 }

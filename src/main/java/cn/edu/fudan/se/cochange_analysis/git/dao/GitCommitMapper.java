@@ -58,4 +58,6 @@ public interface GitCommitMapper {
     List<GitCommit> selectByRepositoryId(int repositoryId);
 
 	int insertFilter(GitCommit commit);
+
+	List<GitCommit> selectFilteredByRepositoryId(int repositoryId);
 }
