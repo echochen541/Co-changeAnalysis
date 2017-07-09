@@ -1,4 +1,4 @@
-package cn.edu.fudan.se.cochange_analysis.git.extractor;
+package cn.edu.fudan.se.cochange_analysis.extractor;
 
 import java.io.File;
 import java.io.IOException;

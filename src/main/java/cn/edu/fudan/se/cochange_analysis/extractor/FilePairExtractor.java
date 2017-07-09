@@ -1,4 +1,4 @@
-package cn.edu.fudan.se.cochange_analysis.filepair;
+package cn.edu.fudan.se.cochange_analysis.extractor;
 
 import java.util.List;
 

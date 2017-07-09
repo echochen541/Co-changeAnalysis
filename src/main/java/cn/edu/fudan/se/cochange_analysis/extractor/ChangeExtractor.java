@@ -1,4 +1,4 @@
-package cn.edu.fudan.se.cochange_analysis.change.extractor;
+package cn.edu.fudan.se.cochange_analysis.extractor;
 
 import java.io.File;
 import java.util.List;
@@ -9,14 +9,12 @@ import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
 import ch.uzh.ifi.seal.changedistiller.distilling.FileDistiller;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
-import cn.edu.fudan.se.cochange_analysis.filepair.FilePairExtractor;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitChangeFileDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitParentDAO;
-import cn.edu.fudan.se.cochange_analysis.git.extractor.GitExtractor;
 
 public class ChangeExtractor {
 	private GitRepository repository;
