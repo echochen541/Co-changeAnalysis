@@ -28,7 +28,7 @@ public class ChangeRelationCommit implements Serializable {
      *
      * @mbg.generated
      */
-    private Integer commitId;
+    private String commitId;
 
     /**
      *
@@ -89,7 +89,7 @@ public class ChangeRelationCommit implements Serializable {
      *
      * @mbg.generated
      */
-    public ChangeRelationCommit(Integer changeRelationCommitId, Integer repositoryId, Integer commitId, String filePair, String changeType1, String changedEntityType1, String changeType2, String changedEntityType2) {
+    public ChangeRelationCommit(Integer changeRelationCommitId, Integer repositoryId, String commitId, String filePair, String changeType1, String changedEntityType1, String changeType2, String changedEntityType2) {
         this.changeRelationCommitId = changeRelationCommitId;
         this.repositoryId = repositoryId;
         this.commitId = commitId;
@@ -166,7 +166,7 @@ public class ChangeRelationCommit implements Serializable {
      *
      * @mbg.generated
      */
-    public Integer getCommitId() {
+    public String getCommitId() {
         return commitId;
     }
 
@@ -178,7 +178,7 @@ public class ChangeRelationCommit implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCommitId(Integer commitId) {
+    public void setCommitId(String commitId) {
         this.commitId = commitId;
     }
 

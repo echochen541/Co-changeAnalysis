@@ -67,7 +67,7 @@ public class FilePairExtractor {
 			String commitId = commit.getCommitId();
 			List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryIdAndCommitId(repositoryId,
 					commitId);
-			System.out.println(repositoryId + " : " + commitId);
+			// System.out.println(repositoryId + " : " + commitId);
 
 			for (int i = 0; i < changeFiles.size() - 1; i++) {
 				GitChangeFile changeFile1 = changeFiles.get(i);
@@ -79,11 +79,6 @@ public class FilePairExtractor {
 					String filePath2 = changeFile2.getFileName();
 					String fileName2 = FileUtils.parseFilePath(filePath2, repositoryName);
 
-					if (fileName1.equals(fileName2)) {
-						fileName1 = filePath1;
-						fileName2 = filePath2;
-					}
-
 					String filePair = null;
 					FilePairCommit filePairCommit = null;
 
@@ -91,19 +86,13 @@ public class FilePairExtractor {
 					if (compare > 0) {
 						filePair = fileName2 + splitString + fileName1;
 						filePairCommit = new FilePairCommit(repositoryId, commitId, filePath2, filePath1, filePair);
-					} else if (compare < 0) {
+					} else {
 						filePair = fileName1 + splitString + fileName2;
 						filePairCommit = new FilePairCommit(repositoryId, commitId, filePath1, filePath2, filePair);
-					} else {
-						System.out.println("duplicated short names");
-						System.out.println(filePath1);
-						System.out.println(filePath2);
-						System.exit(0);
 					}
 					FilePairCommitDAO.insertFilePairCommit(filePairCommit);
 				}
 			}
 		}
 	}
-
 }

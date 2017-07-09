@@ -53,7 +53,7 @@
       changed_entity_type1, change_type2, changed_entity_type2
       )
     values (#{changeRelationCommitId,jdbcType=INTEGER}, #{repositoryId,jdbcType=INTEGER}, 
-      #{commitId,jdbcType=INTEGER}, #{filePair,jdbcType=VARCHAR}, #{changeType1,jdbcType=VARCHAR}, 
+      #{commitId,jdbcType=VARCHAR}, #{filePair,jdbcType=VARCHAR}, #{changeType1,jdbcType=VARCHAR}, 
       #{changedEntityType1,jdbcType=VARCHAR}, #{changeType2,jdbcType=VARCHAR}, #{changedEntityType2,jdbcType=VARCHAR}
       )
   </insert>
@@ -97,7 +97,7 @@
         #{repositoryId,jdbcType=INTEGER},
       </if>
       <if test="commitId != null">
-        #{commitId,jdbcType=INTEGER},
+        #{commitId,jdbcType=VARCHAR},
       </if>
       <if test="filePair != null">
         #{filePair,jdbcType=VARCHAR},
@@ -127,7 +127,7 @@
         repository_id = #{repositoryId,jdbcType=INTEGER},
       </if>
       <if test="commitId != null">
-        commit_id = #{commitId,jdbcType=INTEGER},
+        commit_id = #{commitId,jdbcType=VARCHAR},
       </if>
       <if test="filePair != null">
         file_pair = #{filePair,jdbcType=VARCHAR},
@@ -154,7 +154,7 @@
     -->
     update change_relation_commit
     set repository_id = #{repositoryId,jdbcType=INTEGER},
-      commit_id = #{commitId,jdbcType=INTEGER},
+      commit_id = #{commitId,jdbcType=VARCHAR},
       file_pair = #{filePair,jdbcType=VARCHAR},
       change_type1 = #{changeType1,jdbcType=VARCHAR},
       changed_entity_type1 = #{changedEntityType1,jdbcType=VARCHAR},
