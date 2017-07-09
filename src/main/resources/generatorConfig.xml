@@ -63,14 +63,14 @@
 			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
 			<table tableName="file_pair_count" domainObjectName="FilePairCount" enableCountByExample="false" 
 			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
-			selectByExampleQueryId="false"></table> <table tableName="change_relation" 
-			domainObjectName="ChangeRelation" enableCountByExample="false" enableUpdateByExample="false" 
-			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
-			<table tableName="change_relation_commit" domainObjectName="ChangeRelationCommit" 
-			enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" 
-			enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
-
-		<table tableName="change_operation" domainObjectName="ChangeOperation"
+			selectByExampleQueryId="false"></table> <table tableName="change_operation" 
+			domainObjectName="ChangeOperation" enableCountByExample="false" enableUpdateByExample="false" 
+			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
+		<table tableName="change_relation_count" domainObjectName="ChangeRelationCount"
+			enableCountByExample="false" enableUpdateByExample="false"
+			enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false"></table>
+		<table tableName="change_relation_commit" domainObjectName="ChangeRelationCommit"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
