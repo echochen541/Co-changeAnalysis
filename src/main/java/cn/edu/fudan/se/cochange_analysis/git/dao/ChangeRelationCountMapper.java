@@ -1,5 +1,9 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 
 public interface ChangeRelationCountMapper {
@@ -50,4 +54,7 @@ public interface ChangeRelationCountMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(ChangeRelationCount record);
+    
+    
+    List<ChangeRelationCount> selectByRepoId(@Param(value="repoId")int repoId);
 }

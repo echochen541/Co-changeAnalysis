@@ -50,7 +50,6 @@ public class RelationChangeExtractor {
 						}
 					}
 				}
-				
 			}
 		}
 		for (Map.Entry<String,Set<String>> entry : result.entrySet()) {  
@@ -75,7 +74,9 @@ public class RelationChangeExtractor {
 		}
 	}
 	
-	public static void generateDSM(){
+	public static void generateDSM(int repoId){
+		List<ChangeRelationCommit> changeRelationCommit=ChangeRelationCommitDAO.selectAllChangeRelationCommit(repoId);
+		List<ChangeRelationCount> changeRelationCount=ChangeRelationCountDAO.selectAllChangeRelationCount(repoId);
 		
 	}
 

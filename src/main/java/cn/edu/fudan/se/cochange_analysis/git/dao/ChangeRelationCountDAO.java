@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 
 public class ChangeRelationCountDAO {
@@ -31,6 +32,9 @@ public class ChangeRelationCountDAO {
 	public static void insertChangeRelationCountMapper(ChangeRelationCount commit) {
 		changeRelationCountMapper.insert(commit);
 		sqlSession.commit();
+	}
+	public static List<ChangeRelationCount> selectAllChangeRelationCount(int repoId){
+		return changeRelationCountMapper.selectByRepoId(repoId);
 	}
 	
 

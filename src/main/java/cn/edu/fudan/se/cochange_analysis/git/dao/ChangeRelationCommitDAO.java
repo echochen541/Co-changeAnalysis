@@ -2,6 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.git.dao;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -30,6 +31,9 @@ public class ChangeRelationCommitDAO {
 	public static void insertChangeRelationCommitMapper(ChangeRelationCommit commit) {
 		changeRelationCommitMapper.insert(commit);
 		sqlSession.commit();
+	}
+	public static List<ChangeRelationCommit> selectAllChangeRelationCommit(int repoId){
+		return changeRelationCommitMapper.selectByRepoId(repoId);
 	}
 
 }
