@@ -48,14 +48,6 @@ public class ChangeExtractor {
 		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
 		changeExtractor = new ChangeExtractor(gitRepository);
 		changeExtractor.extracChange();
-		
-		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-		FilePairExtractor extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
-
-		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
 	}
 
 	public void extracChange() {

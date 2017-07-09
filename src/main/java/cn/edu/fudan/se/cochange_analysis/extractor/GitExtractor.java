@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -24,6 +25,11 @@ import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
+import ch.uzh.ifi.seal.changedistiller.ChangeDistiller;
+import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
+import ch.uzh.ifi.seal.changedistiller.distilling.FileDistiller;
+import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
@@ -167,10 +173,10 @@ public class GitExtractor {
 				ObjectLoader loader = repository.open(blobId);
 				byte[] bytes = loader.getBytes();
 				return bytes;
-				
-//				InputStream input = FileUtils.open(blobId, repository);
-//				byte[] bytes = FileUtils.toByteArray(input);
-//				return bytes;
+
+				// InputStream input = FileUtils.open(blobId, repository);
+				// byte[] bytes = FileUtils.toByteArray(input);
+				// return bytes;
 			} else {
 				System.err.println("Cannot found file(" + filePath + ") in commit (" + commitId + "): " + revWalk);
 			}
@@ -187,11 +193,39 @@ public class GitExtractor {
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
-		// GitRepository gitRepository = new GitRepository(1, "camel",
-		// "D:/echo/lab/research/co-change/projects/camel/.git");
-		// GitExtractor gitExtractor = new GitExtractor(gitRepository);
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		GitExtractor gitExtractor = new GitExtractor(gitRepository);
+
+		byte[] content1 = gitExtractor.getFileContentByCommitId("12dcc564673c26b49102876f1e075db7ac944f1c", "components/camel-lumberjack/src/main/java/org/apache/camel/component/lumberjack/LumberjackComponent.java");
+		byte[] content2 = gitExtractor.getFileContentByCommitId("f496aac76098600313248a8a4c62c75efedf1830", "components/camel-lumberjack/src/main/java/org/apache/camel/component/lumberjack/LumberjackComponent.java");
+
+		System.out.println(new String(content1));
+		System.out.println(new String(content2));
+		
+		
+		
+		String randomString = UUID.randomUUID().toString();
+		// create temp files before and after the commit
+		File left = FileUtils.writeBytesToFile(content1, "d809f7cf-0d7f-4306-aa5f-9fb5a3e1a93f", "A.v1");
+		File right = FileUtils.writeBytesToFile(content2, "d809f7cf-0d7f-4306-aa5f-9fb5a3e1a93f", "A.v2");
+
+		FileDistiller distiller = ChangeDistiller.createFileDistiller(Language.JAVA);
+		try {
+			distiller.extractClassifiedSourceCodeChanges(left, right);
+		} catch (Exception e) {
+			System.err.println("Warning: error while change distilling. " + e.getMessage());
+		}
+
+		// delete temp files
+//		left.delete();
+//		right.delete();
+
+		List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+		System.out.println(changes);
+		
 		// gitExtractor.extractCommitHistory();
 
 		// gitRepository = new GitRepository(2, "cassandra",
@@ -199,20 +233,24 @@ public class GitExtractor {
 		// gitExtractor = new GitExtractor(gitRepository);
 		// gitExtractor.extractCommitHistory();
 
-		GitRepository gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		GitExtractor gitExtractor = new GitExtractor(gitRepository);
-		gitExtractor.extractCommitHistory();
+		// GitRepository gitRepository = new GitRepository(3, "cxf",
+		// "D:/echo/lab/research/co-change/projects/cxf/.git");
+		// GitExtractor gitExtractor = new GitExtractor(gitRepository);
+		// gitExtractor.extractCommitHistory();
 
-		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-		gitExtractor = new GitExtractor(gitRepository);
-		gitExtractor.extractCommitHistory();
+		// gitRepository = new GitRepository(4, "hadoop",
+		// "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		// gitExtractor = new GitExtractor(gitRepository);
+		// gitExtractor.extractCommitHistory();
 
-		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-		gitExtractor = new GitExtractor(gitRepository);
-		gitExtractor.extractCommitHistory();
+		// gitRepository = new GitRepository(5, "hbase",
+		// "D:/echo/lab/research/co-change/projects/hbase/.git");
+		// gitExtractor = new GitExtractor(gitRepository);
+		// gitExtractor.extractCommitHistory();
 
-		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		gitExtractor = new GitExtractor(gitRepository);
-		gitExtractor.extractCommitHistory();
+		// gitRepository = new GitRepository(6, "wicket",
+		// "D:/echo/lab/research/co-change/projects/wicket/.git");
+		// gitExtractor = new GitExtractor(gitRepository);
+		// gitExtractor.extractCommitHistory();
 	}
 }
