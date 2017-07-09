@@ -1,5 +1,9 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCountKey;
 
@@ -51,4 +55,7 @@ public interface FilePairCountMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(FilePairCount record);
+    
+    List<FilePairCount> selectByFilePairCountNum(@Param(value="num")int num,@Param(value="repoId")int repoId);
+    
 }

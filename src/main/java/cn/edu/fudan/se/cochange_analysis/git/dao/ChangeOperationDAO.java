@@ -11,6 +11,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import ch.uzh.ifi.seal.changedistiller.model.entities.Update;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperation;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationWithBLOBs;
 
 public class ChangeOperationDAO {
@@ -62,5 +64,8 @@ public class ChangeOperationDAO {
 			}
 		}
 
+	}
+	public static List<ChangeOperationUnique> selectChangeOperationsByFileNameAndCommitId(String fileName,String commitId){
+		return changeOperationMapper.selectChangeOperationsByFileNameAndCommitId(fileName,commitId);
 	}
 }

@@ -1,6 +1,11 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperation;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationWithBLOBs;
 
 public interface ChangeOperationMapper {
@@ -59,4 +64,6 @@ public interface ChangeOperationMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(ChangeOperation record);
+    
+    List<ChangeOperationUnique> selectChangeOperationsByFileNameAndCommitId(@Param(value="fileName") String fileName,@Param(value="commitId") String commitId);
 }

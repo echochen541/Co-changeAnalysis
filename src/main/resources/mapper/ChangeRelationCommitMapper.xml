@@ -9,7 +9,7 @@
     <constructor>
       <idArg column="change_relation_commit_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="repository_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
-      <arg column="commit_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="commit_id" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="file_pair" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="change_type1" javaType="java.lang.String" jdbcType="VARCHAR" />
       <arg column="changed_entity_type1" javaType="java.lang.String" jdbcType="VARCHAR" />

@@ -1,5 +1,9 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommitKey;
 
@@ -51,4 +55,7 @@ public interface FilePairCommitMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(FilePairCommit record);
+    
+    
+    List<FilePairCommit> selectByFilePairName(@Param(value="filePair") String filePair,@Param(value="repoId")int repoId);
 }
