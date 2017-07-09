@@ -18,14 +18,14 @@
 	<mappers>
 		<!--userMapper.xml装载进来 同等于把“dao”的实现装载进来 -->
 		<mapper resource="mapper/GitRepositoryMapper.xml" />
+		<mapper resource="mapper/GitCommitParentMapper.xml" />
 		<mapper resource="mapper/GitCommitMapper.xml" />
 		<mapper resource="mapper/GitChangeFileMapper.xml" />
-		<mapper resource="mapper/GitCommitParentMapper.xml" />
-
-		<mapper resource="mapper/ChangeOperationMapper.xml" />
-		<mapper resource="mapper/ChangeRelationCommitMapper.xml" />
-		<mapper resource="mapper/ChangeRelationMapper.xml" />
-		<mapper resource="mapper/FilePairCommitMapper.xml" />
 		<mapper resource="mapper/FilePairCountMapper.xml" />
+		<mapper resource="mapper/FilePairCommitMapper.xml" />
+		<mapper resource="mapper/ChangeRelationMapper.xml" />
+		<mapper resource="mapper/ChangeRelationCountMapper.xml" />
+		<mapper resource="mapper/ChangeRelationCommitMapper.xml" />
+		<mapper resource="mapper/ChangeOperationMapper.xml" />
 	</mappers>
 </configuration>
