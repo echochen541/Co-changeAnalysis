@@ -69,13 +69,17 @@ public class RelationChangeExtractor {
 			ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repoId, tmp[0], tmp[1], tmp[2], tmp[3],
 					tmp[4], size);
 			ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
+
+			List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
 			Iterator<String> i = commitIds.iterator();
 			while (i.hasNext()) {
 				String commitId = (String) i.next();
 				ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repoId, commitId, tmp[0],
 						tmp[1], tmp[2], tmp[3], tmp[4]);
-				ChangeRelationCommitDAO.insertChangeRelationCommit(changeRelationCommit);
+				// ChangeRelationCommitDAO.insertChangeRelationCommit(changeRelationCommit);
+				changeRelationCommits.add(changeRelationCommit);
 			}
+			ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 		}
 	}
 
