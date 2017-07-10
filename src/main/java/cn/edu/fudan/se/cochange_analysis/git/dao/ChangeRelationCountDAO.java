@@ -32,11 +32,11 @@ public class ChangeRelationCountDAO {
 		changeRelationCountMapper.insert(commit);
 		sqlSession.commit();
 	}
-	public static List<ChangeRelationCount> selectAllChangeRelationCount(int repoId){
-		return changeRelationCountMapper.selectByRepoId(repoId);
+	public static List<ChangeRelationCount> selectAllChangeRelationCount(int repoId,String myFilePair,int threshold ){
+		return changeRelationCountMapper.selectByRepoId(repoId,myFilePair,threshold);
 	}
-	public static List<ChangeRelationUnique> selectDistinctChangeType(int repoId){
-		return changeRelationCountMapper.selectDistinctChangeType(repoId);
+	public static List<ChangeRelationUnique> selectDistinctChangeType(int repoId,int threshold){
+		return changeRelationCountMapper.selectDistinctChangeType(repoId,threshold);
 	}
 	
 

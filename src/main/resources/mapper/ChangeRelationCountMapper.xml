@@ -183,7 +183,8 @@
     select 
     <include refid="Base_Column_List" />
     from change_relation_count
-    where repository_id = #{repoId,jdbcType=INTEGER}
+    where repository_id = #{repoId,jdbcType=INTEGER} and file_pair=#{myFilePair,jdbcType=VARCHAR}
+     and count>=#{threshold,jdbcType=INTEGER}
   </select>
   
     <select id="selectDistinctChangeType" resultMap="ChangeRelationUnique">
@@ -194,6 +195,6 @@
     select 
     distinct change_type1,changed_entity_type1,change_type2,changed_entity_type2 
     from change_relation_count
-    where repository_id = #{repoId,jdbcType=INTEGER}
+    where repository_id = #{repoId,jdbcType=INTEGER} and count>=#{threshold,jdbcType=INTEGER}
   </select>
 </mapper>

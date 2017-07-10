@@ -82,12 +82,13 @@ public class RelationChangeExtractor {
 	public static void main(String args[]) {
 		int[] repos = { 1, 2, 3, 4, 5 };
 		for (int repoId : repos) {
-			run(repoId, 20);
-			generateDSM(repoId, 20);
+//			run(repoId, 20);
+			generateDSM(repoId,60,20);
+			break;
 		}
 	}
 
-	public static void generateDSM(int repoId, int threshold) {
+	public static void generateDSM(int repoId, int threshold,int threshold2) {
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
@@ -105,14 +106,15 @@ public class RelationChangeExtractor {
 		for (int index = 0; index < fileList.size(); index++) {
 			fileIndexMap.put(fileList.get(index), index);
 		}
+		System.out.println("FileSize:" + fileList.size());
 
 		StringBuilder[][] dsmMatrix = new StringBuilder[fileList.size()][fileList.size()];
 
 		Map<String, Integer> typeIndexMap = new HashMap<String, Integer>();
-		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId);
+		List<String> typeList=new ArrayList<String>();
+		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,threshold2);
 		StringBuilder typeBuilder = new StringBuilder();
 		typeBuilder.append("[");
-		int typeIndex = 0;
 		for (ChangeRelationUnique changeRelationUniqueItem : changeRelationUniqueList) {
 			if (changeRelationUniqueItem.getChangeType1().contains("JAVADOC")
 					|| changeRelationUniqueItem.getChangeType2().contains("JAVADOC")
@@ -125,41 +127,43 @@ public class RelationChangeExtractor {
 					+ changeRelationUniqueItem.getChangeType2() + "||"
 					+ changeRelationUniqueItem.getChangedEntityType2();
 
-			typeBuilder.append(tmp + ",");
-			typeIndexMap.put(tmp, typeIndex);
-			typeIndex++;
+			typeList.add(tmp);
+			
 		}
+		Collections.sort(typeList);
+		for(int m=0;m<typeList.size();m++){
+			typeIndexMap.put(typeList.get(m), m);
+			typeBuilder.append(typeList.get(m) + ",");
+		}
+		System.out.println("TypeSize:" + typeList.size());
 		typeBuilder.deleteCharAt(typeBuilder.length() - 1);
 		typeBuilder.append("]\n");
 		typeBuilder.append(fileList.size());
 		typeBuilder.append("\n");
 		StringBuilder matrixCell = new StringBuilder();
-		for (int j = 0; j < changeRelationUniqueList.size(); j++) {
+		for (int j = 0; j < typeList.size(); j++) {
 			matrixCell.append("0");
 		}
-		// for(int m=0;m<dsmMatrix.length;m++){
-		// for(int n=0;n<dsmMatrix[0].length;n++){
-		// dsmMatrix[m][n]=new StringBuilder(matrixCell.toString());
-		// }
-		// }
-		List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId);
-		for (ChangeRelationCount changeRelationCountItem : changeRelationCount) {
-			String filePairName = changeRelationCountItem.getFilePair();
-			String changeType1 = changeRelationCountItem.getChangeType1();
-			String changeType2 = changeRelationCountItem.getChangeType2();
-			String changedEntityType1 = changeRelationCountItem.getChangedEntityType1();
-			String changedEntityType2 = changeRelationCountItem.getChangedEntityType2();
-			if (changedEntityType1.contains("JAVADOC") || changedEntityType2.contains("JAVADOC")
-					|| changedEntityType1.contains("COMMENT") || changedEntityType2.contains("COMMENT")) {
-				continue;
-			}
-			String relationType = changeType1 + "||" + changedEntityType1 + "||" + changeType2 + "||"
+		for(FilePairCount myFileName:filePairCountList){
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,myFileName.getFilePair(),threshold2);
+			for (ChangeRelationCount changeRelationCountItem : changeRelationCount) {
+				String filePairName = changeRelationCountItem.getFilePair();
+				String changeType1 = changeRelationCountItem.getChangeType1();
+				String changeType2 = changeRelationCountItem.getChangeType2();
+				String changedEntityType1 = changeRelationCountItem.getChangedEntityType1();
+				String changedEntityType2 = changeRelationCountItem.getChangedEntityType2();
+				if (changedEntityType1.contains("JAVADOC") || changedEntityType2.contains("JAVADOC")
+						|| changedEntityType1.contains("COMMENT") || changedEntityType2.contains("COMMENT")) {
+					continue;
+				}	
+				String relationType = changeType1 + "||" + changedEntityType1 + "||" + changeType2 + "||"
 					+ changedEntityType2;
-			String[] filePairs = filePairName.split("\\|\\|");
-
-			StringBuilder a2bRelation = new StringBuilder(matrixCell.toString());
-			a2bRelation.setCharAt(typeIndexMap.get(relationType), '1');
-			dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] = a2bRelation;
+				String[] filePairs = filePairName.split("\\|\\|");
+				if(dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])]==null){
+					dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] = new StringBuilder(matrixCell.toString());;
+				}
+				dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])].setCharAt(typeIndexMap.get(relationType), '1');
+			}
 		}
 		StringBuilder matrixBuilder = new StringBuilder();
 		for (int m = 0; m < dsmMatrix.length; m++) {
@@ -177,8 +181,7 @@ public class RelationChangeExtractor {
 		for (String fileName : fileList) {
 			fileListBuilder.append(fileName + "\n");
 		}
-		System.out.println("FileSize:" + fileList.size());
-		System.out.println("TypeSize:" + typeIndexMap.size());
+		
 		try {
 			FileOutputStream fos = new FileOutputStream(new File("D://test.dsm"));
 			fos.write(typeBuilder.toString().getBytes());
