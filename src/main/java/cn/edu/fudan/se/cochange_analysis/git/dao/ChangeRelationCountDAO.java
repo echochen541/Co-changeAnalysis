@@ -8,8 +8,8 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 
 public class ChangeRelationCountDAO {
 	private static SqlSessionFactory sessionFactory;
@@ -34,6 +34,9 @@ public class ChangeRelationCountDAO {
 	}
 	public static List<ChangeRelationCount> selectAllChangeRelationCount(int repoId){
 		return changeRelationCountMapper.selectByRepoId(repoId);
+	}
+	public static List<ChangeRelationUnique> selectDistinctChangeType(int repoId){
+		return changeRelationCountMapper.selectDistinctChangeType(repoId);
 	}
 	
 

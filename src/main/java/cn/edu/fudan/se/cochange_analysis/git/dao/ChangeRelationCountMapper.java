@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 
 public interface ChangeRelationCountMapper {
     /**
@@ -57,4 +59,6 @@ public interface ChangeRelationCountMapper {
     
     
     List<ChangeRelationCount> selectByRepoId(@Param(value="repoId")int repoId);
+    
+    List<ChangeRelationUnique> selectDistinctChangeType(@Param(value="repoId") int repoId);
 }
