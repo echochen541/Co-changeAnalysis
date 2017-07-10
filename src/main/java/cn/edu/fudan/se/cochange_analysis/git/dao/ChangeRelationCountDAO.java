@@ -28,7 +28,7 @@ public class ChangeRelationCountDAO {
 		}
 	}
 
-	public static void insertChangeRelationCountMapper(ChangeRelationCount commit) {
+	public static void insertChangeRelationCount(ChangeRelationCount commit) {
 		changeRelationCountMapper.insert(commit);
 		sqlSession.commit();
 	}

@@ -28,7 +28,7 @@ public class ChangeRelationCommitDAO {
 		}
 	}
 
-	public static void insertChangeRelationCommitMapper(ChangeRelationCommit commit) {
+	public static void insertChangeRelationCommit(ChangeRelationCommit commit) {
 		changeRelationCommitMapper.insert(commit);
 		sqlSession.commit();
 	}
