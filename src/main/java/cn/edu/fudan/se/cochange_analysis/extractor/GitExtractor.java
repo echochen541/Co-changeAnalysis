@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -199,15 +197,14 @@ public class GitExtractor {
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		GitExtractor gitExtractor = new GitExtractor(gitRepository);
 
-		byte[] content1 = gitExtractor.getFileContentByCommitId("12dcc564673c26b49102876f1e075db7ac944f1c", "components/camel-lumberjack/src/main/java/org/apache/camel/component/lumberjack/LumberjackComponent.java");
-		byte[] content2 = gitExtractor.getFileContentByCommitId("f496aac76098600313248a8a4c62c75efedf1830", "components/camel-lumberjack/src/main/java/org/apache/camel/component/lumberjack/LumberjackComponent.java");
+		byte[] content1 = gitExtractor.getFileContentByCommitId("12dcc564673c26b49102876f1e075db7ac944f1c",
+				"components/camel-lumberjack/src/main/java/org/apache/camel/component/lumberjack/LumberjackComponent.java");
+		byte[] content2 = gitExtractor.getFileContentByCommitId("f496aac76098600313248a8a4c62c75efedf1830",
+				"components/camel-lumberjack/src/main/java/org/apache/camel/component/lumberjack/LumberjackComponent.java");
 
 		System.out.println(new String(content1));
 		System.out.println(new String(content2));
-		
-		
-		
-		String randomString = UUID.randomUUID().toString();
+
 		// create temp files before and after the commit
 		File left = FileUtils.writeBytesToFile(content1, "d809f7cf-0d7f-4306-aa5f-9fb5a3e1a93f", "A.v1");
 		File right = FileUtils.writeBytesToFile(content2, "d809f7cf-0d7f-4306-aa5f-9fb5a3e1a93f", "A.v2");
@@ -220,12 +217,12 @@ public class GitExtractor {
 		}
 
 		// delete temp files
-//		left.delete();
-//		right.delete();
+		// left.delete();
+		// right.delete();
 
 		List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
 		System.out.println(changes);
-		
+
 		// gitExtractor.extractCommitHistory();
 
 		// gitRepository = new GitRepository(2, "cassandra",
