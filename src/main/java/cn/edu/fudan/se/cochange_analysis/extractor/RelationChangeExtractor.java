@@ -1,5 +1,11 @@
 package cn.edu.fudan.se.cochange_analysis.extractor;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperation;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
@@ -70,13 +76,115 @@ public class RelationChangeExtractor {
 	public static void main(String args[]){
 		int[] repos={1,2,3,4,5};
 		for(int repoId:repos){
-			run(repoId);
+//			run(repoId);
+			generateDSM(repoId);
+			break;
 		}
+
 	}
 	
 	public static void generateDSM(int repoId){
-		List<ChangeRelationCommit> changeRelationCommit=ChangeRelationCommitDAO.selectAllChangeRelationCommit(repoId);
+		List<FilePairCount> filePairCountList=FilePairCountDAO.selectByFilePairCountNum(20,repoId);
+		List<String> fileList=new ArrayList<String>();
+		Set<String> fileSet=new HashSet<String>();
+		for(FilePairCount filePairItem:filePairCountList){
+			String[] filePairs=filePairItem.getFilePair().split("\\|\\|");
+			fileSet.add(filePairs[0]);
+			fileSet.add(filePairs[1]);
+		}
+		Iterator <String> i=fileSet.iterator();
+		while(i.hasNext()){
+			fileList.add(i.next());
+		}
+		Collections.sort(fileList);
+		Map<String,Integer> fileIndexMap=new HashMap<String,Integer>();
+		for(int index=0;index<fileList.size();index++){
+			fileIndexMap.put(fileList.get(index),index);
+		}
+
+		StringBuilder[][] dsmMatrix=new StringBuilder[fileList.size()][fileList.size()];
+
+		Map<String,Integer> typeIndexMap=new HashMap<String,Integer>();
+		List<ChangeRelationUnique> changeRelationUniqueList=ChangeRelationCountDAO.selectDistinctChangeType(repoId);
+		StringBuilder typeBuilder=new StringBuilder();
+		typeBuilder.append("[");
+		int typeIndex=0;
+		for(ChangeRelationUnique changeRelationUniqueItem:changeRelationUniqueList){
+			if(changeRelationUniqueItem.getChangeType1().contains("JAVADOC")||changeRelationUniqueItem.getChangeType2().contains("JAVADOC")||
+					changeRelationUniqueItem.getChangeType1().contains("COMMENT")||changeRelationUniqueItem.getChangeType2().contains("COMMENT")){
+				continue;
+			}
+			String tmp=changeRelationUniqueItem.getChangeType1()+"||"+
+						changeRelationUniqueItem.getChangedEntityType1()+"||"+
+						changeRelationUniqueItem.getChangeType2()+"||"+
+						changeRelationUniqueItem.getChangedEntityType2();
+			
+			typeBuilder.append(tmp+",");
+			typeIndexMap.put(tmp, typeIndex);
+			typeIndex++;
+		}
+		typeBuilder.deleteCharAt(typeBuilder.length()-1);
+		typeBuilder.append("]\n");
+		typeBuilder.append(fileList.size());
+		typeBuilder.append("\n");
+		StringBuilder matrixCell=new StringBuilder();
+		for(int j=0;j<changeRelationUniqueList.size();j++){
+			matrixCell.append("0");
+		}
+//		for(int m=0;m<dsmMatrix.length;m++){
+//			for(int n=0;n<dsmMatrix[0].length;n++){
+//				dsmMatrix[m][n]=new StringBuilder(matrixCell.toString());
+//			}
+//		}
 		List<ChangeRelationCount> changeRelationCount=ChangeRelationCountDAO.selectAllChangeRelationCount(repoId);
+		for(ChangeRelationCount changeRelationCountItem:changeRelationCount){
+			String filePairName=changeRelationCountItem.getFilePair();
+			String changeType1=changeRelationCountItem.getChangeType1();
+			String changeType2=changeRelationCountItem.getChangeType2();
+			String changedEntityType1=changeRelationCountItem.getChangedEntityType1();
+			String changedEntityType2=changeRelationCountItem.getChangedEntityType2();
+			if(changedEntityType1.contains("JAVADOC")||changedEntityType2.contains("JAVADOC")||
+					changedEntityType1.contains("COMMENT")||changedEntityType2.contains("COMMENT")){
+				continue;
+			}
+			String relationType=changeType1+"||"+changedEntityType1+"||"+changeType2+"||"+changedEntityType2;
+			String[] filePairs=filePairName.split("\\|\\|");
+			
+			StringBuilder a2bRelation=new StringBuilder(matrixCell.toString());
+			a2bRelation.setCharAt(typeIndexMap.get(relationType),'1');
+			dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])]=a2bRelation;
+		}
+		StringBuilder matrixBuilder=new StringBuilder();
+		for(int m=0;m<dsmMatrix.length;m++){
+			for(int n=0;n<dsmMatrix[0].length;n++){
+				if(dsmMatrix[m][n]==null){
+					matrixBuilder.append("0 ");
+				}else{
+					matrixBuilder.append(dsmMatrix[m][n].toString()+" ");
+				}
+			}
+			matrixBuilder.deleteCharAt(matrixBuilder.length()-1);
+			matrixBuilder.append("\n");
+		}
+		StringBuilder fileListBuilder=new StringBuilder();
+		for(String fileName:fileList){
+			fileListBuilder.append(fileName+"\n");
+		}
+		System.out.println("FileSize:"+ fileList.size());
+		System.out.println("TypeSize:"+ typeIndexMap.size());
+		try {
+			FileOutputStream fos=new FileOutputStream(new File("D://test.dsm"));
+			fos.write(typeBuilder.toString().getBytes());
+			fos.write(matrixBuilder.toString().getBytes());
+			fos.write(fileListBuilder.toString().getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 	}
 
