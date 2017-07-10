@@ -19,9 +19,9 @@ import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 
 public class RelationChangeExtractor {
-	public static void run(int repoId) {
+	public static void run(int repoId, int threshold) {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(20, repoId);
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
 
 		for (FilePairCount filePairCountItem : filePairCountList) {
 			List<FilePairCommit> filePairCommitList = FilePairCommitDAO
@@ -75,7 +75,7 @@ public class RelationChangeExtractor {
 	public static void main(String args[]) {
 		int[] repos = { 1, 2, 3, 4, 5, 6 };
 		for (int repoId : repos) {
-			run(repoId);
+			run(repoId, 20);
 		}
 	}
 
