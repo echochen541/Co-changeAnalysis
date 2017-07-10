@@ -59,6 +59,7 @@ public class FilePairExtractor {
 
 	public void extractFilePairHistory() {
 		int repositoryId = repository.getRepositoryId();
+		System.out.println(repositoryId);
 		String repositoryName = repository.getRepositoryName();
 		List<GitCommit> filteredCommits = GitCommitDAO.selectFilteredByRepositoryId(repositoryId);
 		String splitString = "||";

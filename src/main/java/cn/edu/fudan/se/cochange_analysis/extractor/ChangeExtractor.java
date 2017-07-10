@@ -52,7 +52,7 @@ public class ChangeExtractor {
 
 	public void extracChange() {
 		int repositoryId = repository.getRepositoryId();
-		// System.out.println(repositoryId);
+		System.out.println(repositoryId);
 		GitExtractor gitExtractor = new GitExtractor(repository);
 		// create temp directory to store files to be extracted
 		String userDirPath = System.getProperty("user.dir");
@@ -73,7 +73,8 @@ public class ChangeExtractor {
 			String parentCommitId = commitParents.get(0).getParentCommitId();
 			String filePath = changeFile.getFileName();
 
-			System.out.println(repositoryId + "," + commitId + "," + filePath);
+			// System.out.println(repositoryId + "," + commitId + "," +
+			// filePath);
 
 			byte[] content1 = gitExtractor.getFileContentByCommitId(parentCommitId, filePath);
 			byte[] content2 = gitExtractor.getFileContentByCommitId(commitId, filePath);
