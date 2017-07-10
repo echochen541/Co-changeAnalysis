@@ -8,9 +8,6 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationUnique;
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 

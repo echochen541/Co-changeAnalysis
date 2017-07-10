@@ -60,7 +60,7 @@ public class CommitFilter {
 		List<GitCommit> commits = GitCommitDAO.selectByRepositoryId(repositoryId);
 		for (GitCommit commit : commits) {
 			String commitId = commit.getCommitId();
-			System.out.println(repositoryId + " : " + commitId);
+			// System.out.println(repositoryId + " : " + commitId);
 			List<GitCommitParentKey> parentCommits = GitCommitParentDAO.selectByRepositoryIdAndCommitId(repositoryId,
 					commitId);
 			// System.out.println(parentCommits);
@@ -89,9 +89,12 @@ public class CommitFilter {
 		for (GitChangeFile changeFile : changeFiles) {
 			String fileName = changeFile.getFileName();
 			String changeType = changeFile.getChangeType();
+			
 			// java file and non test java file
-			// System.out.println(fileName);
-			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.endsWith("Test.java")) {
+			int index = fileName.lastIndexOf("/");
+			String name = fileName.substring(index + 1);
+
+			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.endsWith("Test.java") && !name.startsWith("Test")) {
 				filteredFiles.add(changeFile);
 			}
 		}

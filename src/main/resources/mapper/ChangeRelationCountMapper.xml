@@ -186,7 +186,6 @@
     where repository_id = #{repoId,jdbcType=INTEGER}
   </select>
   
-   
     <select id="selectDistinctChangeType" resultMap="ChangeRelationUnique">
     <!--
       WARNING - @mbg.generated
