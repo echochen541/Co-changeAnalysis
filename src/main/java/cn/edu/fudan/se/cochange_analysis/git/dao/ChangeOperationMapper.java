@@ -66,4 +66,6 @@ public interface ChangeOperationMapper {
     int updateByPrimaryKey(ChangeOperation record);
     
     List<ChangeOperationUnique> selectChangeOperationsByFileNameAndCommitId(@Param(value="fileName") String fileName,@Param(value="commitId") String commitId);
+
+	int insertBatch(List<ChangeOperationWithBLOBs> operations);
 }

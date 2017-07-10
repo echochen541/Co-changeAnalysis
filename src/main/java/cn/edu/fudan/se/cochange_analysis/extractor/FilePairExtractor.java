@@ -69,7 +69,7 @@ public class FilePairExtractor {
 			String commitId = commit.getCommitId();
 			List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryIdAndCommitId(repositoryId,
 					commitId);
-			// System.out.println(repositoryId + " : " + commitId);
+			System.out.println(repositoryId + " : " + commitId);
 			List<FilePairCommit> filePairCommits = new ArrayList<FilePairCommit>();
 
 			for (int i = 0; i < changeFiles.size() - 1; i++) {

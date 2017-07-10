@@ -2,6 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.git.dao;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.io.Resources;
@@ -39,6 +40,7 @@ public class ChangeOperationDAO {
 
 	public static void insertChanges(List<SourceCodeChange> changes, int repositoryId, String commitId,
 			String filePath) {
+		List<ChangeOperationWithBLOBs> operations = new ArrayList<ChangeOperationWithBLOBs>();
 		for (SourceCodeChange change : changes) {
 			String newEntity = "";
 			// if update, store new entity content
@@ -54,17 +56,16 @@ public class ChangeOperationDAO {
 					change.getParentEntity().getUniqueName().toString(),
 					change.getChangedEntity().getUniqueName().toString(), newEntity);
 			// System.out.println(operation.toString());
-			try {
-				changeOperationMapper.insert(operation);
-				sqlSession.commit();
-			} catch (Exception e) {
-				System.out.println("insert: " + operation);
-				e.printStackTrace();
-			}
+			operations.add(operation);
+			// changeOperationMapper.insert(operation);
+			// sqlSession.commit();
 		}
-
+		changeOperationMapper.insertBatch(operations);
+		sqlSession.commit();
 	}
-	public static List<ChangeOperationUnique> selectChangeOperationsByFileNameAndCommitId(String fileName,String commitId){
-		return changeOperationMapper.selectChangeOperationsByFileNameAndCommitId(fileName,commitId);
+
+	public static List<ChangeOperationUnique> selectChangeOperationsByFileNameAndCommitId(String fileName,
+			String commitId) {
+		return changeOperationMapper.selectChangeOperationsByFileNameAndCommitId(fileName, commitId);
 	}
 }
