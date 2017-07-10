@@ -170,7 +170,7 @@
     -->
     select 
     <include refid="Base_Column_List" />
-    from change_relation_commit
+    from change_relation_count
     where repository_id = #{repoId,jdbcType=INTEGER}
   </select>
 </mapper>
