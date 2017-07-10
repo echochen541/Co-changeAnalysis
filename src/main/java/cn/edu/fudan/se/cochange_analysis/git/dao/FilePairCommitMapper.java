@@ -58,4 +58,6 @@ public interface FilePairCommitMapper {
     
     
     List<FilePairCommit> selectByFilePairName(@Param(value="filePair") String filePair,@Param(value="repoId")int repoId);
+
+	int insertBatch(List<FilePairCommit> filePairCommits);
 }

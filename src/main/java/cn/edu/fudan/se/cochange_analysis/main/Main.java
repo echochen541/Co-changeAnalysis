@@ -18,6 +18,8 @@ public class Main {
 		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
 		changeExtractor.extracChange();
 
+		System.exit(0);
+		
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
 		changeExtractor = new ChangeExtractor(gitRepository);
 		changeExtractor.extracChange();
@@ -34,6 +36,8 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		changeExtractor.extracChange();
 
+		System.exit(0);
+		
 		// extract file pair
 		System.out.println("Begin extract file pair:");
 		gitRepository = new GitRepository(1, "camel", "D:/echo/lab/research/co-change/projects/camel/.git");

@@ -1,5 +1,6 @@
 package cn.edu.fudan.se.cochange_analysis.extractor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
@@ -69,6 +70,7 @@ public class FilePairExtractor {
 			List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryIdAndCommitId(repositoryId,
 					commitId);
 			// System.out.println(repositoryId + " : " + commitId);
+			List<FilePairCommit> filePairCommits = new ArrayList<FilePairCommit>();
 
 			for (int i = 0; i < changeFiles.size() - 1; i++) {
 				GitChangeFile changeFile1 = changeFiles.get(i);
@@ -91,9 +93,11 @@ public class FilePairExtractor {
 						filePair = fileName1 + splitString + fileName2;
 						filePairCommit = new FilePairCommit(repositoryId, commitId, filePath1, filePath2, filePair);
 					}
-					FilePairCommitDAO.insertFilePairCommit(filePairCommit);
+					// FilePairCommitDAO.insertFilePairCommit(filePairCommit);
+					filePairCommits.add(filePairCommit);
 				}
 			}
+			FilePairCommitDAO.insertBatch(filePairCommits);
 		}
 	}
 }
