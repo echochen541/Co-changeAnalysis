@@ -19,6 +19,7 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
@@ -26,7 +27,23 @@ import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 
 public class RelationChangeExtractor {
-	public static void run(int repoId, int threshold) {
+	private GitRepository repository;
+	
+	public GitRepository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(GitRepository repository) {
+		this.repository = repository;
+	}
+	
+
+	public RelationChangeExtractor(GitRepository repository) {
+		super();
+		this.repository = repository;
+	}
+
+	public void run(int repoId, int threshold) {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
 
@@ -83,16 +100,26 @@ public class RelationChangeExtractor {
 		}
 	}
 
-	public static void main(String args[]) {
-		int[] repos = { 1, 2, 3, 4, 5, 6 };
-		for (int repoId : repos) {
-			run(repoId, 20);
-			generateDSM(repoId, 20, 3);
-			break;
+	public void generateRelationCountSummary(int repoId,int threshold){
+		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,
+				threshold);
+		Map<String,Integer> result=new HashMap<String,Integer>();
+		for(ChangeRelationUnique changeRelationUniqueItem:changeRelationUniqueList){
+			result.put(changeRelationUniqueItem.getChangeType1()+"||"
+					+changeRelationUniqueItem.getChangedEntityType1()+"||"
+					+changeRelationUniqueItem.getChangeType2()+"||"
+					+changeRelationUniqueItem.getChangedEntityType2(), 0);
 		}
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
+		for(FilePairCount filePairCountItem:filePairCountList){
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,
+					filePairCountItem.getFilePair(), threshold);
+			
+		}
+		
 	}
 
-	public static void generateDSM(int repoId, int threshold, int threshold2) {
+	public void generateDSM(int repoId, int threshold, int threshold2) {
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();

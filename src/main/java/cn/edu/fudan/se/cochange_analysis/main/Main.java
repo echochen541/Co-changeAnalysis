@@ -18,20 +18,18 @@ public class Main {
 		// changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 
-		GitRepository gitRepository = new GitRepository(5, "hbase",
-				"D:/echo/lab/research/co-change/projects/hbase/.git");
-		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
+//		GitRepository gitRepository = new GitRepository(5, "hbase",
+//				"D:/echo/lab/research/co-change/projects/hbase/.git");
+//		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
+//		changeExtractor.extracChange();
+//
+//		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
+//		changeExtractor = new ChangeExtractor(gitRepository);
+//		changeExtractor.extracChange();
 
-		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
-
-		int[] repos = { 1, 2, 3, 4, 5, 6 };
-		for (int repoId : repos) {
-			RelationChangeExtractor.run(repoId, 20);
+			
+		new RelationChangeExtractor(gitRepository).run(gitRepository.getRepositoryId(), 20);
 			// RelationChangeExtractor.generateDSM(repoId, 20, 3);
-		}
 
 		// extract file pair
 		// System.out.println("Begin extract file pair:");
