@@ -51,14 +51,16 @@ public class ChangeRelationExtractor {
 	// file pair co-change >= threshold1 times, change relation occur >=
 	// threshold2 times
 	public void extractChangeRelation(int threshold1, int threshold2) {
-		int repoId = repository.getRepositoryId();
+		int repositoryId = repository.getRepositoryId();
+		// System.out.println("repository id : " + repositoryId);
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repoId,
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
 				threshold1);
 
 		for (FilePairCount filePairCountItem : filePairCountList) {
 			String filePair = filePairCountItem.getFilePair();
-			List<FilePairCommit> filePairCommitList = FilePairCommitDAO.selectByRepositoryIdAndFilePair(repoId,
+			System.out.println(repositoryId + " : " + filePair);
+			List<FilePairCommit> filePairCommitList = FilePairCommitDAO.selectByRepositoryIdAndFilePair(repositoryId,
 					filePair);
 
 			for (FilePairCommit filePairCommitItem : filePairCommitList) {
@@ -98,16 +100,16 @@ public class ChangeRelationExtractor {
 			int size = commitIds.size();
 			// if change relation occurs >= threshold2 times
 			if (size >= threshold2) {
-				ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repoId, tmp[0], tmp[1], tmp[2],
-						tmp[3], tmp[4], size);
+				ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repositoryId, tmp[0], tmp[1],
+						tmp[2], tmp[3], tmp[4], size);
 				ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
 
 				List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
 				Iterator<String> i = commitIds.iterator();
 				while (i.hasNext()) {
 					String commitId = (String) i.next();
-					ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repoId, commitId, tmp[0],
-							tmp[1], tmp[2], tmp[3], tmp[4]);
+					ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repositoryId, commitId,
+							tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]);
 					changeRelationCommits.add(changeRelationCommit);
 				}
 				ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
@@ -116,8 +118,8 @@ public class ChangeRelationExtractor {
 	}
 
 	public void generateDSM(int threshold1, int threshold2) {
-		int repoId = repository.getRepositoryId();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repoId,
+		int repositoryId = repository.getRepositoryId();
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
 				threshold1);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
@@ -141,8 +143,8 @@ public class ChangeRelationExtractor {
 
 		Map<String, Integer> typeIndexMap = new HashMap<String, Integer>();
 		List<String> typeList = new ArrayList<String>();
-		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,
-				threshold2);
+		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO
+				.selectDistinctChangeType(repositoryId, threshold2);
 		StringBuilder typeBuilder = new StringBuilder();
 		typeBuilder.append("[");
 		for (ChangeRelationUnique changeRelationUniqueItem : changeRelationUniqueList) {
@@ -175,8 +177,8 @@ public class ChangeRelationExtractor {
 			matrixCell.append("0");
 		}
 		for (FilePairCount myFileName : filePairCountList) {
-			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,
-					myFileName.getFilePair(), threshold2);
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO
+					.selectAllChangeRelationCount(repositoryId, myFileName.getFilePair(), threshold2);
 			for (ChangeRelationCount changeRelationCountItem : changeRelationCount) {
 				String filePairName = changeRelationCountItem.getFilePair();
 				String changeType1 = changeRelationCountItem.getChangeType1();
@@ -218,7 +220,7 @@ public class ChangeRelationExtractor {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(
-					new File("D://" + repoId + "_" + threshold1 + "_" + threshold2 + ".dsm"));
+					new File("D://" + repositoryId + "_" + threshold1 + "_" + threshold2 + ".dsm"));
 			fos.write(typeBuilder.toString().getBytes());
 			fos.write(matrixBuilder.toString().getBytes());
 			fos.write(fileListBuilder.toString().getBytes());
