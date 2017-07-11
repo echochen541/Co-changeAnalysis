@@ -56,4 +56,6 @@ public interface ChangeRelationCommitMapper {
     int updateByPrimaryKey(ChangeRelationCommit record);
     
     List<ChangeRelationCommit> selectByRepoId(@Param(value="repoId") int repoId);
+
+	int insertBatch(List<ChangeRelationCommit> changeRelationCommits);
 }

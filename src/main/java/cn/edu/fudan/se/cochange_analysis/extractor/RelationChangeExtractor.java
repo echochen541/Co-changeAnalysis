@@ -68,27 +68,31 @@ public class RelationChangeExtractor {
 			int size = commitIds.size();
 			ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repoId, tmp[0], tmp[1], tmp[2], tmp[3],
 					tmp[4], size);
-			ChangeRelationCountDAO.insertChangeRelationCountMapper(changeRelationCount);
+			ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
+
+			List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
 			Iterator<String> i = commitIds.iterator();
 			while (i.hasNext()) {
 				String commitId = (String) i.next();
 				ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repoId, commitId, tmp[0],
 						tmp[1], tmp[2], tmp[3], tmp[4]);
-				ChangeRelationCommitDAO.insertChangeRelationCommitMapper(changeRelationCommit);
+				// ChangeRelationCommitDAO.insertChangeRelationCommit(changeRelationCommit);
+				changeRelationCommits.add(changeRelationCommit);
 			}
+			ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 		}
 	}
 
 	public static void main(String args[]) {
-		int[] repos = {  2, 3, 4, 5 };
+		int[] repos = { 1, 2, 3, 4, 5, 6 };
 		for (int repoId : repos) {
 			run(repoId, 20);
-//			generateDSM(repoId,60,15);
+			generateDSM(repoId, 20, 3);
 			break;
 		}
 	}
 
-	public static void generateDSM(int repoId, int threshold,int threshold2) {
+	public static void generateDSM(int repoId, int threshold, int threshold2) {
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
@@ -111,8 +115,9 @@ public class RelationChangeExtractor {
 		StringBuilder[][] dsmMatrix = new StringBuilder[fileList.size()][fileList.size()];
 
 		Map<String, Integer> typeIndexMap = new HashMap<String, Integer>();
-		List<String> typeList=new ArrayList<String>();
-		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,threshold2);
+		List<String> typeList = new ArrayList<String>();
+		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,
+				threshold2);
 		StringBuilder typeBuilder = new StringBuilder();
 		typeBuilder.append("[");
 		for (ChangeRelationUnique changeRelationUniqueItem : changeRelationUniqueList) {
@@ -128,10 +133,10 @@ public class RelationChangeExtractor {
 					+ changeRelationUniqueItem.getChangedEntityType2();
 
 			typeList.add(tmp);
-			
+
 		}
 		Collections.sort(typeList);
-		for(int m=0;m<typeList.size();m++){
+		for (int m = 0; m < typeList.size(); m++) {
 			typeIndexMap.put(typeList.get(m), m);
 			typeBuilder.append(typeList.get(m) + ",");
 		}
@@ -144,8 +149,9 @@ public class RelationChangeExtractor {
 		for (int j = 0; j < typeList.size(); j++) {
 			matrixCell.append("0");
 		}
-		for(FilePairCount myFileName:filePairCountList){
-			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,myFileName.getFilePair(),threshold2);
+		for (FilePairCount myFileName : filePairCountList) {
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,
+					myFileName.getFilePair(), threshold2);
 			for (ChangeRelationCount changeRelationCountItem : changeRelationCount) {
 				String filePairName = changeRelationCountItem.getFilePair();
 				String changeType1 = changeRelationCountItem.getChangeType1();
@@ -155,14 +161,17 @@ public class RelationChangeExtractor {
 				if (changedEntityType1.contains("JAVADOC") || changedEntityType2.contains("JAVADOC")
 						|| changedEntityType1.contains("COMMENT") || changedEntityType2.contains("COMMENT")) {
 					continue;
-				}	
-				String relationType = changeType1 + "||" + changedEntityType1 + "||" + changeType2 + "||"
-					+ changedEntityType2;
-				String[] filePairs = filePairName.split("\\|\\|");
-				if(dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])]==null){
-					dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] = new StringBuilder(matrixCell.toString());;
 				}
-				dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])].setCharAt(typeIndexMap.get(relationType), '1');
+				String relationType = changeType1 + "||" + changedEntityType1 + "||" + changeType2 + "||"
+						+ changedEntityType2;
+				String[] filePairs = filePairName.split("\\|\\|");
+				if (dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] == null) {
+					dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] = new StringBuilder(
+							matrixCell.toString());
+					;
+				}
+				dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])]
+						.setCharAt(typeIndexMap.get(relationType), '1');
 			}
 		}
 		StringBuilder matrixBuilder = new StringBuilder();
@@ -181,9 +190,9 @@ public class RelationChangeExtractor {
 		for (String fileName : fileList) {
 			fileListBuilder.append(fileName + "\n");
 		}
-		
+
 		try {
-			FileOutputStream fos = new FileOutputStream(new File("D://test.dsm"));
+			FileOutputStream fos = new FileOutputStream(new File("D://" + repoId + ".dsm"));
 			fos.write(typeBuilder.toString().getBytes());
 			fos.write(matrixBuilder.toString().getBytes());
 			fos.write(fileListBuilder.toString().getBytes());

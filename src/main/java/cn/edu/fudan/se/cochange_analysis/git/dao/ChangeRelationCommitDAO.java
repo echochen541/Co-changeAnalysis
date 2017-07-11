@@ -28,12 +28,16 @@ public class ChangeRelationCommitDAO {
 		}
 	}
 
-	public static void insertChangeRelationCommitMapper(ChangeRelationCommit commit) {
+	public static void insertChangeRelationCommit(ChangeRelationCommit commit) {
 		changeRelationCommitMapper.insert(commit);
 		sqlSession.commit();
 	}
 	public static List<ChangeRelationCommit> selectAllChangeRelationCommit(int repoId){
 		return changeRelationCommitMapper.selectByRepoId(repoId);
+	}
+	public static void insertBatch(List<ChangeRelationCommit> changeRelationCommits) {
+		changeRelationCommitMapper.insertBatch(changeRelationCommits);
+		sqlSession.commit();
 	}
 
 }
