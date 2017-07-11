@@ -121,10 +121,10 @@ public class RelationChangeExtractor {
 		StringBuilder typeBuilder = new StringBuilder();
 		typeBuilder.append("[");
 		for (ChangeRelationUnique changeRelationUniqueItem : changeRelationUniqueList) {
-			if (changeRelationUniqueItem.getChangeType1().contains("JAVADOC")
-					|| changeRelationUniqueItem.getChangeType2().contains("JAVADOC")
-					|| changeRelationUniqueItem.getChangeType1().contains("COMMENT")
-					|| changeRelationUniqueItem.getChangeType2().contains("COMMENT")) {
+			if (changeRelationUniqueItem.getChangedEntityType1().contains("JAVADOC")
+					|| changeRelationUniqueItem.getChangedEntityType2().contains("JAVADOC")
+					|| changeRelationUniqueItem.getChangedEntityType1().contains("COMMENT")
+					|| changeRelationUniqueItem.getChangedEntityType2().contains("COMMENT")) {
 				continue;
 			}
 			String tmp = changeRelationUniqueItem.getChangeType1() + "||"
@@ -192,7 +192,8 @@ public class RelationChangeExtractor {
 		}
 
 		try {
-			FileOutputStream fos = new FileOutputStream(new File("D://" + repoId + ".dsm"));
+			FileOutputStream fos = new FileOutputStream(
+					new File("D://" + repoId + "_" + threshold + "_" + threshold2 + ".dsm"));
 			fos.write(typeBuilder.toString().getBytes());
 			fos.write(matrixBuilder.toString().getBytes());
 			fos.write(fileListBuilder.toString().getBytes());
