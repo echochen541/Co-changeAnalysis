@@ -80,10 +80,10 @@ public class RelationChangeExtractor {
 	}
 
 	public static void main(String args[]) {
-		int[] repos = { 1, 2, 3, 4, 5 };
+		int[] repos = {  2, 3, 4, 5 };
 		for (int repoId : repos) {
-//			run(repoId, 20);
-			generateDSM(repoId,60,20);
+			run(repoId, 20);
+//			generateDSM(repoId,60,15);
 			break;
 		}
 	}
