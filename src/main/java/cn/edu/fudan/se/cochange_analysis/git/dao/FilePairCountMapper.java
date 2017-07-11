@@ -56,6 +56,6 @@ public interface FilePairCountMapper {
      */
     int updateByPrimaryKey(FilePairCount record);
     
-    List<FilePairCount> selectByFilePairCountNum(@Param(value="num")int num,@Param(value="repoId")int repoId);
+	List<FilePairCount> selectByRepositoryIdAndFilePairCount(@Param(value="repoId")int repoId, @Param(value="num")int num);
     
 }

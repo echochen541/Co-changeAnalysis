@@ -32,11 +32,13 @@ public class FilePairCommitDAO {
 		filePairCommitMapper.insert(filePairCommit);
 		sqlSession.commit();
 	}
-	public static List<FilePairCommit> selectByFilePairName(String filePair,int repoId){
-		return filePairCommitMapper.selectByFilePairName(filePair,repoId);
-	}
+
 	public static void insertBatch(List<FilePairCommit> filePairCommits) {
 		filePairCommitMapper.insertBatch(filePairCommits);
 		sqlSession.commit();
+	}
+	
+	public static List<FilePairCommit> selectByRepositoryIdAndFilePair(int repoId, String filePair) {
+		return filePairCommitMapper.selectByRepositoryIdAndFilePair(repoId, filePair);
 	}
 }
