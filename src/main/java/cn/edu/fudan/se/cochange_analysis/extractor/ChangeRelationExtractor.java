@@ -6,11 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
@@ -231,5 +233,164 @@ public class ChangeRelationExtractor {
 			e.printStackTrace();
 		}
 
+	}
+	public void generateRelationCountSummary(int threshold1,int threshold2){
+		Map<String,Integer> result=new HashMap<String,Integer>();
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repository.getRepositoryId(),threshold1);
+		for(FilePairCount filePairCountItem:filePairCountList){
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repository.getRepositoryId(),
+					filePairCountItem.getFilePair(), threshold2);
+			for(ChangeRelationCount item:changeRelationCount){
+				String tmp=item.getChangeType1()+"||"
+						+item.getChangedEntityType1()+"||"
+						+item.getChangeType2()+"||"
+						+item.getChangedEntityType2();
+				if(result.containsKey(tmp)){
+					result.put(tmp, result.get(tmp)+1);
+				}else{
+					result.put(tmp,1);
+				}
+				
+			}
+		}
+		List<Entry<String,Integer>> list =
+			    new ArrayList<Entry<String,Integer>>(result.entrySet());
+
+		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+			public int compare(Map.Entry<String, Integer> o1,
+					Map.Entry<String, Integer> o2) {
+				return (o2.getValue() - o1.getValue());
+			}
+		});
+		int bound=list.size();
+		try {
+			FileOutputStream fos=new FileOutputStream(new File("D://" + this.repository.getRepositoryId() + "_" + threshold1 + "_" + threshold2 + ".csv"));
+			for(int i=0;i<bound;i++){
+				Entry<String,Integer> tmp=list.get(i);
+				String byteS=tmp.getKey()+","+tmp.getValue()+",\n";
+				fos.write(byteS.getBytes());
+			}
+			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//next step
+		if(list.size()>32){
+			bound=32;
+		}
+		Map<String,Integer> top32TypeMap=new HashMap<String,Integer>();
+		
+		for(int i=0;i<bound;i++){
+			Entry<String,Integer> tmp=list.get(i);
+			top32TypeMap.put(tmp.getKey(), tmp.getValue());
+		}
+		this.generateTop32TypeDSM(threshold1, threshold2,top32TypeMap);
+		
+	}
+	public void generateTop32TypeDSM(int threshold1,int threshold2,Map<String,Integer> typeMap){
+		int repositoryId = repository.getRepositoryId();
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
+				threshold1);
+		List<String> fileList = new ArrayList<String>();
+		Set<String> fileSet = new HashSet<String>();
+		for (FilePairCount filePairItem : filePairCountList) {
+			String[] filePairs = filePairItem.getFilePair().split("\\|\\|");
+			fileSet.add(filePairs[0]);
+			fileSet.add(filePairs[1]);
+		}
+		Iterator<String> i = fileSet.iterator();
+		while (i.hasNext()) {
+			fileList.add(i.next());
+		}
+		Collections.sort(fileList);
+		Map<String, Integer> fileIndexMap = new HashMap<String, Integer>();
+		for (int index = 0; index < fileList.size(); index++) {
+			fileIndexMap.put(fileList.get(index), index);
+		}
+		System.out.println("FileSize:" + fileList.size());
+
+		StringBuilder[][] dsmMatrix = new StringBuilder[fileList.size()][fileList.size()];
+		Map<String, Integer> typeIndexMap = new HashMap<String, Integer>();
+		List<String> typeList = new ArrayList<String>();
+		for (String tmp:typeMap.keySet()) {
+			typeList.add(tmp);
+		}
+		Collections.sort(typeList);
+		StringBuilder typeBuilder = new StringBuilder();
+		typeBuilder.append("[");
+		for (int m = 0; m < typeList.size(); m++) {
+			typeIndexMap.put(typeList.get(m), m);
+			typeBuilder.append(typeList.get(m) + ", ");
+		}
+		System.out.println("TypeSize:" + typeList.size());
+		typeBuilder.deleteCharAt(typeBuilder.length() - 1);
+		typeBuilder.append("]\n");
+		typeBuilder.append(fileList.size());
+		typeBuilder.append("\n");
+		StringBuilder matrixCell = new StringBuilder();
+		for (int j = 0; j < typeList.size(); j++) {
+			matrixCell.append("0");
+			
+		}
+		for (FilePairCount myFileName : filePairCountList) {
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO
+					.selectAllChangeRelationCount(repositoryId, myFileName.getFilePair(), threshold2);
+			for (ChangeRelationCount changeRelationCountItem : changeRelationCount) {
+				String filePairName = changeRelationCountItem.getFilePair();
+				String changeType1 = changeRelationCountItem.getChangeType1();
+				String changeType2 = changeRelationCountItem.getChangeType2();
+				String changedEntityType1 = changeRelationCountItem.getChangedEntityType1();
+				String changedEntityType2 = changeRelationCountItem.getChangedEntityType2();
+				String relationType = changeType1 + "||" + changedEntityType1 + "||" + changeType2 + "||"
+						+ changedEntityType2;
+				String[] filePairs = filePairName.split("\\|\\|");
+				if(!typeMap.containsKey(relationType)){
+					continue;
+				}
+				if (dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] == null) {
+					StringBuilder sb = new StringBuilder(matrixCell.toString());
+					dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] = sb;
+				}
+				dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])]
+						.setCharAt(typeIndexMap.get(relationType), '1');
+			}
+		}
+		StringBuilder matrixBuilder = new StringBuilder();
+		for (int m = 0; m < dsmMatrix.length; m++) {
+			for (int n = 0; n < dsmMatrix[0].length; n++) {
+				if (dsmMatrix[m][n] == null) {
+					matrixBuilder.append("0 ");
+				} else {
+					matrixBuilder.append(dsmMatrix[m][n].toString() + " ");
+				}
+			}
+			matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
+			matrixBuilder.append("\n");
+		}
+		StringBuilder fileListBuilder = new StringBuilder();
+		for (String fileName : fileList) {
+			fileListBuilder.append(fileName + "\n");
+		}
+
+		try {
+			FileOutputStream fos = new FileOutputStream(
+					new File("D://" + repositoryId + "_" + threshold1 + "_" + threshold2 + ".dsm"));
+			fos.write(typeBuilder.toString().getBytes());
+			fos.write(matrixBuilder.toString().getBytes());
+			fos.write(fileListBuilder.toString().getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void main(String args[]){
+		ChangeRelationExtractor a=new ChangeRelationExtractor(new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git"));
+		a.generateRelationCountSummary(20, 3);
+//		a.extractChangeRelation(20, 3);
 	}
 }
