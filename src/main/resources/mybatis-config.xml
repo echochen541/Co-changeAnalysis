@@ -27,5 +27,6 @@
 		<mapper resource="mapper/ChangeRelationCountMapper.xml" />
 		<mapper resource="mapper/ChangeRelationCommitMapper.xml" />
 		<mapper resource="mapper/ChangeOperationMapper.xml" />
+		<mapper resource="mapper/IssueBugMapper.xml" />
 	</mappers>
 </configuration>
