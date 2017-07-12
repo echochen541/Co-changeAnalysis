@@ -1,6 +1,6 @@
 package cn.edu.fudan.se.cochange_analysis.git.bean;
 
-public class ChangeOperationUnique {
+public class UniqueChangeOperation {
 
 	private String changeType;
 
@@ -22,10 +22,9 @@ public class ChangeOperationUnique {
 		this.changedEntityType = changedEntityType;
 	}
 
-	public ChangeOperationUnique(String changeType, String changedEntityType) {
+	public UniqueChangeOperation(String changeType, String changedEntityType) {
 		super();
 		this.changeType = changeType;
 		this.changedEntityType = changedEntityType;
 	}
-
 }

@@ -197,17 +197,17 @@ public class GitExtractor {
 				"D:/echo/lab/research/co-change/projects/cassandra/.git");
 		GitExtractor gitExtractor = new GitExtractor(gitRepository);
 
-		byte[] content1 = gitExtractor.getFileContentByCommitId("55b617c6a94705158282d5889d635510d137d5e4",
-				"interface/gen-java/org/apache/cassandra/service/NotFoundException.java");
-		byte[] content2 = gitExtractor.getFileContentByCommitId("04d5ec33b2011f6d275b8d2f9ee29dcafde203cb",
-				"interface/gen-java/org/apache/cassandra/service/NotFoundException.java");
+		byte[] content1 = gitExtractor.getFileContentByCommitId("2f25e6e6ea1b1f428873eb964dfc8df401d2bb2d",
+				"src/java/org/apache/cassandra/config/CFMetaData.java");
+		byte[] content2 = gitExtractor.getFileContentByCommitId("25411bf1d15a35bf17002cf7664173357c6dc6cf",
+				"src/java/org/apache/cassandra/config/CFMetaData.java");
 
 		System.out.println(new String(content1));
 		System.out.println(new String(content2));
 
 		// create temp files before and after the commit
-		File left = FileUtils.writeBytesToFile(content1, "4f7b2027-7638-4750-9359-b7ccd91fb920", "A.v1");
-		File right = FileUtils.writeBytesToFile(content2, "4f7b2027-7638-4750-9359-b7ccd91fb920", "A.v2");
+		File left = FileUtils.writeBytesToFile(content1, "0b0701c7-850c-4d47-91b3-2c216f4da0ac", "A.v1");
+		File right = FileUtils.writeBytesToFile(content2, "0b0701c7-850c-4d47-91b3-2c216f4da0ac", "A.v2");
 
 		FileDistiller distiller = ChangeDistiller.createFileDistiller(Language.JAVA);
 		try {

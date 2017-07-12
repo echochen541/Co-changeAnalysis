@@ -13,22 +13,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
+import cn.edu.fudan.se.cochange_analysis.git.bean.UniqueChangeOperation;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 
-public class RelationChangeExtractor {
+/**
+ * @author echo
+ *
+ */
+public class ChangeRelationExtractor {
 	private GitRepository repository;
-	
+
+	public ChangeRelationExtractor() {
+	}
+
+	public ChangeRelationExtractor(GitRepository repository) {
+		this.repository = repository;
+	}
+
 	public GitRepository getRepository() {
 		return repository;
 	}
@@ -36,33 +47,36 @@ public class RelationChangeExtractor {
 	public void setRepository(GitRepository repository) {
 		this.repository = repository;
 	}
-	
 
-	public RelationChangeExtractor(GitRepository repository) {
-		super();
-		this.repository = repository;
-	}
-
-	public void run(int repoId, int threshold) {
+	// file pair co-change >= threshold1 times, change relation occur >=
+	// threshold2 times
+	public void extractChangeRelation(int threshold1, int threshold2) {
+		int repositoryId = repository.getRepositoryId();
+		// System.out.println("repository id : " + repositoryId);
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
+				threshold1);
 
 		for (FilePairCount filePairCountItem : filePairCountList) {
-			List<FilePairCommit> filePairCommitList = FilePairCommitDAO
-					.selectByFilePairName(filePairCountItem.getFilePair(), repoId);
+			String filePair = filePairCountItem.getFilePair();
+			System.out.println(repositoryId + " : " + filePair);
+			List<FilePairCommit> filePairCommitList = FilePairCommitDAO.selectByRepositoryIdAndFilePair(repositoryId,
+					filePair);
+
 			for (FilePairCommit filePairCommitItem : filePairCommitList) {
 				String commitId = filePairCommitItem.getCommitId();
-				String filePair = filePairCommitItem.getFilePair();
 				String fileA = filePairCommitItem.getFileName1();
 				String fileB = filePairCommitItem.getFileName2();
-				List<ChangeOperationUnique> fileAChangeOperationList = ChangeOperationDAO
-						.selectChangeOperationsByFileNameAndCommitId(fileA, commitId);
-				List<ChangeOperationUnique> fileBChangeOperationList = ChangeOperationDAO
-						.selectChangeOperationsByFileNameAndCommitId(fileB, commitId);
-				for (ChangeOperationUnique fileAChangeOperationItem : fileAChangeOperationList) {
+
+				List<UniqueChangeOperation> fileAChangeOperationList = ChangeOperationDAO
+						.selectUniqueChangeOperationsByCommitIdAndFileName(commitId, fileA);
+				List<UniqueChangeOperation> fileBChangeOperationList = ChangeOperationDAO
+						.selectUniqueChangeOperationsByCommitIdAndFileName(commitId, fileB);
+
+				for (UniqueChangeOperation fileAChangeOperationItem : fileAChangeOperationList) {
 					String aChangeType = fileAChangeOperationItem.getChangeType();
 					String aChangedEntityType = fileAChangeOperationItem.getChangedEntityType();
-					for (ChangeOperationUnique fileBChangeOperationItem : fileBChangeOperationList) {
+					for (UniqueChangeOperation fileBChangeOperationItem : fileBChangeOperationList) {
 						String bChangeType = fileBChangeOperationItem.getChangeType();
 						String bChangedEntityType = fileBChangeOperationItem.getChangedEntityType();
 						String key = filePair + "--" + aChangeType + "--" + aChangedEntityType + "--" + bChangeType
@@ -79,48 +93,34 @@ public class RelationChangeExtractor {
 				}
 			}
 		}
+
 		for (Map.Entry<String, Set<String>> entry : result.entrySet()) {
 			String[] tmp = entry.getKey().split("--");
 			Set<String> commitIds = entry.getValue();
 			int size = commitIds.size();
-			ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repoId, tmp[0], tmp[1], tmp[2], tmp[3],
-					tmp[4], size);
-			ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
+			// if change relation occurs >= threshold2 times
+			if (size >= threshold2) {
+				ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repositoryId, tmp[0], tmp[1],
+						tmp[2], tmp[3], tmp[4], size);
+				ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
 
-			List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
-			Iterator<String> i = commitIds.iterator();
-			while (i.hasNext()) {
-				String commitId = (String) i.next();
-				ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repoId, commitId, tmp[0],
-						tmp[1], tmp[2], tmp[3], tmp[4]);
-				// ChangeRelationCommitDAO.insertChangeRelationCommit(changeRelationCommit);
-				changeRelationCommits.add(changeRelationCommit);
+				List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
+				Iterator<String> i = commitIds.iterator();
+				while (i.hasNext()) {
+					String commitId = (String) i.next();
+					ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repositoryId, commitId,
+							tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]);
+					changeRelationCommits.add(changeRelationCommit);
+				}
+				ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 			}
-			ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 		}
 	}
 
-	public void generateRelationCountSummary(int repoId,int threshold){
-		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,
-				threshold);
-		Map<String,Integer> result=new HashMap<String,Integer>();
-		for(ChangeRelationUnique changeRelationUniqueItem:changeRelationUniqueList){
-			result.put(changeRelationUniqueItem.getChangeType1()+"||"
-					+changeRelationUniqueItem.getChangedEntityType1()+"||"
-					+changeRelationUniqueItem.getChangeType2()+"||"
-					+changeRelationUniqueItem.getChangedEntityType2(), 0);
-		}
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
-		for(FilePairCount filePairCountItem:filePairCountList){
-			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,
-					filePairCountItem.getFilePair(), threshold);
-			
-		}
-		
-	}
-
-	public void generateDSM(int repoId, int threshold, int threshold2) {
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByFilePairCountNum(threshold, repoId);
+	public void generateDSM(int threshold1, int threshold2) {
+		int repositoryId = repository.getRepositoryId();
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
+				threshold1);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
 		for (FilePairCount filePairItem : filePairCountList) {
@@ -143,15 +143,15 @@ public class RelationChangeExtractor {
 
 		Map<String, Integer> typeIndexMap = new HashMap<String, Integer>();
 		List<String> typeList = new ArrayList<String>();
-		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO.selectDistinctChangeType(repoId,
-				threshold2);
+		List<ChangeRelationUnique> changeRelationUniqueList = ChangeRelationCountDAO
+				.selectDistinctChangeType(repositoryId, threshold2);
 		StringBuilder typeBuilder = new StringBuilder();
 		typeBuilder.append("[");
 		for (ChangeRelationUnique changeRelationUniqueItem : changeRelationUniqueList) {
-			if (changeRelationUniqueItem.getChangeType1().contains("JAVADOC")
-					|| changeRelationUniqueItem.getChangeType2().contains("JAVADOC")
-					|| changeRelationUniqueItem.getChangeType1().contains("COMMENT")
-					|| changeRelationUniqueItem.getChangeType2().contains("COMMENT")) {
+			if (changeRelationUniqueItem.getChangedEntityType1().contains("JAVADOC")
+					|| changeRelationUniqueItem.getChangedEntityType2().contains("JAVADOC")
+					|| changeRelationUniqueItem.getChangedEntityType1().contains("COMMENT")
+					|| changeRelationUniqueItem.getChangedEntityType2().contains("COMMENT")) {
 				continue;
 			}
 			String tmp = changeRelationUniqueItem.getChangeType1() + "||"
@@ -177,8 +177,8 @@ public class RelationChangeExtractor {
 			matrixCell.append("0");
 		}
 		for (FilePairCount myFileName : filePairCountList) {
-			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repoId,
-					myFileName.getFilePair(), threshold2);
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO
+					.selectAllChangeRelationCount(repositoryId, myFileName.getFilePair(), threshold2);
 			for (ChangeRelationCount changeRelationCountItem : changeRelationCount) {
 				String filePairName = changeRelationCountItem.getFilePair();
 				String changeType1 = changeRelationCountItem.getChangeType1();
@@ -219,7 +219,8 @@ public class RelationChangeExtractor {
 		}
 
 		try {
-			FileOutputStream fos = new FileOutputStream(new File("D://" + repoId + ".dsm"));
+			FileOutputStream fos = new FileOutputStream(
+					new File("D://" + repositoryId + "_" + threshold1 + "_" + threshold2 + ".dsm"));
 			fos.write(typeBuilder.toString().getBytes());
 			fos.write(matrixBuilder.toString().getBytes());
 			fos.write(fileListBuilder.toString().getBytes());
