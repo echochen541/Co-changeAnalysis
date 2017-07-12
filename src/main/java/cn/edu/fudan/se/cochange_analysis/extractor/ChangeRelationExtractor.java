@@ -267,7 +267,7 @@ public class ChangeRelationExtractor {
 			FileOutputStream fos=new FileOutputStream(new File("D://" + this.repository.getRepositoryId() + "_" + threshold1 + "_" + threshold2 + ".csv"));
 			for(int i=0;i<bound;i++){
 				Entry<String,Integer> tmp=list.get(i);
-				String byteS=tmp.getKey()+","+tmp.getValue()+",";
+				String byteS=tmp.getKey()+","+tmp.getValue()+",\n";
 				fos.write(byteS.getBytes());
 			}
 			fos.close();
