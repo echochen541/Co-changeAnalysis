@@ -28,7 +28,7 @@ public class IssueBugDAO {
 		}
 	}
 
-	public static void insertFilePairCommit(IssueBug issueBug) {
+	public static void insert(IssueBug issueBug) {
 		issueBugMapper.insert(issueBug);
 		sqlSession.commit();
 	}

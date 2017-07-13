@@ -81,8 +81,8 @@ public class IssueBug extends IssueBugKey implements Serializable {
      *
      * @mbg.generated
      */
-    public IssueBug(Integer repositoryId, String key, String summary, String assignee, String reporter, String status, String resolution, Date created, Date updated) {
-        super(repositoryId, key);
+    public IssueBug(Integer repositoryId, String issueId, String summary, String assignee, String reporter, String status, String resolution, Date created, Date updated) {
+        super(repositoryId, issueId);
         this.summary = summary;
         this.assignee = assignee;
         this.reporter = reporter;
@@ -289,7 +289,7 @@ public class IssueBug extends IssueBugKey implements Serializable {
         }
         IssueBug other = (IssueBug) that;
         return (this.getRepositoryId() == null ? other.getRepositoryId() == null : this.getRepositoryId().equals(other.getRepositoryId()))
-            && (this.getKey() == null ? other.getKey() == null : this.getKey().equals(other.getKey()))
+            && (this.getIssueId() == null ? other.getIssueId() == null : this.getIssueId().equals(other.getIssueId()))
             && (this.getSummary() == null ? other.getSummary() == null : this.getSummary().equals(other.getSummary()))
             && (this.getAssignee() == null ? other.getAssignee() == null : this.getAssignee().equals(other.getAssignee()))
             && (this.getReporter() == null ? other.getReporter() == null : this.getReporter().equals(other.getReporter()))
@@ -310,7 +310,7 @@ public class IssueBug extends IssueBugKey implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getRepositoryId() == null) ? 0 : getRepositoryId().hashCode());
-        result = prime * result + ((getKey() == null) ? 0 : getKey().hashCode());
+        result = prime * result + ((getIssueId() == null) ? 0 : getIssueId().hashCode());
         result = prime * result + ((getSummary() == null) ? 0 : getSummary().hashCode());
         result = prime * result + ((getAssignee() == null) ? 0 : getAssignee().hashCode());
         result = prime * result + ((getReporter() == null) ? 0 : getReporter().hashCode());

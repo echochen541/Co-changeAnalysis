@@ -234,40 +234,39 @@ public class ChangeRelationExtractor {
 		}
 
 	}
-	public void generateRelationCountSummary(int threshold1,int threshold2){
-		Map<String,Integer> result=new HashMap<String,Integer>();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repository.getRepositoryId(),threshold1);
-		for(FilePairCount filePairCountItem:filePairCountList){
-			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(repository.getRepositoryId(),
-					filePairCountItem.getFilePair(), threshold2);
-			for(ChangeRelationCount item:changeRelationCount){
-				String tmp=item.getChangeType1()+"||"
-						+item.getChangedEntityType1()+"||"
-						+item.getChangeType2()+"||"
-						+item.getChangedEntityType2();
-				if(result.containsKey(tmp)){
-					result.put(tmp, result.get(tmp)+1);
-				}else{
-					result.put(tmp,1);
+
+	public void generateRelationCountSummary(int threshold1, int threshold2) {
+		Map<String, Integer> result = new HashMap<String, Integer>();
+		List<FilePairCount> filePairCountList = FilePairCountDAO
+				.selectByRepositoryIdAndFilePairCount(repository.getRepositoryId(), threshold1);
+		for (FilePairCount filePairCountItem : filePairCountList) {
+			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(
+					repository.getRepositoryId(), filePairCountItem.getFilePair(), threshold2);
+			for (ChangeRelationCount item : changeRelationCount) {
+				String tmp = item.getChangeType1() + "||" + item.getChangedEntityType1() + "||" + item.getChangeType2()
+						+ "||" + item.getChangedEntityType2();
+				if (result.containsKey(tmp)) {
+					result.put(tmp, result.get(tmp) + 1);
+				} else {
+					result.put(tmp, 1);
 				}
-				
+
 			}
 		}
-		List<Entry<String,Integer>> list =
-			    new ArrayList<Entry<String,Integer>>(result.entrySet());
+		List<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>(result.entrySet());
 
 		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-			public int compare(Map.Entry<String, Integer> o1,
-					Map.Entry<String, Integer> o2) {
+			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
 				return (o2.getValue() - o1.getValue());
 			}
 		});
-		int bound=list.size();
+		int bound = list.size();
 		try {
-			FileOutputStream fos=new FileOutputStream(new File("D://" + this.repository.getRepositoryId() + "_" + threshold1 + "_" + threshold2 + ".csv"));
-			for(int i=0;i<bound;i++){
-				Entry<String,Integer> tmp=list.get(i);
-				String byteS=tmp.getKey()+","+tmp.getValue()+",\n";
+			FileOutputStream fos = new FileOutputStream(new File(
+					"D://" + this.repository.getRepositoryName() + "_" + threshold1 + "_" + threshold2 + ".csv"));
+			for (int i = 0; i < bound; i++) {
+				Entry<String, Integer> tmp = list.get(i);
+				String byteS = tmp.getKey() + "," + tmp.getValue() + ",\n";
 				fos.write(byteS.getBytes());
 			}
 			fos.close();
@@ -276,21 +275,34 @@ public class ChangeRelationExtractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		//next step
-		if(list.size()>32){
-			bound=32;
+
+		// next step
+		// if (list.size() > 32) {
+		// bound = 32;
+		// }
+		// Map<String, Integer> top32TypeMap = new HashMap<String, Integer>();
+
+		// for (int i = 0; i < bound; i++) {
+		// Entry<String, Integer> tmp = list.get(i);
+		// top32TypeMap.put(tmp.getKey(), tmp.getValue());
+		// }
+		// this.generateTop32TypeDSM(threshold1, threshold2, top32TypeMap);
+
+		// select top 20
+		if (list.size() > 10) {
+			bound = 10;
 		}
-		Map<String,Integer> top32TypeMap=new HashMap<String,Integer>();
-		
-		for(int i=0;i<bound;i++){
-			Entry<String,Integer> tmp=list.get(i);
-			top32TypeMap.put(tmp.getKey(), tmp.getValue());
+
+		Map<String, Integer> top10TypeMap = new HashMap<String, Integer>();
+
+		for (int i = 0; i < bound; i++) {
+			Entry<String, Integer> tmp = list.get(i);
+			top10TypeMap.put(tmp.getKey(), tmp.getValue());
 		}
-		this.generateTop32TypeDSM(threshold1, threshold2,top32TypeMap);
-		
+		this.generateTop32TypeDSM(threshold1, threshold2, top10TypeMap);
 	}
-	public void generateTop32TypeDSM(int threshold1,int threshold2,Map<String,Integer> typeMap){
+
+	public void generateTop32TypeDSM(int threshold1, int threshold2, Map<String, Integer> typeMap) {
 		int repositoryId = repository.getRepositoryId();
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
 				threshold1);
@@ -315,7 +327,7 @@ public class ChangeRelationExtractor {
 		StringBuilder[][] dsmMatrix = new StringBuilder[fileList.size()][fileList.size()];
 		Map<String, Integer> typeIndexMap = new HashMap<String, Integer>();
 		List<String> typeList = new ArrayList<String>();
-		for (String tmp:typeMap.keySet()) {
+		for (String tmp : typeMap.keySet()) {
 			typeList.add(tmp);
 		}
 		Collections.sort(typeList);
@@ -333,7 +345,7 @@ public class ChangeRelationExtractor {
 		StringBuilder matrixCell = new StringBuilder();
 		for (int j = 0; j < typeList.size(); j++) {
 			matrixCell.append("0");
-			
+
 		}
 		for (FilePairCount myFileName : filePairCountList) {
 			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO
@@ -347,7 +359,7 @@ public class ChangeRelationExtractor {
 				String relationType = changeType1 + "||" + changedEntityType1 + "||" + changeType2 + "||"
 						+ changedEntityType2;
 				String[] filePairs = filePairName.split("\\|\\|");
-				if(!typeMap.containsKey(relationType)){
+				if (!typeMap.containsKey(relationType)) {
 					continue;
 				}
 				if (dsmMatrix[fileIndexMap.get(filePairs[0])][fileIndexMap.get(filePairs[1])] == null) {
@@ -377,7 +389,7 @@ public class ChangeRelationExtractor {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(
-					new File("D://" + repositoryId + "_" + threshold1 + "_" + threshold2 + ".dsm"));
+					new File("D://" + repository.getRepositoryName() + "_" + threshold1 + "_" + threshold2 + ".dsm"));
 			fos.write(typeBuilder.toString().getBytes());
 			fos.write(matrixBuilder.toString().getBytes());
 			fos.write(fileListBuilder.toString().getBytes());
@@ -388,9 +400,7 @@ public class ChangeRelationExtractor {
 			e.printStackTrace();
 		}
 	}
-	public static void main(String args[]){
-		ChangeRelationExtractor a=new ChangeRelationExtractor(new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git"));
-		a.generateRelationCountSummary(20, 3);
-//		a.extractChangeRelation(20, 3);
+
+	public static void main(String args[]) {
 	}
 }
