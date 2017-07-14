@@ -28,5 +28,7 @@
 		<mapper resource="mapper/ChangeRelationCommitMapper.xml" />
 		<mapper resource="mapper/ChangeOperationMapper.xml" />
 		<mapper resource="mapper/IssueBugMapper.xml" />
+		<mapper resource="mapper/IssueBugMapper.xml" />
+		<mapper resource="mapper/BugFixFileMapper.xml" />
 	</mappers>
 </configuration>

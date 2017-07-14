@@ -1,0 +1,116 @@
+package cn.edu.fudan.se.cochange_analysis.extractor;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
+import cn.edu.fudan.se.cochange_analysis.git.bean.BugFixFile;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
+import cn.edu.fudan.se.cochange_analysis.git.bean.IssueBug;
+import cn.edu.fudan.se.cochange_analysis.git.dao.BugFixFileDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.GitChangeFileDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitParentDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.IssueBugDAO;
+
+public class BugExtractor {
+	private GitRepository gitRepository;
+
+	public BugExtractor() {
+	}
+
+	public BugExtractor(GitRepository gitRepository) {
+		this.gitRepository = gitRepository;
+	}
+
+	public static void main(String[] args) {
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		BugExtractor extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
+
+		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
+		extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
+
+		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
+		extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
+
+		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
+
+		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
+		extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
+
+		new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
+		extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
+	}
+
+	public void extractBug() {
+		GitExtractor gitExtractor = new GitExtractor(gitRepository);
+
+		int gitRepositoryId = gitRepository.getRepositoryId();
+		String gitRepositoryName = gitRepository.getRepositoryName();
+		String regex = null;
+		if (gitRepositoryName.equals("hadoop"))
+			regex = "^(HADOOP|HDFS|HDT|MAPREDUCE|YARN)-\\d+";
+		else
+			regex = "^" + gitRepositoryName.toUpperCase() + "-\\d+";
+		Pattern pattern = Pattern.compile(regex);
+
+		List<GitCommit> commitList = GitCommitDAO.selectByRepositoryId(gitRepositoryId);
+		for (GitCommit commit : commitList) {
+			String message = commit.getShortMessage();
+			Matcher matcher = pattern.matcher(message);
+			// if issue id found
+		
+			if (matcher.find()) {
+				String issueId = matcher.group(0);
+				IssueBug issueBug = IssueBugDAO.selectByRepositoryIdAndIssueId(gitRepositoryId, issueId);
+
+				// issue's type is not bug
+				if (issueBug == null)
+					continue;
+
+				String commitId = commit.getCommitId();
+				List<GitCommitParentKey> commitParentList = GitCommitParentDAO
+						.selectByRepositoryIdAndCommitId(gitRepositoryId, commitId);
+				String parentCommitId = commitParentList.get(0).getParentCommitId();
+				Map<String, Integer> file2Loc = gitExtractor.getModifiedLineOfCode(commitId, parentCommitId);
+
+				List<GitChangeFile> changeFileList = GitChangeFileDAO.selectByRepositoryIdAndCommitId(gitRepositoryId,
+						commitId);
+				List<BugFixFile> bugFixFileList = new ArrayList<BugFixFile>();
+				for (GitChangeFile changeFile : changeFileList) {
+					String filePath = changeFile.getFileName();
+					String fileName = FileUtils.parseFilePath(filePath, gitRepositoryName);
+					int lineOfCode = file2Loc.get(filePath);
+					Date fixDate = commit.getAuthoredDate();
+					BugFixFile bugFixFile = new BugFixFile(gitRepositoryId, commitId, fileName, issueId, lineOfCode,
+							fixDate);
+					bugFixFileList.add(bugFixFile);
+				}
+				BugFixFileDAO.insertBatch(bugFixFileList);
+			}
+		}
+	}
+
+	public GitRepository getRepository() {
+		return gitRepository;
+	}
+
+	public void setRepository(GitRepository gitRepository) {
+		this.gitRepository = gitRepository;
+	}
+}

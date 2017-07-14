@@ -1,13 +1,21 @@
 package cn.edu.fudan.se.cochange_analysis.extractor;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.Edit;
+import org.eclipse.jgit.diff.EditList;
+import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -16,6 +24,8 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.patch.FileHeader;
+import org.eclipse.jgit.patch.HunkHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -193,61 +203,71 @@ public class GitExtractor {
 	}
 
 	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(2, "cassandra",
-				"D:/echo/lab/research/co-change/projects/cassandra/.git");
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
 		GitExtractor gitExtractor = new GitExtractor(gitRepository);
+		gitExtractor.getModifiedLineOfCode("0000e4462e7343152ee0f6730fc8e50e8810b7f4",
+				"22c65c20dfd6e911f5385d400713ac4c8a0b7ea5");
+	}
 
-		byte[] content1 = gitExtractor.getFileContentByCommitId("2f25e6e6ea1b1f428873eb964dfc8df401d2bb2d",
-				"src/java/org/apache/cassandra/config/CFMetaData.java");
-		byte[] content2 = gitExtractor.getFileContentByCommitId("25411bf1d15a35bf17002cf7664173357c6dc6cf",
-				"src/java/org/apache/cassandra/config/CFMetaData.java");
+	public Map<String, Integer> getModifiedLineOfCode(String commitId, String parentCommitId) {
+		System.out.println(parentCommitId + "," + commitId);
 
-		System.out.println(new String(content1));
-		System.out.println(new String(content2));
-
-		// create temp files before and after the commit
-		File left = FileUtils.writeBytesToFile(content1, "0b0701c7-850c-4d47-91b3-2c216f4da0ac", "A.v1");
-		File right = FileUtils.writeBytesToFile(content2, "0b0701c7-850c-4d47-91b3-2c216f4da0ac", "A.v2");
-
-		FileDistiller distiller = ChangeDistiller.createFileDistiller(Language.JAVA);
+		Map<String, Integer> file2Loc = new HashMap<String, Integer>();
+		AbstractTreeIterator newTree = prepareTreeParser(commitId), oldTree = prepareTreeParser(parentCommitId);
 		try {
-			distiller.extractClassifiedSourceCodeChanges(left, right);
-		} catch (Exception e) {
-			System.err.println("Warning: error while change distilling. " + e.getMessage());
+			List<DiffEntry> diff = git.diff().setOldTree(oldTree).setNewTree(newTree).setShowNameAndStatusOnly(true)
+					.call();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			@SuppressWarnings("resource")
+			DiffFormatter df = new DiffFormatter(out);
+			// 设置比较器为忽略空白字符对比（Ignores all whitespace）
+			df.setDiffComparator(RawTextComparator.WS_IGNORE_ALL);
+			df.setRepository(git.getRepository());
+			System.out.println("------------------------------start-----------------------------");
+			// 每一个diffEntry都是第个文件版本之间的变动差异
+			for (DiffEntry diffEntry : diff) {
+				String newPath = diffEntry.getNewPath();
+				String oldPath = diffEntry.getOldPath();
+				String fileName = null;
+				String changeType = diffEntry.getChangeType().name();
+				if (ChangeType.DELETE.name().equals(changeType))
+					fileName = oldPath;
+				else
+					fileName = newPath;
+				
+				// 打印文件差异具体内容
+				df.format(diffEntry);
+				String diffText = out.toString("UTF-8");
+				System.out.println(diffText);
+
+				// 获取文件差异位置，从而统计差异的行数，如增加行数，减少行数
+				FileHeader fileHeader = df.toFileHeader(diffEntry);
+				@SuppressWarnings("unchecked")
+				List<HunkHeader> hunks = (List<HunkHeader>) fileHeader.getHunks();
+				int addSize = 0, subSize = 0;
+				for (HunkHeader hunkHeader : hunks) {
+					EditList editList = hunkHeader.toEditList();
+					for (Edit edit : editList) {
+						subSize += edit.getEndA() - edit.getBeginA();
+						addSize += edit.getEndB() - edit.getBeginB();
+					}
+				}
+				System.out.print(fileName);
+				System.out.println("addSize=" + addSize);
+				System.out.println("subSize=" + subSize);
+				System.out.println("------------------------------end-----------------------------");
+				file2Loc.put(fileName, addSize + subSize);
+				out.reset();
+			}
+			out.close();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		// delete temp files
-		// left.delete();
-		// right.delete();
-
-		List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
-		System.out.println(changes);
-
-		// gitExtractor.extractCommitHistory();
-
-		// gitRepository = new GitRepository(2, "cassandra",
-		// "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		// gitExtractor = new GitExtractor(gitRepository);
-		// gitExtractor.extractCommitHistory();
-
-		// GitRepository gitRepository = new GitRepository(3, "cxf",
-		// "D:/echo/lab/research/co-change/projects/cxf/.git");
-		// GitExtractor gitExtractor = new GitExtractor(gitRepository);
-		// gitExtractor.extractCommitHistory();
-
-		// gitRepository = new GitRepository(4, "hadoop",
-		// "D:/echo/lab/research/co-change/projects/hadoop/.git");
-		// gitExtractor = new GitExtractor(gitRepository);
-		// gitExtractor.extractCommitHistory();
-
-		// gitRepository = new GitRepository(5, "hbase",
-		// "D:/echo/lab/research/co-change/projects/hbase/.git");
-		// gitExtractor = new GitExtractor(gitRepository);
-		// gitExtractor.extractCommitHistory();
-
-		// gitRepository = new GitRepository(6, "wicket",
-		// "D:/echo/lab/research/co-change/projects/wicket/.git");
-		// gitExtractor = new GitExtractor(gitRepository);
-		// gitExtractor.extractCommitHistory();
+		return file2Loc;
 	}
 }

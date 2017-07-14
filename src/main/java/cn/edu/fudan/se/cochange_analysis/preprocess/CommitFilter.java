@@ -51,7 +51,7 @@ public class CommitFilter {
 
 		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
 		commitFilter = new CommitFilter(gitRepository);
-		// System.out.println(gitRepository.getRepositoryId());
+		System.out.println(gitRepository.getRepositoryId());
 		commitFilter.filterCommits();
 	}
 
@@ -75,9 +75,7 @@ public class CommitFilter {
 					// store filtered commit
 					GitCommitDAO.insertFilteredCommit(commit);
 					// store filtered commit change file
-					for (GitChangeFile filteredFile : filteredFiles) {
-						GitChangeFileDAO.insertChangeFileFilter(filteredFile);
-					}
+					GitChangeFileDAO.insertFilterBatch(filteredFiles);
 				}
 			}
 			// System.out.println();
@@ -89,12 +87,8 @@ public class CommitFilter {
 		for (GitChangeFile changeFile : changeFiles) {
 			String fileName = changeFile.getFileName();
 			String changeType = changeFile.getChangeType();
-			
 			// java file and non test java file
-			int index = fileName.lastIndexOf("/");
-			String name = fileName.substring(index + 1);
-
-			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.endsWith("Test.java") && !name.startsWith("Test")) {
+			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.contains("/test/")) {
 				filteredFiles.add(changeFile);
 			}
 		}

@@ -37,8 +37,12 @@ public class IssueBugDAO {
 		issueBugMapper.insertBatch(issueBugs);
 		sqlSession.commit();
 	}
-	
-	public static List<IssueBug> selectByRepository(int repositoryId) {
+
+	public static List<IssueBug> selectByRepositoryId(int repositoryId) {
 		return issueBugMapper.selectByRepositoryId(repositoryId);
+	}
+
+	public static IssueBug selectByRepositoryIdAndIssueId(int repositoryId, String issueId) {
+		return issueBugMapper.selectByRepositoryIdAndIssueId(repositoryId, issueId);
 	}
 }

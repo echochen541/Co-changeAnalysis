@@ -63,7 +63,7 @@ public class ChangeRelationExtractor {
 
 		for (FilePairCount filePairCountItem : filePairCountList) {
 			String filePair = filePairCountItem.getFilePair();
-			System.out.println(repositoryId + " : " + filePair);
+			// System.out.println(repositoryId + " : " + filePair);
 			List<FilePairCommit> filePairCommitList = FilePairCommitDAO.selectByRepositoryIdAndFilePair(repositoryId,
 					filePair);
 
@@ -80,9 +80,17 @@ public class ChangeRelationExtractor {
 				for (UniqueChangeOperation fileAChangeOperationItem : fileAChangeOperationList) {
 					String aChangeType = fileAChangeOperationItem.getChangeType();
 					String aChangedEntityType = fileAChangeOperationItem.getChangedEntityType();
+
+					if (aChangedEntityType.contains("DOC") || aChangedEntityType.contains("COMMENT"))
+						continue;
+
 					for (UniqueChangeOperation fileBChangeOperationItem : fileBChangeOperationList) {
 						String bChangeType = fileBChangeOperationItem.getChangeType();
 						String bChangedEntityType = fileBChangeOperationItem.getChangedEntityType();
+
+						if (bChangedEntityType.contains("DOC") || bChangedEntityType.contains("COMMENT"))
+							continue;
+
 						String key = filePair + "--" + aChangeType + "--" + aChangedEntityType + "--" + bChangeType
 								+ "--" + bChangedEntityType;
 						if (result.containsKey(key)) {

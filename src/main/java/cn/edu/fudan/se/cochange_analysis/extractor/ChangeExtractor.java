@@ -52,7 +52,7 @@ public class ChangeExtractor {
 
 	public void extracChange() {
 		int repositoryId = repository.getRepositoryId();
-		System.out.println(repositoryId);
+		// System.out.println(repositoryId);
 		GitExtractor gitExtractor = new GitExtractor(repository);
 		// create temp directory to store files to be extracted
 		String userDirPath = System.getProperty("user.dir");
@@ -60,16 +60,19 @@ public class ChangeExtractor {
 		File tempDir = new File(tempDirPath);
 		tempDir.mkdirs();
 
-		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryId(repositoryId);
+		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectByRepositoryId(repositoryId);
 
 		for (GitChangeFile changeFile : changeFiles) {
+			// not MODIFY
+			if (!changeFile.getChangeType().equals("MODIFY"))
+				continue;
+
 			String commitId = changeFile.getCommitId();
 			List<GitCommitParentKey> commitParents = GitCommitParentDAO.selectByRepositoryIdAndCommitId(repositoryId,
 					commitId);
-			if (commitParents.size() != 1) {
-				System.out.println("error: more than one parent!");
-				System.exit(0);
-			}
+			if (commitParents.size() != 1)
+				continue;
+
 			String parentCommitId = commitParents.get(0).getParentCommitId();
 			String filePath = changeFile.getFileName();
 
@@ -101,7 +104,7 @@ public class ChangeExtractor {
 		// System.out.println();
 		// delete temp directory
 		tempDir.delete();
-		System.out.println();
+		// System.out.println();
 
 	}
 
