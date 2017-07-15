@@ -31,30 +31,7 @@ public class BugExtractor {
 	}
 
 	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
-				"D:/echo/lab/research/co-change/projects/camel/.git");
-		BugExtractor extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
 
-		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
-
-		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
-
-		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
-
-		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
-
-		new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
 	}
 
 	public void extractBug() {
@@ -99,7 +76,7 @@ public class BugExtractor {
 					String shortName = FileUtils.parseFilePath(fileName, gitRepositoryName);
 					int lineOfCode = file2Loc.get(fileName);
 					Date fixDate = commit.getAuthoredDate();
-					BugFixFile bugFixFile = new BugFixFile(gitRepositoryId, commitId, fileName, issueId, shortName,
+					BugFixFile bugFixFile = new BugFixFile(gitRepositoryId, commitId, fileName, shortName, issueId,
 							lineOfCode, fixDate);
 					bugFixFileList.add(bugFixFile);
 					BugFixFileDAO.insert(bugFixFile);

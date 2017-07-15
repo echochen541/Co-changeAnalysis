@@ -15,7 +15,6 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.diff.EditList;
-import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -33,11 +32,6 @@ import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
-import ch.uzh.ifi.seal.changedistiller.ChangeDistiller;
-import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
-import ch.uzh.ifi.seal.changedistiller.distilling.FileDistiller;
-import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
-import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
@@ -203,11 +197,7 @@ public class GitExtractor {
 	}
 
 	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
-				"D:/echo/lab/research/co-change/projects/camel/.git");
-		GitExtractor gitExtractor = new GitExtractor(gitRepository);
-		gitExtractor.getModifiedLineOfCode("05a2830cb4588193c86f9fc279f53e0a77f2f393",
-				"c94c619828781277282bf5c6ae80d545466fdbc2");
+
 	}
 
 	public Map<String, Integer> getModifiedLineOfCode(String commitId, String parentCommitId) {
@@ -222,7 +212,7 @@ public class GitExtractor {
 			@SuppressWarnings("resource")
 			DiffFormatter df = new DiffFormatter(out);
 			// 设置比较器为忽略空白字符对比（Ignores all whitespace）
-			df.setDiffComparator(RawTextComparator.WS_IGNORE_ALL);
+			// df.setDiffComparator(RawTextComparator.WS_IGNORE_ALL);
 			df.setRepository(git.getRepository());
 			// System.out.println("------------------------------start-----------------------------");
 			// 每一个diffEntry都是第个文件版本之间的变动差异
@@ -231,34 +221,38 @@ public class GitExtractor {
 				String oldPath = diffEntry.getOldPath();
 				String fileName = null;
 				String changeType = diffEntry.getChangeType().name();
+
 				if (ChangeType.DELETE.name().equals(changeType))
 					fileName = oldPath;
 				else
 					fileName = newPath;
 
-				// 打印文件差异具体内容
-				// df.format(diffEntry);
-				// String diffText = out.toString("UTF-8");
-				// System.out.println(diffText);
+				if (ChangeType.MODIFY.name().equals(changeType) && fileName.endsWith(".java")
+						&& !fileName.contains("/test/")) {
+					// 打印文件差异具体内容
+					// df.format(diffEntry);
+					// String diffText = out.toString("UTF-8");
+					// System.out.println(diffText);
 
-				// 获取文件差异位置，从而统计差异的行数，如增加行数，减少行数
-				FileHeader fileHeader = df.toFileHeader(diffEntry);
-				@SuppressWarnings("unchecked")
-				List<HunkHeader> hunks = (List<HunkHeader>) fileHeader.getHunks();
-				int addSize = 0, subSize = 0;
-				for (HunkHeader hunkHeader : hunks) {
-					EditList editList = hunkHeader.toEditList();
-					for (Edit edit : editList) {
-						subSize += edit.getEndA() - edit.getBeginA();
-						addSize += edit.getEndB() - edit.getBeginB();
+					// 获取文件差异位置，从而统计差异的行数，如增加行数，减少行数
+					FileHeader fileHeader = df.toFileHeader(diffEntry);
+					@SuppressWarnings("unchecked")
+					List<HunkHeader> hunks = (List<HunkHeader>) fileHeader.getHunks();
+					int addSize = 0, subSize = 0;
+					for (HunkHeader hunkHeader : hunks) {
+						EditList editList = hunkHeader.toEditList();
+						for (Edit edit : editList) {
+							subSize += edit.getEndA() - edit.getBeginA();
+							addSize += edit.getEndB() - edit.getBeginB();
+						}
 					}
+					// System.out.println(fileName);
+					// System.out.println("addSize=" + addSize);
+					// System.out.println("subSize=" + subSize);
+					// System.out.println("------------------------------end-----------------------------");
+					file2Loc.put(fileName, addSize + subSize);
+					out.reset();
 				}
-				// System.out.println(fileName);
-				// System.out.println("addSize=" + addSize);
-				// System.out.println("subSize=" + subSize);
-				// System.out.println("------------------------------end-----------------------------");
-				file2Loc.put(fileName, addSize + subSize);
-				out.reset();
 			}
 			out.close();
 		} catch (GitAPIException e) {

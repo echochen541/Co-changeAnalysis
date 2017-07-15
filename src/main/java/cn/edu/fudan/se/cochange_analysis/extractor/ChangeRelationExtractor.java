@@ -412,11 +412,7 @@ public class ChangeRelationExtractor {
 	}
 
 	public static void main(String args[]) {
-		ChangeRelationExtractor a = new ChangeRelationExtractor(
-				new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git"));
-		// a.generateRelationCountSummary(20, 3);
-		// a.extractChangeRelation(20, 3);
-		a.analyzeCSVs();
+
 	}
 
 	public void analyzeCSVs() {
