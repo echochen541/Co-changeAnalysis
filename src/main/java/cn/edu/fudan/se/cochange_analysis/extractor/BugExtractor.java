@@ -2,8 +2,10 @@ package cn.edu.fudan.se.cochange_analysis.extractor;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,29 +33,35 @@ public class BugExtractor {
 	}
 
 	public static void main(String[] args) {
-
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		BugExtractor extractor = new BugExtractor(gitRepository);
+		extractor.extractBug();
 	}
 
 	public void extractBug() {
 		GitExtractor gitExtractor = new GitExtractor(gitRepository);
-
 		int gitRepositoryId = gitRepository.getRepositoryId();
 		String gitRepositoryName = gitRepository.getRepositoryName();
 		String regex = null;
 		if (gitRepositoryName.equals("hadoop"))
-			regex = "^(HADOOP|HDFS|HDT|MAPREDUCE|YARN)-\\d+";
+			regex = "(HADOOP|HDFS|HDT|MAPREDUCE|YARN)-\\d+";
 		else
-			regex = "^" + gitRepositoryName.toUpperCase() + "-\\d+";
+			regex = gitRepositoryName.toUpperCase() + "-\\d+";
 		Pattern pattern = Pattern.compile(regex);
 
 		List<GitCommit> commitList = GitCommitDAO.selectByRepositoryId(gitRepositoryId);
 		for (GitCommit commit : commitList) {
 			String message = commit.getShortMessage();
 			Matcher matcher = pattern.matcher(message);
-			// if issue id found
 
-			if (matcher.find()) {
-				String issueId = matcher.group(0);
+			// exclude duplicate issue ids
+			Set<String> issueIdList = new HashSet<String>();
+			while (matcher.find()) {
+				issueIdList.add(matcher.group());
+			}
+
+			for (String issueId : issueIdList) {
 				IssueBug issueBug = IssueBugDAO.selectByRepositoryIdAndIssueId(gitRepositoryId, issueId);
 
 				// issue's type is not bug

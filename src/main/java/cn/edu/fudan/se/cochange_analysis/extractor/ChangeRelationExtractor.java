@@ -60,13 +60,14 @@ public class ChangeRelationExtractor {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
 				threshold1);
+		// System.out.println(filePairCountList.size());
 
 		for (FilePairCount filePairCountItem : filePairCountList) {
 			String filePair = filePairCountItem.getFilePair();
 			// System.out.println(repositoryId + " : " + filePair);
 			List<FilePairCommit> filePairCommitList = FilePairCommitDAO.selectByRepositoryIdAndFilePair(repositoryId,
 					filePair);
-
+			// System.out.println(filePairCommitList.size());
 			for (FilePairCommit filePairCommitItem : filePairCommitList) {
 				String commitId = filePairCommitItem.getCommitId();
 				String fileA = filePairCommitItem.getFileName1();
@@ -77,18 +78,23 @@ public class ChangeRelationExtractor {
 				List<UniqueChangeOperation> fileBChangeOperationList = ChangeOperationDAO
 						.selectUniqueChangeOperationsByCommitIdAndFileName(commitId, fileB);
 
+				// System.out.println("fileAChangeOperationList " +
+				// fileAChangeOperationList.size());
+				// System.out.println("fileBChangeOperationList " +
+				// fileBChangeOperationList.size());
+
 				for (UniqueChangeOperation fileAChangeOperationItem : fileAChangeOperationList) {
 					String aChangeType = fileAChangeOperationItem.getChangeType();
 					String aChangedEntityType = fileAChangeOperationItem.getChangedEntityType();
 
-					if (aChangedEntityType.contains("DOC") || aChangedEntityType.contains("COMMENT"))
+					if (aChangedEntityType.contains("JAVADOC") || aChangedEntityType.contains("COMMENT"))
 						continue;
 
 					for (UniqueChangeOperation fileBChangeOperationItem : fileBChangeOperationList) {
 						String bChangeType = fileBChangeOperationItem.getChangeType();
 						String bChangedEntityType = fileBChangeOperationItem.getChangedEntityType();
 
-						if (bChangedEntityType.contains("DOC") || bChangedEntityType.contains("COMMENT"))
+						if (bChangedEntityType.contains("JAVADOC") || bChangedEntityType.contains("COMMENT"))
 							continue;
 
 						String key = filePair + "--" + aChangeType + "--" + aChangedEntityType + "--" + bChangeType
@@ -101,31 +107,34 @@ public class ChangeRelationExtractor {
 							newSet.add(commitId);
 							result.put(key, newSet);
 						}
+						// System.out.println(result);
 					}
 				}
 			}
-		}
+			// System.out.println(result.size());
 
-		for (Map.Entry<String, Set<String>> entry : result.entrySet()) {
-			String[] tmp = entry.getKey().split("--");
-			Set<String> commitIds = entry.getValue();
-			int size = commitIds.size();
-			// if change relation occurs >= threshold2 times
-			if (size >= threshold2) {
-				ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repositoryId, tmp[0], tmp[1],
-						tmp[2], tmp[3], tmp[4], size);
-				ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
+			for (Map.Entry<String, Set<String>> entry : result.entrySet()) {
+				String[] tmp = entry.getKey().split("--");
+				Set<String> commitIds = entry.getValue();
+				int size = commitIds.size();
+				// if change relation occurs >= threshold2 times
+				if (size >= threshold2) {
+					ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repositoryId, tmp[0], tmp[1],
+							tmp[2], tmp[3], tmp[4], size);
+					ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
 
-				List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
-				Iterator<String> i = commitIds.iterator();
-				while (i.hasNext()) {
-					String commitId = (String) i.next();
-					ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repositoryId, commitId,
-							tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]);
-					changeRelationCommits.add(changeRelationCommit);
+					List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
+					Iterator<String> i = commitIds.iterator();
+					while (i.hasNext()) {
+						String commitId = (String) i.next();
+						ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repositoryId, commitId,
+								tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]);
+						changeRelationCommits.add(changeRelationCommit);
+					}
+					ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 				}
-				ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 			}
+			result.clear();
 		}
 	}
 
