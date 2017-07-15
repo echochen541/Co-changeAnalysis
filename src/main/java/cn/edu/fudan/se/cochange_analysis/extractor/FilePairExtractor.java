@@ -32,35 +32,12 @@ public class FilePairExtractor {
 	}
 
 	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
-				"D:/echo/lab/research/co-change/projects/camel/.git");
-		FilePairExtractor extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
 
-		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
-
-		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
-
-		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-		extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
-
-		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-		extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
-
-		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		extractor = new FilePairExtractor(gitRepository);
-		extractor.extractFilePairHistory();
 	}
 
 	public void extractFilePairHistory() {
 		int repositoryId = repository.getRepositoryId();
-		System.out.println(repositoryId);
+		// System.out.println(repositoryId);
 		String repositoryName = repository.getRepositoryName();
 		List<GitCommit> filteredCommits = GitCommitDAO.selectFilteredByRepositoryId(repositoryId);
 		String splitString = "||";

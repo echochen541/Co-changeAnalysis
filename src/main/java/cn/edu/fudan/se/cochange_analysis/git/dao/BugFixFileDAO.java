@@ -9,40 +9,32 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.IssueBug;
+import cn.edu.fudan.se.cochange_analysis.git.bean.BugFixFile;
 
-public class IssueBugDAO {
+public class BugFixFileDAO {
 	private static SqlSessionFactory sessionFactory;
 	private static Reader reader;
 	private static SqlSession sqlSession;
-	private static IssueBugMapper issueBugMapper;
+	private static BugFixFileMapper bugFixFileMapper;
 
 	static {
 		try {
 			reader = Resources.getResourceAsReader("mybatis-config.xml");
 			sessionFactory = new SqlSessionFactoryBuilder().build(reader);
 			sqlSession = sessionFactory.openSession();
-			issueBugMapper = sqlSession.getMapper(IssueBugMapper.class);
+			bugFixFileMapper = sqlSession.getMapper(BugFixFileMapper.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void insert(IssueBug issueBug) {
-		issueBugMapper.insert(issueBug);
+	public static void insert(BugFixFile bugFixFile) {
+		bugFixFileMapper.insert(bugFixFile);
 		sqlSession.commit();
 	}
 
-	public static void insertBatch(List<IssueBug> issueBugs) {
-		issueBugMapper.insertBatch(issueBugs);
+	public static void insertBatch(List<BugFixFile> bugFixFileList) {
+		bugFixFileMapper.insertBatch(bugFixFileList);
 		sqlSession.commit();
-	}
-
-	public static List<IssueBug> selectByRepositoryId(int repositoryId) {
-		return issueBugMapper.selectByRepositoryId(repositoryId);
-	}
-
-	public static IssueBug selectByRepositoryIdAndIssueId(int repositoryId, String issueId) {
-		return issueBugMapper.selectByRepositoryIdAndIssueId(repositoryId, issueId);
 	}
 }

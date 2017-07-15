@@ -71,11 +71,13 @@
 			enableSelectByExample="false" selectByExampleQueryId="false"></table> <table 
 			tableName="change_relation_commit" domainObjectName="ChangeRelationCommit" 
 			enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" 
-			enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
-
-		<table tableName="issue_bug" domainObjectName="IssueBug"
-			enableCountByExample="false" enableUpdateByExample="false"
-			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false"></table>
+			enableSelectByExample="false" selectByExampleQueryId="false"></table> <table 
+			tableName="issue_bug" domainObjectName="IssueBug" enableCountByExample="false" 
+			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"></table>-->
+			
+			<table tableName="bug_fix_file" domainObjectName="BugFixFile" 
+			enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" 
+			enableSelectByExample="false" selectByExampleQueryId="false"></table>
 	</context>
 </generatorConfiguration>

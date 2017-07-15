@@ -65,4 +65,6 @@ public interface GitChangeFileMapper {
 	List<GitChangeFile> selectFilteredByRepositoryIdAndCommitId(@Param("repositoryId") int repositoryId,@Param("commitId") String commitId);
 
 	List<GitChangeFile> selectFilteredByRepositoryId(int repositoryId);
+
+	int insertFilterBatch(List<GitChangeFile> filteredFiles);
 }
