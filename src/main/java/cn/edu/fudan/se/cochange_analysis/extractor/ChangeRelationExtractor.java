@@ -262,12 +262,23 @@ public class ChangeRelationExtractor {
 			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(
 					repository.getRepositoryId(), filePairCountItem.getFilePair(), threshold2);
 			for (ChangeRelationCount item : changeRelationCount) {
-				String tmp = item.getChangeType1() + "||" + item.getChangedEntityType1() + "||" + item.getChangeType2()
-						+ "||" + item.getChangedEntityType2();
+				if(item.getChangedEntityType1().contains("JAVADOC")||item.getChangedEntityType2().contains("JAVADOC")
+						||item.getChangedEntityType1().contains("COMMENT")||item.getChangedEntityType2().contains("COMMENT")){
+					continue;
+				}
+				String item1Str= item.getChangeType1() + "||" + item.getChangedEntityType1();
+				String item2Str= item.getChangeType2() + "||" + item.getChangedEntityType2();
+				String tmp=null;
+				if(item1Str.compareTo(item2Str)<0){
+					tmp=item1Str+"||"+item2Str;
+				}else{
+					tmp=item2Str+"||"+item2Str;
+				}
+				
 				if (result.containsKey(tmp)) {
-					result.put(tmp, result.get(tmp) + 1);
+					result.put(tmp, result.get(tmp) + item.getCount());
 				} else {
-					result.put(tmp, 1);
+					result.put(tmp, item.getCount());
 				}
 
 			}
