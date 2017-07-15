@@ -60,7 +60,7 @@ public class ChangeExtractor {
 		File tempDir = new File(tempDirPath);
 		tempDir.mkdirs();
 
-		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectByRepositoryId(repositoryId);
+		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectFilteredByRepositoryId(repositoryId);
 
 		for (GitChangeFile changeFile : changeFiles) {
 			// not MODIFY

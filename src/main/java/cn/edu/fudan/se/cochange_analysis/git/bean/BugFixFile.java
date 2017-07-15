@@ -36,8 +36,8 @@ public class BugFixFile extends BugFixFileKey implements Serializable {
      *
      * @mbg.generated
      */
-    public BugFixFile(Integer repositoryId, String commitId, String fileName, String issueId, Integer lineOfCode, Date fixDate) {
-        super(repositoryId, commitId, fileName, issueId);
+    public BugFixFile(Integer repositoryId, String commitId, String fileName, String shortName, String issueId, Integer lineOfCode, Date fixDate) {
+        super(repositoryId, commitId, fileName, shortName, issueId);
         this.lineOfCode = lineOfCode;
         this.fixDate = fixDate;
     }
@@ -121,6 +121,7 @@ public class BugFixFile extends BugFixFileKey implements Serializable {
         return (this.getRepositoryId() == null ? other.getRepositoryId() == null : this.getRepositoryId().equals(other.getRepositoryId()))
             && (this.getCommitId() == null ? other.getCommitId() == null : this.getCommitId().equals(other.getCommitId()))
             && (this.getFileName() == null ? other.getFileName() == null : this.getFileName().equals(other.getFileName()))
+            && (this.getShortName() == null ? other.getShortName() == null : this.getShortName().equals(other.getShortName()))
             && (this.getIssueId() == null ? other.getIssueId() == null : this.getIssueId().equals(other.getIssueId()))
             && (this.getLineOfCode() == null ? other.getLineOfCode() == null : this.getLineOfCode().equals(other.getLineOfCode()))
             && (this.getFixDate() == null ? other.getFixDate() == null : this.getFixDate().equals(other.getFixDate()));
@@ -139,6 +140,7 @@ public class BugFixFile extends BugFixFileKey implements Serializable {
         result = prime * result + ((getRepositoryId() == null) ? 0 : getRepositoryId().hashCode());
         result = prime * result + ((getCommitId() == null) ? 0 : getCommitId().hashCode());
         result = prime * result + ((getFileName() == null) ? 0 : getFileName().hashCode());
+        result = prime * result + ((getShortName() == null) ? 0 : getShortName().hashCode());
         result = prime * result + ((getIssueId() == null) ? 0 : getIssueId().hashCode());
         result = prime * result + ((getLineOfCode() == null) ? 0 : getLineOfCode().hashCode());
         result = prime * result + ((getFixDate() == null) ? 0 : getFixDate().hashCode());

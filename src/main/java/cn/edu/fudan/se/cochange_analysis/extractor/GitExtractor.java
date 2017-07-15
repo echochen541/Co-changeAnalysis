@@ -206,12 +206,12 @@ public class GitExtractor {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		GitExtractor gitExtractor = new GitExtractor(gitRepository);
-		gitExtractor.getModifiedLineOfCode("0000e4462e7343152ee0f6730fc8e50e8810b7f4",
-				"22c65c20dfd6e911f5385d400713ac4c8a0b7ea5");
+		gitExtractor.getModifiedLineOfCode("05a2830cb4588193c86f9fc279f53e0a77f2f393",
+				"c94c619828781277282bf5c6ae80d545466fdbc2");
 	}
 
 	public Map<String, Integer> getModifiedLineOfCode(String commitId, String parentCommitId) {
-		System.out.println(parentCommitId + "," + commitId);
+		// System.out.println(parentCommitId + "," + commitId);
 
 		Map<String, Integer> file2Loc = new HashMap<String, Integer>();
 		AbstractTreeIterator newTree = prepareTreeParser(commitId), oldTree = prepareTreeParser(parentCommitId);
@@ -224,7 +224,7 @@ public class GitExtractor {
 			// 设置比较器为忽略空白字符对比（Ignores all whitespace）
 			df.setDiffComparator(RawTextComparator.WS_IGNORE_ALL);
 			df.setRepository(git.getRepository());
-			System.out.println("------------------------------start-----------------------------");
+			// System.out.println("------------------------------start-----------------------------");
 			// 每一个diffEntry都是第个文件版本之间的变动差异
 			for (DiffEntry diffEntry : diff) {
 				String newPath = diffEntry.getNewPath();
@@ -235,11 +235,11 @@ public class GitExtractor {
 					fileName = oldPath;
 				else
 					fileName = newPath;
-				
+
 				// 打印文件差异具体内容
-				df.format(diffEntry);
-				String diffText = out.toString("UTF-8");
-				System.out.println(diffText);
+				// df.format(diffEntry);
+				// String diffText = out.toString("UTF-8");
+				// System.out.println(diffText);
 
 				// 获取文件差异位置，从而统计差异的行数，如增加行数，减少行数
 				FileHeader fileHeader = df.toFileHeader(diffEntry);
@@ -253,10 +253,10 @@ public class GitExtractor {
 						addSize += edit.getEndB() - edit.getBeginB();
 					}
 				}
-				System.out.print(fileName);
-				System.out.println("addSize=" + addSize);
-				System.out.println("subSize=" + subSize);
-				System.out.println("------------------------------end-----------------------------");
+				// System.out.println(fileName);
+				// System.out.println("addSize=" + addSize);
+				// System.out.println("subSize=" + subSize);
+				// System.out.println("------------------------------end-----------------------------");
 				file2Loc.put(fileName, addSize + subSize);
 				out.reset();
 			}

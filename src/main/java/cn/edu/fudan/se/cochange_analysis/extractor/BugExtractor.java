@@ -74,7 +74,7 @@ public class BugExtractor {
 			String message = commit.getShortMessage();
 			Matcher matcher = pattern.matcher(message);
 			// if issue id found
-		
+
 			if (matcher.find()) {
 				String issueId = matcher.group(0);
 				IssueBug issueBug = IssueBugDAO.selectByRepositoryIdAndIssueId(gitRepositoryId, issueId);
@@ -91,17 +91,20 @@ public class BugExtractor {
 
 				List<GitChangeFile> changeFileList = GitChangeFileDAO.selectByRepositoryIdAndCommitId(gitRepositoryId,
 						commitId);
+				List<GitChangeFile> filteredFileList = filterChangeFiles(changeFileList);
+
 				List<BugFixFile> bugFixFileList = new ArrayList<BugFixFile>();
-				for (GitChangeFile changeFile : changeFileList) {
-					String filePath = changeFile.getFileName();
-					String fileName = FileUtils.parseFilePath(filePath, gitRepositoryName);
-					int lineOfCode = file2Loc.get(filePath);
+				for (GitChangeFile changeFile : filteredFileList) {
+					String fileName = changeFile.getFileName();
+					String shortName = FileUtils.parseFilePath(fileName, gitRepositoryName);
+					int lineOfCode = file2Loc.get(fileName);
 					Date fixDate = commit.getAuthoredDate();
-					BugFixFile bugFixFile = new BugFixFile(gitRepositoryId, commitId, fileName, issueId, lineOfCode,
-							fixDate);
+					BugFixFile bugFixFile = new BugFixFile(gitRepositoryId, commitId, fileName, issueId, shortName,
+							lineOfCode, fixDate);
 					bugFixFileList.add(bugFixFile);
+					BugFixFileDAO.insert(bugFixFile);
 				}
-				BugFixFileDAO.insertBatch(bugFixFileList);
+				// BugFixFileDAO.insertBatch(bugFixFileList);
 			}
 		}
 	}
@@ -112,5 +115,18 @@ public class BugExtractor {
 
 	public void setRepository(GitRepository gitRepository) {
 		this.gitRepository = gitRepository;
+	}
+
+	private List<GitChangeFile> filterChangeFiles(List<GitChangeFile> changeFiles) {
+		List<GitChangeFile> filteredFiles = new ArrayList<GitChangeFile>();
+		for (GitChangeFile changeFile : changeFiles) {
+			String fileName = changeFile.getFileName();
+			String changeType = changeFile.getChangeType();
+			// java file and non test java file
+			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.contains("/test/")) {
+				filteredFiles.add(changeFile);
+			}
+		}
+		return filteredFiles;
 	}
 }

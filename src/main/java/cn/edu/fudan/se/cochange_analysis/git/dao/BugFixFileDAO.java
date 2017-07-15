@@ -10,7 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.BugFixFile;
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 
 public class BugFixFileDAO {
 	private static SqlSessionFactory sessionFactory;
@@ -38,5 +37,4 @@ public class BugFixFileDAO {
 		bugFixFileMapper.insertBatch(bugFixFileList);
 		sqlSession.commit();
 	}
-
 }
