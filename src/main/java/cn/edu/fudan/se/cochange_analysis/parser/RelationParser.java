@@ -15,21 +15,29 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import cn.edu.fudan.se.cochange_analysis.file.util.DSMGenerator;
+import cn.edu.fudan.se.cochange_analysis.file.util.GenerateDSM;
+import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
+import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 
 
 public class RelationParser {
+	private GitRepository repository;
 	private String project;
 	private String directory;
 
 
-	public RelationParser(String project, String directory) {
+	public RelationParser(GitRepository gitRepo,String project, String directory) {
 		this.project = project;
 		this.directory = directory;
+		this.repository = repository;
+		this.repository=gitRepo;
 	}
 	public static void main(String args[]){
-		RelationParser a=new RelationParser("camel","D:\\Workspace\\co-change summer\\understand\\camel\\");
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		RelationParser a=new RelationParser(gitRepository,"camel","D:\\Workspace\\co-change summer\\understand\\camel\\");
 		a.extractRelation();
 	}
 
@@ -53,7 +61,8 @@ public class RelationParser {
 		for(String tmp:types){
 			typeList.add(tmp);
 		}
-		DSMGenerator dsmGenerator;
+		GenerateDSM structureDSM;
+		GenerateDSM historyDSM;
 		HashMap<Integer, String> hm = new HashMap<Integer, String>();
 		String fileName = f.getName();
 		String[] tokens = fileName.split("-");
@@ -82,7 +91,8 @@ public class RelationParser {
 				}
 			}
 			Collections.sort(fileList);
-			dsmGenerator=new DSMGenerator(typeList,fileList);
+			structureDSM=new GenerateDSM(typeList,fileList);
+			
 			nodes = root.elements("edge");
 			for (Iterator<Element> it = nodes.iterator(); it.hasNext();) {
 				Element elm = (Element) it.next();
@@ -98,7 +108,7 @@ public class RelationParser {
 						for(String tmp:mTypeList){
 							mTypeList2.add(tmp.trim());
 						}
-						dsmGenerator.setFileRelationType(hm.get(source), hm.get(target), mTypeList2);
+						structureDSM.setFileStructureRelationType(hm.get(source), hm.get(target), mTypeList2);
 					}
 				}
 			}
@@ -106,6 +116,16 @@ public class RelationParser {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
+		historyDSM=new GenerateDSM(fileList);
+		for(int i=0;i<fileList.size();i++)
+			for(int j=i+1;j<fileList.size();j++){
+				FilePairCount dataList=FilePairCountDAO.selectByRepositoryIdAndFilePairName(this.repository.getRepositoryId(),fileList.get(i)+"||"+fileList.get(j));
+				if(dataList==null){
+					System.err.println("ERR");
+				}
+				historyDSM.setFileHistoryRelationCount(fileList.get(i),fileList.get(j), dataList.getCount());
+				historyDSM.setFileHistoryRelationCount(fileList.get(j),fileList.get(i), dataList.getCount());
+			}
 	}
 
 	private ArrayList<File> getListFiles(File directory) {

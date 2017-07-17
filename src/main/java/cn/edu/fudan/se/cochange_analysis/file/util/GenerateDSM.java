@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DSMGenerator {
+public class GenerateDSM {
 	private StringBuilder[][] structureDsmMatrix;
 	private int[][] historyDsmMatrix;
 	private List<String> typeList;
@@ -23,14 +23,11 @@ public class DSMGenerator {
 	private StringBuilder matrixCell;
 	private Map<String,Integer> typeIndexMap;
 	
-	public DSMGenerator(int type,List<String> mTypeList,List<String> mFileList){
+	public GenerateDSM(List<String> mTypeList,List<String> mFileList){
 		
 		Collections.sort(mTypeList);
 		Collections.sort(mFileList);
-		if(type==1)
-			structureDsmMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
-		else
-			historyDsmMatrix=new int[mFileList.size()][mFileList.size()];
+		structureDsmMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
 		typeList=mTypeList;
 		fileList=mFileList;
 		matrixBuilder=new StringBuilder();
@@ -44,6 +41,17 @@ public class DSMGenerator {
 		}
 		
 		buildString();
+	}
+	public GenerateDSM(List<String> mFileList){
+		
+		Collections.sort(mFileList);
+		historyDsmMatrix=new int[mFileList.size()][mFileList.size()];
+		fileList=mFileList;
+		fileListBuilder=new StringBuilder();
+		
+		for (String fileName : fileList) {
+			fileListBuilder.append(fileName + "\n");
+		}
 	}
 	public void setFileStructureRelationType(String fromFileA,String toFileB,List<String> typeList){
 		int x=fileList.indexOf(fromFileA);
@@ -68,7 +76,7 @@ public class DSMGenerator {
 	public void setFileHistoryRelationCount(String fromFileA,String toFileB,int count){
 		int x=fileList.indexOf(fromFileA);
 		int y=fileList.indexOf(toFileB);
-		historyDsmMatrix[x][y]+=count;
+		historyDsmMatrix[x][y]=count;
 			
 	}
 
@@ -125,7 +133,8 @@ public class DSMGenerator {
 		try {
 			FileOutputStream fos = new FileOutputStream(
 					new File(outputPath));
-			fos.write(typeBuilder.toString().getBytes());
+			String tmp=this.fileList.size()+"\n";
+			fos.write(tmp.getBytes());
 			fos.write(matrixBuilder.toString().getBytes());
 			fos.write(fileListBuilder.toString().getBytes());
 			fos.close();
