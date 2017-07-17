@@ -88,7 +88,8 @@ public class CommitFilter {
 			String fileName = changeFile.getFileName();
 			String changeType = changeFile.getChangeType();
 			// java file and non test java file
-			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.contains("/test/")) {
+			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.contains("/test/")
+					&& !fileName.contains("/tester/")) {
 				filteredFiles.add(changeFile);
 			}
 		}

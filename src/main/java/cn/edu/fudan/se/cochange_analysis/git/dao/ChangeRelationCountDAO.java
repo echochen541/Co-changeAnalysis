@@ -41,4 +41,8 @@ public class ChangeRelationCountDAO {
 	public static List<ChangeRelationCount> selectByRepositoryId(int repositoryId) {
 		return changeRelationCountMapper.selectByRepositoryId(repositoryId);
 	}
+	
+	public static List<ChangeRelationCount> selectByRepositoryIdAndFilePair(int repositoryId, String filePair) {
+		return changeRelationCountMapper.selectByRepositoryIdAndFilePair(repositoryId, filePair);
+	}
 }
