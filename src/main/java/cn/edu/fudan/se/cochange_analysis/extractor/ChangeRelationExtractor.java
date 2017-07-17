@@ -140,20 +140,20 @@ public class ChangeRelationExtractor {
 
 	public void rankChangeRelationCount(String outputdir) {
 		Map<String, Integer> result = new HashMap<String, Integer>();
-
 		int repositoryId = repository.getRepositoryId();
 		List<ChangeRelationCount> changeRelationCountList = ChangeRelationCountDAO.selectByRepositoryId(repositoryId);
 
-		System.out.println(changeRelationCountList.size());
-
+		// System.out.println(changeRelationCountList.size());
 		for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
-			String change1 = changeRelationCount.getChangeType1() + "||" + changeRelationCount.getChangedEntityType1();
-			String change2 = changeRelationCount.getChangeType2() + "||" + changeRelationCount.getChangedEntityType2();
+			String change1 = changeRelationCount.getChangeType1() + "(" + changeRelationCount.getChangedEntityType1()
+					+ ")";
+			String change2 = changeRelationCount.getChangeType2() + "(" + changeRelationCount.getChangedEntityType2()
+					+ ")";
 			String changeRelation = null;
 			if (change1.compareTo(change2) <= 0)
-				changeRelation = change1 + "||" + change2;
+				changeRelation = change1 + "--" + change2;
 			else
-				changeRelation = change2 + "||" + change1;
+				changeRelation = change2 + "--" + change1;
 
 			if (result.containsKey(changeRelation)) {
 				result.put(changeRelation, result.get(changeRelation) + changeRelationCount.getCount());
@@ -171,7 +171,8 @@ public class ChangeRelationExtractor {
 
 		int line = rankList.size();
 		try {
-			String outputFileName = outputdir + "/" + this.repository.getRepositoryName() + "_change-relation-count-rank.csv";
+			String outputFileName = outputdir + "/" + this.repository.getRepositoryName()
+					+ "_change-relation-count-rank.csv";
 			System.out.println(outputFileName);
 			File f = new File(outputFileName);
 			if (!f.exists())
@@ -508,41 +509,5 @@ public class ChangeRelationExtractor {
 
 	public static void main(String args[]) {
 
-	}
-
-	public void analyzeCSVs() {
-		try {
-			Map<String, Integer> result = new HashMap<String, Integer>();
-			String[] files = { "camel", "cassandra", "cxf", "hadoop", "hbase", "wicket" };
-			for (String tmp : files) {
-				FileInputStream fis = new FileInputStream(new File("D:\\2017.7.12\\" + tmp + "_20_3.csv"));
-				Scanner sc = new Scanner(fis);
-				for (int i = 0; i < 10; i++) {
-					String line = sc.nextLine();
-					String[] content = line.split(",");
-					if (result.containsKey(content[0])) {
-						result.put(content[0], result.get(content[0]) + 1);
-					} else {
-						result.put(content[0], 1);
-					}
-				}
-			}
-			List<Entry<String, Integer>> mapList = new ArrayList<Entry<String, Integer>>(result.entrySet());
-			Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
-				public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-					return (o2.getValue() - o1.getValue());
-				}
-			});
-			FileOutputStream fos = new FileOutputStream(new File("D://OverlapSummary.csv"));
-			for (Entry<String, Integer> tmp : mapList) {
-				String t = tmp.getKey() + ", " + tmp.getValue() + ",\n";
-				fos.write(t.getBytes());
-			}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

@@ -4,6 +4,7 @@ import cn.edu.fudan.se.cochange_analysis.extractor.BugExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.ChangeExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.ChangeRelationExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.FilePairExtractor;
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.preprocess.CommitFilter;
 
@@ -95,5 +96,7 @@ public class Main {
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		// extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
+
+		FileUtils.analyzeChangeRelationOverlap(outputdir);
 	}
 }
