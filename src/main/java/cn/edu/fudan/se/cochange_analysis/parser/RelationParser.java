@@ -2,7 +2,6 @@ package cn.edu.fudan.se.cochange_analysis.parser;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,26 +14,21 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-//import cn.edu.fudan.se.constant.MySqlConstants;
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
+
 
 public class RelationParser {
 	private String project;
 	private String directory;
 
-	Connection conn = null;
-	Statement stmt;
 
 	public RelationParser(String project, String directory) {
 		this.project = project;
 		this.directory = directory;
-
-		try {
-			Class.forName(MySqlConstants.DRIVER);
-			conn = DriverManager.getConnection(MySqlConstants.URL, MySqlConstants.USER, MySqlConstants.PASSWORD);
-			stmt = conn.createStatement();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	}
+	public static void main(String args[]){
+		RelationParser a=new RelationParser("camel","D:\\Workspace\\co-change summer\\understand\\camel\\");
+		a.extractRelation();
 	}
 
 	public void extractRelation() {
@@ -54,12 +48,6 @@ public class RelationParser {
 		String fileName = f.getName();
 		String[] tokens = fileName.split("-");
 		String version = tokens[1];
-		// if (version.equals("2.0.8")||version.equals("2.1.2")) {
-		// System.out.println(version+" Begin");
-		// System.out.println(version+" End");
-		// return;
-		// }
-		// System.out.println(this.project + "\t" + version);
 		SAXReader reader = new SAXReader();
 		Document document;
 		try {
@@ -74,10 +62,10 @@ public class RelationParser {
 				for (Element child : children) {
 					Attribute name = child.attribute("name");
 					if (name.getValue().equals("longName")) {
-
 						String path = child.attribute("value").getValue();
 						// System.out.println(id + "\t" + parseName(path));
-						hm.put(id, parseName(path));
+						String packageName=FileUtils.parseFilePath(path, this.project);
+						hm.put(id, packageName);
 					}
 				}
 			}
@@ -92,18 +80,10 @@ public class RelationParser {
 					Attribute name = child.attribute("name");
 					if (name.getValue().equals("dependency kind")) {
 						String kind = child.attribute("value").getValue();
-						// System.out.println(this.project + "\t" + version +
-						// "\t" + hm.get(source) + "\t" + kind + "\t"
-						// + hm.get(target));
-						String sql = "insert into structure_relation values('" + this.project + "','" + hm.get(source)
-								+ "','" + hm.get(target) + "','" + version + "','" + kind + "')";
+						
+						hm.get(source)
+						hm.get(target) + + kind + "')";
 						// System.out.println(sql);
-						try {
-							stmt.execute(sql);
-						} catch (Exception e) {
-							System.out.println(sql);
-							e.printStackTrace();
-						}
 					}
 				}
 			}
