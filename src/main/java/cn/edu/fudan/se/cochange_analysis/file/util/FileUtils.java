@@ -8,8 +8,18 @@ package cn.edu.fudan.se.cochange_analysis.file.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Map.Entry;
 
 /**
  * @ClassName: FileUtils
@@ -95,5 +105,42 @@ public class FileUtils {
 			}
 		}
 		return fileName;
+	}
+
+	public static void analyzeChangeRelationOverlap(String outputdir) {
+		try {
+			Map<String, Integer> result = new HashMap<String, Integer>();
+			String[] files = { "camel", "cassandra", "cxf", "hadoop", "hbase", "wicket" };
+			for (String tmp : files) {
+				FileInputStream fis = new FileInputStream(
+						new File(outputdir + "/" + tmp + "_change-relation-count-rank.csv"));
+				Scanner sc = new Scanner(fis);
+				for (int i = 0; i < 32; i++) {
+					String line = sc.nextLine();
+					String[] content = line.split(",");
+					if (result.containsKey(content[0])) {
+						result.put(content[0], result.get(content[0]) + 1);
+					} else {
+						result.put(content[0], 1);
+					}
+				}
+			}
+			List<Entry<String, Integer>> mapList = new ArrayList<Entry<String, Integer>>(result.entrySet());
+			Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
+				public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+					return (o2.getValue() - o1.getValue());
+				}
+			});
+			FileOutputStream fos = new FileOutputStream(new File(outputdir + "/ChangeRelationOverlap.csv"));
+			for (Entry<String, Integer> tmp : mapList) {
+				String t = tmp.getKey() + ", " + tmp.getValue() + ",\n";
+				fos.write(t.getBytes());
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
