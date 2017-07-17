@@ -59,12 +59,13 @@ public class FileUtils {
 	}
 
 	public static String parseFilePath(String filePath, String repositoryName) {
+		if (filePath.startsWith("wicket/src/java"))
+			return filePath.replace("wicket/src/java", "org/apache");
+		
 		String fileName = null;
 		String matchString1 = "org/apache/" + repositoryName;
 		String matchString2 = "src/main/java/";
 		String matchString3 = "src/main/resources/";
-		String matchString4 = "src/test/java/";
-		String matchString5 = "src/test/resources/";
 
 		// search matchString1
 		int index = filePath.indexOf(matchString1);
@@ -84,23 +85,8 @@ public class FileUtils {
 				if (index != -1) {
 					fileName = filePath.substring(index + matchString3.length());
 				} else {
-					// matchString3 not found, search matchString4
-					index = filePath.indexOf(matchString4);
-					if (index != -1) {
-						// matchString4 found
-						fileName = filePath.substring(index + matchString4.length());
-					} else {
-						// matchString4 not found, search matchString5
-						index = filePath.indexOf(matchString5);
-						if (index != -1) {
-							// matchString5 found
-							fileName = filePath.substring(index + matchString5.length());
-						} else {
-							// matchString1,2,3,4,5 not found, keep original
-							// path
-							fileName = filePath;
-						}
-					}
+					// matchString3 not found, keep original path
+					fileName = filePath;
 				}
 			}
 		}

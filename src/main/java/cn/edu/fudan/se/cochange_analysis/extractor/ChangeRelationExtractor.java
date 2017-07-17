@@ -1,10 +1,12 @@
 package cn.edu.fudan.se.cochange_analysis.extractor;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
@@ -58,7 +59,7 @@ public class ChangeRelationExtractor {
 		int repositoryId = repository.getRepositoryId();
 		// System.out.println("repository id : " + repositoryId);
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId,
 				threshold1);
 		// System.out.println(filePairCountList.size());
 
@@ -194,7 +195,7 @@ public class ChangeRelationExtractor {
 
 	public void generateDSM(int threshold1, int threshold2) {
 		int repositoryId = repository.getRepositoryId();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId,
 				threshold1);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
@@ -305,13 +306,12 @@ public class ChangeRelationExtractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void generateRelationCountSummary(int threshold1, int threshold2, int threshold3) {
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		List<FilePairCount> filePairCountList = FilePairCountDAO
-				.selectByRepositoryIdAndFilePairCount(repository.getRepositoryId(), threshold1);
+				.selectByRepositoryIdAndCount(repository.getRepositoryId(), threshold1);
 		for (FilePairCount filePairCountItem : filePairCountList) {
 			List<ChangeRelationCount> changeRelationCount = ChangeRelationCountDAO.selectAllChangeRelationCount(
 					repository.getRepositoryId(), filePairCountItem.getFilePair(), threshold2);
@@ -389,7 +389,7 @@ public class ChangeRelationExtractor {
 
 	public void generateTopNTypeDSM(int threshold1, int threshold2, Map<String, Integer> typeMap) {
 		int repositoryId = repository.getRepositoryId();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndFilePairCount(repositoryId,
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId,
 				threshold1);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();

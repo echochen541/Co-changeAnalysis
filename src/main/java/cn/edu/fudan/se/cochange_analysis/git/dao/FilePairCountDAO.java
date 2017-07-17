@@ -28,7 +28,7 @@ public class FilePairCountDAO {
 		}
 	}
 
-	public static List<FilePairCount> selectByRepositoryIdAndFilePairCount(int repoId, int threshold1) {
-		return filePairCountMapper.selectByRepositoryIdAndFilePairCount(repoId, threshold1);
+	public static List<FilePairCount> selectByRepositoryIdAndCount(int repoId, int threshold1) {
+		return filePairCountMapper.selectByRepositoryIdAndCount(repoId, threshold1);
 	}
 }

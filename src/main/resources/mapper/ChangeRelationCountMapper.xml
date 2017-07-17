@@ -56,7 +56,14 @@
 		select
 		<include refid="Base_Column_List" />
 		from change_relation_count
-		where repository_id = #{changeRelationCountId,jdbcType=INTEGER}
+		where repository_id = #{repositoryId,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectByRepositoryIdAndFilePair" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from change_relation_count
+		where repository_id = #{repositoryId,jdbcType=INTEGER} and file_pair = #{filePair,jdbcType=VARCHAR}
 	</select>
 
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
