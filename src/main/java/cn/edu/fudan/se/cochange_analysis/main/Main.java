@@ -20,9 +20,11 @@ public class Main {
 		// ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		ChangeRelationExtractor changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		BugExtractor extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		String outputdir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count-rank";
+		changeRelationExtractor.rankChangeRelationCount(outputdir);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// BugExtractor extractor = new BugExtractor(gitRepository);
+		// extractor.extractBug();
 
 		System.out.println(2);
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
@@ -33,9 +35,10 @@ public class Main {
 		// changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		changeRelationExtractor.rankChangeRelationCount(outputdir);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// extractor = new BugExtractor(gitRepository);
+		// extractor.extractBug();
 
 		System.out.println(3);
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
@@ -46,9 +49,10 @@ public class Main {
 		// changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		changeRelationExtractor.rankChangeRelationCount(outputdir);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// extractor = new BugExtractor(gitRepository);
+		// extractor.extractBug();
 
 		System.out.println(4);
 		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
@@ -59,9 +63,10 @@ public class Main {
 		// changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		changeRelationExtractor.rankChangeRelationCount(outputdir);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// extractor = new BugExtractor(gitRepository);
+		// extractor.extractBug();
 
 		System.out.println(5);
 		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
@@ -72,9 +77,10 @@ public class Main {
 		// changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		changeRelationExtractor.rankChangeRelationCount(outputdir);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// extractor = new BugExtractor(gitRepository);
+		// extractor.extractBug();
 
 		System.out.println(6);
 		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
@@ -85,8 +91,9 @@ public class Main {
 		// changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		changeRelationExtractor.rankChangeRelationCount(outputdir);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// extractor = new BugExtractor(gitRepository);
+		// extractor.extractBug();
 	}
 }

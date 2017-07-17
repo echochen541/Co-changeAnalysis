@@ -38,9 +38,7 @@ public class ChangeRelationCountDAO {
 	public static List<ChangeRelationUnique> selectDistinctChangeType(int repoId,int threshold){
 		return changeRelationCountMapper.selectDistinctChangeType(repoId,threshold);
 	}
-	
-
-
-
-
+	public static List<ChangeRelationCount> selectByRepositoryId(int repositoryId) {
+		return changeRelationCountMapper.selectByRepositoryId(repositoryId);
+	}
 }
