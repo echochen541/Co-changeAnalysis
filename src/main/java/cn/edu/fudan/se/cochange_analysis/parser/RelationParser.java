@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import cn.edu.fudan.se.cochange_analysis.file.util.DSMGenerator;
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 
 
@@ -44,6 +46,14 @@ public class RelationParser {
 	}
 
 	private void parseFile(File f) {
+		
+		String[] types={"Extend","Typed","Import","Call","Create","Cast","Implement","Set","Modify","Use","Throw"};
+		List<String> typeList = new ArrayList<String>();
+		List<String> fileList = new ArrayList<String>(); 
+		for(String tmp:types){
+			typeList.add(tmp);
+		}
+		DSMGenerator dsmGenerator;
 		HashMap<Integer, String> hm = new HashMap<Integer, String>();
 		String fileName = f.getName();
 		String[] tokens = fileName.split("-");
@@ -66,10 +76,13 @@ public class RelationParser {
 						// System.out.println(id + "\t" + parseName(path));
 						String packageName=FileUtils.parseFilePath(path, this.project);
 						hm.put(id, packageName);
+						fileList.add(packageName);
 					}
+					
 				}
 			}
-
+			Collections.sort(fileList);
+			dsmGenerator=new DSMGenerator(typeList,fileList);
 			nodes = root.elements("edge");
 			for (Iterator<Element> it = nodes.iterator(); it.hasNext();) {
 				Element elm = (Element) it.next();
@@ -80,10 +93,12 @@ public class RelationParser {
 					Attribute name = child.attribute("name");
 					if (name.getValue().equals("dependency kind")) {
 						String kind = child.attribute("value").getValue();
-						
-						hm.get(source)
-						hm.get(target) + + kind + "')";
-						// System.out.println(sql);
+						String [] mTypeList=kind.split(",");
+						List<String> mTypeList2=new ArrayList<String>();
+						for(String tmp:mTypeList){
+							mTypeList2.add(tmp.trim());
+						}
+						dsmGenerator.setFileRelationType(hm.get(source), hm.get(target), mTypeList2);
 					}
 				}
 			}
@@ -91,7 +106,6 @@ public class RelationParser {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		// System.out.println(version + " End");
 	}
 
 	private ArrayList<File> getListFiles(File directory) {
@@ -109,8 +123,5 @@ public class RelationParser {
 		return files;
 	}
 
-	public String parseName(String fileName) {
-		int index = fileName.indexOf("org\\apache\\cassandra\\");
-		return (fileName.substring(index, fileName.length())).replaceAll(".java", "_java").replaceAll("\\\\", ".");
-	}
+	
 }

@@ -5,10 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DSMGenerator {
-	private StringBuilder[][] dsmMatrix;
+	private StringBuilder[][] structureDsmMatrix;
+	private int[][] historyDsmMatrix;
 	private List<String> typeList;
 	private List<String> fileList;
 	
@@ -16,18 +20,58 @@ public class DSMGenerator {
 	private StringBuilder typeBuilder;
 	private StringBuilder fileListBuilder;
 	
-	public DSMGenerator(int size,ArrayList<String> mTypeList,List<String> mFileList){
-		dsmMatrix = new StringBuilder[size][size];
+	private StringBuilder matrixCell;
+	private Map<String,Integer> typeIndexMap;
+	
+	public DSMGenerator(int type,List<String> mTypeList,List<String> mFileList){
+		
+		Collections.sort(mTypeList);
+		Collections.sort(mFileList);
+		if(type==1)
+			structureDsmMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
+		else
+			historyDsmMatrix=new int[mFileList.size()][mFileList.size()];
 		typeList=mTypeList;
 		fileList=mFileList;
 		matrixBuilder=new StringBuilder();
 		typeBuilder=new StringBuilder();
 		fileListBuilder=new StringBuilder();
+		matrixCell=new StringBuilder();
+		typeIndexMap=new HashMap<String,Integer>();
+		for(int i=0;i<typeList.size();i++){
+			matrixCell.append("0");
+			typeIndexMap.put(typeList.get(i),i);
+		}
+		
 		buildString();
 	}
-	public StringBuilder[][] getDsmMatrix() {
-		return dsmMatrix;
+	public void setFileStructureRelationType(String fromFileA,String toFileB,List<String> typeList){
+		int x=fileList.indexOf(fromFileA);
+		int y=fileList.indexOf(toFileB);
+		if (structureDsmMatrix[x][y] == null) {
+			structureDsmMatrix[x][y] = new StringBuilder(
+					matrixCell.toString());
+			;
+		}
+		for(String tmp:typeList){
+			structureDsmMatrix[x][y].setCharAt(typeIndexMap.get(tmp), '1');
+		}
 	}
+	public void setFileStructureRelationType(String fromFileA,String toFileB, String type){
+		int x=fileList.indexOf(fromFileA);
+		int y=fileList.indexOf(toFileB);
+		if (structureDsmMatrix[x][y] == null) {
+			structureDsmMatrix[x][y] = new StringBuilder(matrixCell.toString());
+		}
+		structureDsmMatrix[x][y].setCharAt(typeIndexMap.get(type), '1');
+	}
+	public void setFileHistoryRelationCount(String fromFileA,String toFileB,int count){
+		int x=fileList.indexOf(fromFileA);
+		int y=fileList.indexOf(toFileB);
+		historyDsmMatrix[x][y]+=count;
+			
+	}
+
 	
 	private void buildString(){
 		typeBuilder.append("[");
@@ -45,14 +89,35 @@ public class DSMGenerator {
 		}
 	}
 	
-	public void write2DSM(String outputPath){
-		for (int m = 0; m < dsmMatrix.length; m++) {
-			for (int n = 0; n < dsmMatrix[0].length; n++) {
-				if (dsmMatrix[m][n] == null) {
+	public void write2StructureDSM(String outputPath){
+		for (int m = 0; m < structureDsmMatrix.length; m++) {
+			for (int n = 0; n < structureDsmMatrix[0].length; n++) {
+				if (structureDsmMatrix[m][n] == null) {
 					matrixBuilder.append("0 ");
 				} else {
-					matrixBuilder.append(dsmMatrix[m][n].toString() + " ");
+					matrixBuilder.append(structureDsmMatrix[m][n].toString() + " ");
 				}
+			}
+			matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
+			matrixBuilder.append("\n");
+		}
+		try {
+			FileOutputStream fos = new FileOutputStream(
+					new File(outputPath));
+			fos.write(typeBuilder.toString().getBytes());
+			fos.write(matrixBuilder.toString().getBytes());
+			fos.write(fileListBuilder.toString().getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void write2HistoryDSM(String outputPath){
+		for (int m = 0; m < historyDsmMatrix.length; m++) {
+			for (int n = 0; n < historyDsmMatrix[0].length; n++) {
+					matrixBuilder.append(String.valueOf(historyDsmMatrix[m][n]) + " ");
 			}
 			matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
 			matrixBuilder.append("\n");
