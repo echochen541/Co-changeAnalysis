@@ -28,6 +28,12 @@ import java.util.Map.Entry;
  * @date: May 23, 2017 5:04:48 PM
  */
 public class FileUtils {
+	public static void main(String[] args) {
+		String text = "wicket-examples/src/java/wicket/examples/displaytag/utils/AbsoluteHref.java";
+		System.out.println(FileUtils.parseFilePath(
+				"wicket-examples/src/java/wicket/examples/displaytag/utils/AbsoluteHref.java", "wicket"));
+	}
+
 	public static File writeBytesToFile(byte[] bfile, String filePath, String fileName) {
 		BufferedOutputStream bos = null;
 		FileOutputStream fos = null;
@@ -59,9 +65,10 @@ public class FileUtils {
 	}
 
 	public static String parseFilePath(String filePath, String repositoryName) {
-		if (filePath.startsWith("wicket/src/java"))
-			return filePath.replace("wicket/src/java", "org/apache");
-		
+		if (repositoryName.equals("wicket")) {
+			filePath = filePath.replaceFirst("src/java/wicket", "org/apache/wicket");
+			filePath = filePath.replaceFirst("src/main/java/wicket", "org/apache/wicket");
+		}
 		String fileName = null;
 		String matchString1 = "org/apache/" + repositoryName;
 		String matchString2 = "src/main/java/";
