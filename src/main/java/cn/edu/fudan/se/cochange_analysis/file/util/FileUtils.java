@@ -29,9 +29,9 @@ import java.util.Map.Entry;
  */
 public class FileUtils {
 	public static void main(String[] args) {
-		String text = "wicket-examples/src/java/wicket/examples/displaytag/utils/AbsoluteHref.java";
+		String text = "src/main/java/org/apache/hadoop/hbase/regionserver/CompactSplitThread.java";
 		System.out.println(FileUtils.parseFilePath(
-				"wicket-examples/src/java/wicket/examples/displaytag/utils/AbsoluteHref.java", "wicket"));
+				text, "hbase"));
 	}
 
 	public static File writeBytesToFile(byte[] bfile, String filePath, String fileName) {
@@ -69,6 +69,14 @@ public class FileUtils {
 			filePath = filePath.replaceFirst("src/java/wicket", "org/apache/wicket");
 			filePath = filePath.replaceFirst("src/main/java/wicket", "org/apache/wicket");
 		}
+		
+		if (repositoryName.equals("hbase")) {
+			if (!filePath.contains("org/apache/hadoop/hbase")) {
+				filePath = filePath.replaceFirst("org/apache/hadoop", "org/apache/hadoop/hbase");
+				filePath = filePath.replaceFirst("org/apache/hbase", "org/apache/hadoop/hbase");
+			}
+		}
+
 		String fileName = null;
 		String matchString1 = "org/apache/" + repositoryName;
 		if (repositoryName.equals("hbase"))

@@ -96,17 +96,16 @@ public class Main {
 		commitFilter = new CommitFilter(gitRepository);
 		// commitFilter.filterCommits();
 		filePairExtractor = new FilePairExtractor(gitRepository);
-		filePairExtractor.extractFilePairHistory();
+		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
-		// changeExtractor.extracChange();
+		changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
-		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
-		// extractor.extractBug();
+		extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
-		// 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
 
 		System.out.println(6);
@@ -126,6 +125,6 @@ public class Main {
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 
-		// FileUtils.analyzeChangeRelationOverlap(outputDir1);
+		FileUtils.analyzeChangeRelationOverlap(outputDir1);
 	}
 }
