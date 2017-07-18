@@ -60,6 +60,7 @@ public class DSMGenerator {
 				String line = br.readLine();
 				String[] tokens = line.split(",");
 				relationList.add(tokens[0]);
+				System.out.println(tokens[0]);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
