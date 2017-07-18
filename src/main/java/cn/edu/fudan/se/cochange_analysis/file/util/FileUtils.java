@@ -71,6 +71,9 @@ public class FileUtils {
 		}
 		String fileName = null;
 		String matchString1 = "org/apache/" + repositoryName;
+		if (repositoryName.equals("hbase"))
+			matchString1 = "org/apache/hadoop/" + repositoryName;
+
 		String matchString2 = "src/main/java/";
 		String matchString3 = "src/main/resources/";
 

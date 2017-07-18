@@ -1,8 +1,6 @@
 package cn.edu.fudan.se.cochange_analysis.parser;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,18 +19,16 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 
-
 public class RelationParser {
 	private GitRepository repository;
 	private String project;
 	private String directory;
 
-
-	public RelationParser(GitRepository gitRepo,String project, String directory) {
+	public RelationParser(GitRepository gitRepo, String project, String directory) {
 		this.project = project;
 		this.directory = directory;
+		this.repository = repository;
 		this.repository = gitRepo;
-		this.repository=gitRepo;
 	}
 	public static void main(String args[]){
 //		GitRepository gitRepository = new GitRepository(1, "camel",
@@ -74,11 +70,12 @@ a.extractRelation();
 	}
 
 	private void parseFile(File f) {
-		
-		String[] types={"Extend","Typed","Import","Call","Create","Cast","Implement","Set","Modify","Use","Throw"};
+
+		String[] types = { "Extend", "Typed", "Import", "Call", "Create", "Cast", "Implement", "Set", "Modify", "Use",
+				"Throw" };
 		List<String> typeList = new ArrayList<String>();
-		List<String> fileList = new ArrayList<String>(); 
-		for(String tmp:types){
+		List<String> fileList = new ArrayList<String>();
+		for (String tmp : types) {
 			typeList.add(tmp);
 		}
 		GenerateDSM structureDSM=null;
@@ -122,7 +119,7 @@ a.extractRelation();
 						hm.put(id, packageName);
 						fileList.add(packageName);
 					}
-					
+
 				}
 			}
 			Collections.sort(fileList);
@@ -143,9 +140,9 @@ a.extractRelation();
 					Attribute name = child.attribute("name");
 					if (name.getValue().equals("dependency kind")) {
 						String kind = child.attribute("value").getValue();
-						String [] mTypeList=kind.split(",");
-						List<String> mTypeList2=new ArrayList<String>();
-						for(String tmp:mTypeList){
+						String[] mTypeList = kind.split(",");
+						List<String> mTypeList2 = new ArrayList<String>();
+						for (String tmp : mTypeList) {
 							mTypeList2.add(tmp.trim());
 						}
 						structureDSM.setFileStructureRelationType(hm.get(source), hm.get(target), mTypeList2);
@@ -185,5 +182,4 @@ a.extractRelation();
 		return files;
 	}
 
-	
 }

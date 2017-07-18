@@ -197,7 +197,11 @@ public class GitExtractor {
 	}
 
 	public static void main(String[] args) {
-
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		GitExtractor gitExtractor = new GitExtractor(gitRepository);
+		gitExtractor.getModifiedLineOfCode("471d69c3a99fdc3977b6b583d339af654f7a148b",
+				"7a837ff7d7b994306ca248b6f89b89d5c9f6a134");
 	}
 
 	public Map<String, Integer> getModifiedLineOfCode(String commitId, String parentCommitId) {
@@ -214,7 +218,7 @@ public class GitExtractor {
 			// 设置比较器为忽略空白字符对比（Ignores all whitespace）
 			// df.setDiffComparator(RawTextComparator.WS_IGNORE_ALL);
 			df.setRepository(git.getRepository());
-			// System.out.println("------------------------------start-----------------------------");
+			System.out.println("------------------------------start-----------------------------");
 			// 每一个diffEntry都是第个文件版本之间的变动差异
 			for (DiffEntry diffEntry : diff) {
 				String newPath = diffEntry.getNewPath();
@@ -228,7 +232,7 @@ public class GitExtractor {
 					fileName = newPath;
 
 				if (ChangeType.MODIFY.name().equals(changeType) && fileName.endsWith(".java")
-						&& !fileName.contains("/test/")) {
+						&& !fileName.contains("/test/") && !fileName.contains("/tester/")) {
 					// 打印文件差异具体内容
 					// df.format(diffEntry);
 					// String diffText = out.toString("UTF-8");
@@ -246,10 +250,10 @@ public class GitExtractor {
 							addSize += edit.getEndB() - edit.getBeginB();
 						}
 					}
-					// System.out.println(fileName);
-					// System.out.println("addSize=" + addSize);
-					// System.out.println("subSize=" + subSize);
-					// System.out.println("------------------------------end-----------------------------");
+					System.out.println(fileName);
+					System.out.println("addSize=" + addSize);
+					System.out.println("subSize=" + subSize);
+					System.out.println("------------------------------end-----------------------------");
 					file2Loc.put(fileName, addSize + subSize);
 					out.reset();
 				}
