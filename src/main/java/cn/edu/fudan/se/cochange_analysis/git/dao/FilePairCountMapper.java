@@ -58,4 +58,7 @@ public interface FilePairCountMapper {
 
 	List<FilePairCount> selectByRepositoryIdAndCount(@Param(value = "repoId") int repoId,
 			@Param(value = "num") int num);
+	
+	FilePairCount selectByRepositoryIdAndFilePairName(@Param(value="repoId")int repoId,
+			@Param(value="filePair")String filePair);
 }
