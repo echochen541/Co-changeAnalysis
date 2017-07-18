@@ -21,7 +21,6 @@ public class GenerateDSM {
 	private StringBuilder fileListBuilder;
 	
 	private StringBuilder matrixCell;
-	private Map<String,Integer> typeIndexMap;
 	
 	public GenerateDSM(List<String> mTypeList,List<String> mFileList){
 		
@@ -34,11 +33,10 @@ public class GenerateDSM {
 		typeBuilder=new StringBuilder();
 		fileListBuilder=new StringBuilder();
 		matrixCell=new StringBuilder();
-		typeIndexMap=new HashMap<String,Integer>();
 		for(int i=0;i<typeList.size();i++){
 			matrixCell.append("0");
-			typeIndexMap.put(typeList.get(i),i);
 		}
+		
 		
 		buildString();
 	}
@@ -53,7 +51,7 @@ public class GenerateDSM {
 			fileListBuilder.append(fileName + "\n");
 		}
 	}
-	public void setFileStructureRelationType(String fromFileA,String toFileB,List<String> typeList){
+	public void setFileStructureRelationType(String fromFileA,String toFileB,List<String> typeList2){
 		int x=fileList.indexOf(fromFileA);
 		int y=fileList.indexOf(toFileB);
 		if (structureDsmMatrix[x][y] == null) {
@@ -61,8 +59,8 @@ public class GenerateDSM {
 					matrixCell.toString());
 			;
 		}
-		for(String tmp:typeList){
-			structureDsmMatrix[x][y].setCharAt(typeIndexMap.get(tmp), '1');
+		for(String tmp:typeList2){
+			structureDsmMatrix[x][y].setCharAt(this.typeList.indexOf(tmp), '1');
 		}
 	}
 	public void setFileStructureRelationType(String fromFileA,String toFileB, String type){
@@ -71,11 +69,14 @@ public class GenerateDSM {
 		if (structureDsmMatrix[x][y] == null) {
 			structureDsmMatrix[x][y] = new StringBuilder(matrixCell.toString());
 		}
-		structureDsmMatrix[x][y].setCharAt(typeIndexMap.get(type), '1');
+		structureDsmMatrix[x][y].setCharAt(this.typeList.indexOf(type), '1');
 	}
 	public void setFileHistoryRelationCount(String fromFileA,String toFileB,int count){
 		int x=fileList.indexOf(fromFileA);
 		int y=fileList.indexOf(toFileB);
+		if(x==-1||y==-1){
+			return;
+		}
 		historyDsmMatrix[x][y]=count;
 			
 	}
@@ -98,22 +99,24 @@ public class GenerateDSM {
 	}
 	
 	public void write2StructureDSM(String outputPath){
-		for (int m = 0; m < structureDsmMatrix.length; m++) {
-			for (int n = 0; n < structureDsmMatrix[0].length; n++) {
-				if (structureDsmMatrix[m][n] == null) {
-					matrixBuilder.append("0 ");
-				} else {
-					matrixBuilder.append(structureDsmMatrix[m][n].toString() + " ");
-				}
-			}
-			matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
-			matrixBuilder.append("\n");
-		}
 		try {
 			FileOutputStream fos = new FileOutputStream(
 					new File(outputPath));
 			fos.write(typeBuilder.toString().getBytes());
-			fos.write(matrixBuilder.toString().getBytes());
+			for (int m = 0; m < structureDsmMatrix.length; m++) {
+				matrixBuilder=new StringBuilder();
+				for (int n = 0; n < structureDsmMatrix[0].length; n++) {
+					if (structureDsmMatrix[m][n] == null) {
+						matrixBuilder.append("0 ");
+					} else {
+						matrixBuilder.append(structureDsmMatrix[m][n].toString() + " ");
+						structureDsmMatrix[m][n]=null;
+					}
+				}
+				matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
+				matrixBuilder.append("\n");
+				fos.write(matrixBuilder.toString().getBytes());
+			}
 			fos.write(fileListBuilder.toString().getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {
@@ -123,19 +126,20 @@ public class GenerateDSM {
 		}
 	}
 	public void write2HistoryDSM(String outputPath){
-		for (int m = 0; m < historyDsmMatrix.length; m++) {
-			for (int n = 0; n < historyDsmMatrix[0].length; n++) {
-					matrixBuilder.append(String.valueOf(historyDsmMatrix[m][n]) + " ");
-			}
-			matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
-			matrixBuilder.append("\n");
-		}
 		try {
 			FileOutputStream fos = new FileOutputStream(
 					new File(outputPath));
 			String tmp=this.fileList.size()+"\n";
 			fos.write(tmp.getBytes());
-			fos.write(matrixBuilder.toString().getBytes());
+			for (int m = 0; m < historyDsmMatrix.length; m++) {
+				matrixBuilder=new StringBuilder();
+				for (int n = 0; n < historyDsmMatrix[0].length; n++) {
+						matrixBuilder.append(String.valueOf(historyDsmMatrix[m][n]) + " ");
+				}
+				matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
+				matrixBuilder.append("\n");
+				fos.write(matrixBuilder.toString().getBytes());
+			}
 			fos.write(fileListBuilder.toString().getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {
