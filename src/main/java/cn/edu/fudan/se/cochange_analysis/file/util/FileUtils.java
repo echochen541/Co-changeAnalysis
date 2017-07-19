@@ -29,9 +29,8 @@ import java.util.Map.Entry;
  */
 public class FileUtils {
 	public static void main(String[] args) {
-		String text = "src/main/java/org/apache/hadoop/hbase/regionserver/CompactSplitThread.java";
-		System.out.println(FileUtils.parseFilePath(
-				text, "hbase"));
+		String text = "src/main/java/org/apache/hadoop/hbase/regionserver/TestCompactSplitThread.java";
+		System.out.println(FileUtils.isTestFile(text));
 	}
 
 	public static File writeBytesToFile(byte[] bfile, String filePath, String fileName) {
@@ -69,7 +68,7 @@ public class FileUtils {
 			filePath = filePath.replaceFirst("src/java/wicket", "org/apache/wicket");
 			filePath = filePath.replaceFirst("src/main/java/wicket", "org/apache/wicket");
 		}
-		
+
 		if (repositoryName.equals("hbase")) {
 			if (!filePath.contains("org/apache/hadoop/hbase")) {
 				filePath = filePath.replaceFirst("org/apache/hadoop", "org/apache/hadoop/hbase");
@@ -146,5 +145,20 @@ public class FileUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static boolean isTestFile(String filePath) {
+		// path contain test/, tester/, testing/, testng/, tests/, testutils/,
+		// testutil/, testcase/
+		if (filePath.contains("test/") || filePath.contains("tester/") || filePath.contains("testng/")
+				|| filePath.contains("testing/") || filePath.contains("tests/") || filePath.contains("testutils/")
+				|| filePath.contains("testutil/") || filePath.contains("testcase/"))
+			return true;
+
+		String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+		// System.out.println(fileName);
+		if (fileName.contains("Test"))
+			return true;
+		return false;
 	}
 }

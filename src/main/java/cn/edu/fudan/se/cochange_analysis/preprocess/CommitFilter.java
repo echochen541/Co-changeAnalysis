@@ -3,6 +3,7 @@ package cn.edu.fudan.se.cochange_analysis.preprocess;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
@@ -87,11 +88,9 @@ public class CommitFilter {
 		for (GitChangeFile changeFile : changeFiles) {
 			String fileName = changeFile.getFileName();
 			String changeType = changeFile.getChangeType();
-			// java file and non test java file
-			if (changeType.equals("MODIFY") && fileName.endsWith(".java") && !fileName.contains("/test/")
-					&& !fileName.contains("/tester/")) {
+			// java file, type is modify and non test java file
+			if (fileName.endsWith(".java") && changeType.equals("MODIFY") && !FileUtils.isTestFile(fileName))
 				filteredFiles.add(changeFile);
-			}
 		}
 		return filteredFiles;
 	}
