@@ -1,4 +1,4 @@
-package cn.edu.fudan.se.cochange_analysis.file.util;
+package cn.edu.fudan.se.cochange_analysis.dsm;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,9 +23,8 @@ public class GenerateDSM {
 	private StringBuilder matrixCell;
 
 	public GenerateDSM(List<String> mTypeList, List<String> mFileList) {
-
-		Collections.sort(mTypeList);
-		Collections.sort(mFileList);
+		// Collections.sort(mTypeList);
+		// Collections.sort(mFileList);
 		structureDsmMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
 		typeList = mTypeList;
 		fileList = mFileList;
@@ -36,13 +35,11 @@ public class GenerateDSM {
 		for (int i = 0; i < typeList.size(); i++) {
 			matrixCell.append("0");
 		}
-
 		buildString();
 	}
 
 	public GenerateDSM(List<String> mFileList) {
-
-		Collections.sort(mFileList);
+		// Collections.sort(mFileList);
 		historyDsmMatrix = new int[mFileList.size()][mFileList.size()];
 		fileList = mFileList;
 		fileListBuilder = new StringBuilder();
@@ -53,6 +50,7 @@ public class GenerateDSM {
 	}
 
 	public void setFileStructureRelationType(String fromFileA, String toFileB, List<String> typeList2) {
+		// System.out.println(fromFileA + "," + toFileB + "," + typeList2);
 		int x = fileList.indexOf(fromFileA);
 		int y = fileList.indexOf(toFileB);
 		if (structureDsmMatrix[x][y] == null) {
@@ -61,6 +59,7 @@ public class GenerateDSM {
 		for (String tmp : typeList2) {
 			structureDsmMatrix[x][y].setCharAt(this.typeList.indexOf(tmp), '1');
 		}
+		// System.out.println(structureDsmMatrix[x][y]);
 	}
 
 	public void setFileStructureRelationType(String fromFileA, String toFileB, String type) {
@@ -78,8 +77,9 @@ public class GenerateDSM {
 		if (x == -1 || y == -1) {
 			return;
 		}
+		// System.out.println(fileList.get(x) + " , " + fileList.get(y));
 		historyDsmMatrix[x][y] = count;
-
+		// System.out.println(historyDsmMatrix[x][y]);
 	}
 
 	private void buildString() {
@@ -108,7 +108,6 @@ public class GenerateDSM {
 						matrixBuilder.append("0 ");
 					} else {
 						matrixBuilder.append(structureDsmMatrix[m][n].toString() + " ");
-						structureDsmMatrix[m][n] = null;
 					}
 				}
 				matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
@@ -146,5 +145,4 @@ public class GenerateDSM {
 			e.printStackTrace();
 		}
 	}
-
 }
