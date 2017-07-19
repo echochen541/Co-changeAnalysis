@@ -21,73 +21,68 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 
 public class ClusterReportParser {
 	private GitRepository repository;
-	
-	public ClusterReportParser(GitRepository repository){
-		this.repository=repository;
+
+	public ClusterReportParser(GitRepository repository) {
+		this.repository = repository;
 	}
-	
+
 	public static void main(String[] args) {
-		 GitRepository gitRepository = new GitRepository(1, "camel",
-				 "D:/echo/lab/research/co-change/projects/camel/.git");
-		 ClusterReportParser a=new ClusterReportParser(gitRepository);
-		 a.parse("camel_32_20_cluster..clsx","D:\\");
-		 System.out.println("Finished");
-		
-        
-       
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		ClusterReportParser a = new ClusterReportParser(gitRepository);
+		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		a.parse("camel_32_20_cluster..clsx", inputDir);
+		System.out.println("Finished");
 	}
-	public void parse(String fileName,String dir){
+
+	public void parse(String fileName, String dir) {
 		FileInputStream fis;
 		FileOutputStream fos;
-		Stack<String> stack=new Stack<String>();
-		List<String> groupLines=new ArrayList<String>();
+		Stack<String> stack = new Stack<String>();
+		List<String> groupLines = new ArrayList<String>();
 		try {
-			fis = new FileInputStream(new File(dir+File.separator+fileName));
-			fos=new FileOutputStream(new File(dir+File.separator+fileName.split("\\.")[0]+".csv"));
-			Scanner sc=new Scanner(fis);
-			int groupFlag=0;
-			
-			while(sc.hasNextLine()){
-				String line=sc.nextLine();
-				line=line.trim();
-				if(line.startsWith("<cluster")){
-					stack.push(line);continue;
+			fis = new FileInputStream(new File(dir + File.separator + fileName));
+			fos = new FileOutputStream(new File(dir + File.separator + fileName.split("\\.")[0] + ".csv"));
+			Scanner sc = new Scanner(fis);
+			int groupFlag = 0;
+
+			while (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				line = line.trim();
+				if (line.startsWith("<cluster")) {
+					stack.push(line);
+					continue;
 				}
-				if(line.startsWith("<group")){
-					stack.push(line);continue;
+				if (line.startsWith("<group")) {
+					stack.push(line);
+					continue;
 				}
-				if(line.startsWith("</group>")){
+				if (line.startsWith("</group>")) {
 					stack.pop();
-					if(groupFlag!=0){
-						if(groupFlag>1){
-							for(String tmp:groupLines){
-								if(tmp.startsWith("<group")){
-									String res=match(tmp,"group","name")+",\n";
+					if (groupFlag != 0) {
+						if (groupFlag > 1) {
+							for (String tmp : groupLines) {
+								if (tmp.startsWith("<group")) {
+									String res = match(tmp, "group", "name") + ",\n";
 									fos.write(res.getBytes());
-								}else if(tmp.startsWith("<item")){
-									String res=match(tmp,"item","name")+",\n";
+								} else if (tmp.startsWith("<item")) {
+									String res = match(tmp, "item", "name") + ",\n";
 									fos.write(res.getBytes());
 								}
-								
+
 							}
 							fos.write("\n".getBytes());
 						}
 						groupLines.clear();
-						groupFlag=0;
-//						System.out.println(line);
+						groupFlag = 0;
+						// System.out.println(line);
 					}
 					continue;
 				}
-				if(line.startsWith("<item")){
-					String group=stack.peek();
-					if(groupFlag==0){
-						groupLines.add(group);
-//						System.out.println(group);
-						
-					}
+				if (line.startsWith("<item")) {
 					groupFlag++;
 					groupLines.add(line);
-//					System.out.println(line);
+					// System.out.println(line);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -97,18 +92,18 @@ public class ClusterReportParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
+
 	public static String match(String source, String element, String attr) {
-        String result=null;
-        String reg = "<" + element + " " + attr +"="+ "\"(.*)\"";
-        Matcher m = Pattern.compile(reg).matcher(source);
-        while (m.find()) {
-            String r = m.group(1);
-            result=r;
-            return result;
-        }
-        return result;
-    }
+		String result = null;
+		String reg = "<" + element + " " + attr + "=" + "\"(.*)\"";
+		Matcher m = Pattern.compile(reg).matcher(source);
+		while (m.find()) {
+			String r = m.group(1);
+			result = r;
+			return result;
+		}
+		return result;
+	}
 }
