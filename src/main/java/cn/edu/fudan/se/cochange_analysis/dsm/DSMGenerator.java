@@ -8,13 +8,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
@@ -35,14 +44,18 @@ public class DSMGenerator {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		DSMGenerator generator = new DSMGenerator(gitRepository);
-		String inputdir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count-rank";
-		String outputdir = "D:/echo/lab/research/co-change/ICSE-2018/data/dsm";
-		generator.generateTopNRelationTopNFilePairDSM(inputdir, outputdir, 32, 20);
+		String inputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
+		String outputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1, 32, 20);
+		
+		String inputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm";
+		String outputDir2 = inputDir2;
+		generator.generateHotspotDSM(inputDir2, outputDir2);
 	}
 
 	public void generateTopNRelationTopNFilePairDSM(String inputdir, String outputdir, int threshold1, int threshold2) {
-		String repositoryName = gitRepository.getRepositoryName();
-		int repositoryId = gitRepository.getRepositoryId();
+		String gitRepositoryName = gitRepository.getRepositoryName();
+		int gitRepositoryId = gitRepository.getRepositoryId();
 		String intputFileName = inputdir + "/" + gitRepository.getRepositoryName() + "_change-relation-count-rank.csv";
 
 		// get top n relation
@@ -65,7 +78,8 @@ public class DSMGenerator {
 		relationBuilder.append("]\n");
 
 		// get top n file
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId, threshold2);
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(gitRepositoryId,
+				threshold2);
 		List<String> fileList = getTopNFile(filePairCountList);
 		Map<String, Integer> fileIndexMap = new HashMap<String, Integer>();
 		for (int index = 0; index < fileList.size(); index++) {
@@ -78,15 +92,15 @@ public class DSMGenerator {
 		relationBuilder.append("\n");
 
 		StringBuilder[][] dsmMatrix = new StringBuilder[fileList.size()][fileList.size()];
-		int k = 0;
+		// int k = 0;
 		for (FilePairCount filePairCount : filePairCountList) {
 			String filePair = filePairCount.getFilePair();
 			String[] tokens = filePair.split("\\|\\|");
 			String fileName1 = tokens[0];
 			String fileName2 = tokens[1];
 			List<ChangeRelationCount> changeRelationCountList = ChangeRelationCountDAO
-					.selectByRepositoryIdAndFilePair(repositoryId, filePair);
-			System.out.println(++k + " : " + filePair);
+					.selectByRepositoryIdAndFilePair(gitRepositoryId, filePair);
+			// System.out.println(++k + " : " + filePair);
 			for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
 				String changeType1 = changeRelationCount.getChangeType1();
 				String changeType2 = changeRelationCount.getChangeType2();
@@ -141,7 +155,7 @@ public class DSMGenerator {
 		}
 
 		try {
-			String outputPath = outputdir + "/" + repositoryName + "_" + threshold1 + "_" + threshold2 + ".dsm";
+			String outputPath = outputdir + "/" + gitRepositoryName + "_" + threshold1 + "_" + threshold2 + ".dsm";
 			// System.out.println(outputPath);
 			File f = new File(outputPath);
 			if (!f.exists())
@@ -156,11 +170,6 @@ public class DSMGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void generateTopNRelationTopNFilePairDSM2(String inputdir, String outputdir, int threshold1,
-			int threshold2) {
-
 	}
 
 	public List<String> getTopNRelation(String intputFileName, int threshold1) {
@@ -211,5 +220,101 @@ public class DSMGenerator {
 
 	public void setGitRepository(GitRepository gitRepository) {
 		this.gitRepository = gitRepository;
+	}
+
+	private void generateHotspotDSM(String inputDir, String outputDir) {
+		String gitRepositoryName = gitRepository.getRepositoryName();
+
+		String xmlPath = inputDir + "/" + gitRepository.getRepositoryName() + "_FileDependencyCytoscape.xml";
+		File f = new File(xmlPath);
+
+		String[] types = { "Extend", "Typed", "Import", "Call", "Create", "Cast", "Implement", "Set", "Modify", "Use",
+				"Throw" };
+		List<String> typeList = Arrays.asList(types);
+		List<String> fileList = new ArrayList<String>();
+
+		GenerateDSM structureDSM = null;
+		GenerateDSM historyDSM = null;
+
+		HashMap<Integer, String> hm = new HashMap<Integer, String>();
+		SAXReader reader = new SAXReader();
+		Document document;
+		try {
+			document = reader.read(f);
+			Element root = document.getRootElement();
+			List<Element> nodes = root.elements("node");
+			// parse each node tag
+			for (Iterator<Element> it = nodes.iterator(); it.hasNext();) {
+				Element elm = (Element) it.next();
+				int id = Integer.parseInt(elm.attribute("id").getValue());
+				List<Element> children = elm.elements("att");
+				for (Element child : children) {
+					Attribute name = child.attribute("name");
+					if (name.getValue().equals("longName")) {
+						String path = child.attribute("value").getValue();
+						// System.out.println(id + "\t" + parseName(path));
+						if (path.contains("\\test\\") || path.contains("\\tester\\")) {
+							break;
+						}
+						path = path.replace("\\", "/");
+						String parsedName = FileUtils.parseFilePath(path, gitRepositoryName);
+
+						String startsWithStr = "org/apache/";
+						if (gitRepositoryName.equals("hbase")) {
+							startsWithStr += "hadoop/hbase";
+						} else {
+							startsWithStr += gitRepositoryName;
+						}
+						if (!parsedName.startsWith(startsWithStr)) {
+							break;
+						}
+						hm.put(id, parsedName);
+						fileList.add(parsedName);
+					}
+				}
+			}
+			Collections.sort(fileList);
+			System.out.println("FileListSize:" + fileList.size());
+			structureDSM = new GenerateDSM(typeList, fileList);
+
+			nodes = root.elements("edge");
+			for (Iterator<Element> it = nodes.iterator(); it.hasNext();) {
+				Element elm = (Element) it.next();
+
+				int source = Integer.parseInt(elm.attribute("source").getValue());
+				int target = Integer.parseInt(elm.attribute("target").getValue());
+				if (!hm.containsKey(source) || !hm.containsKey(target)) {
+					continue;
+				}
+				List<Element> children = elm.elements("att");
+				for (Element child : children) {
+					Attribute name = child.attribute("name");
+					if (name.getValue().equals("dependency kind")) {
+						String kind = child.attribute("value").getValue();
+						String[] mTypeList = kind.split(", ");
+						List<String> mTypeList2 = Arrays.asList(mTypeList);
+						// System.out.println("source=\"" + source + "\"
+						// target=\"" + target + "\"");
+						structureDSM.setFileStructureRelationType(hm.get(source), hm.get(target), mTypeList2);
+					}
+				}
+			}
+
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		structureDSM.write2StructureDSM(outputDir + "/" + gitRepositoryName + "_sdsm.dsm");
+
+		historyDSM = new GenerateDSM(fileList);
+		int gitRepositoryId = gitRepository.getRepositoryId();
+		List<FilePairCount> dataList = FilePairCountDAO.selectByRepositoryIdAndCount(gitRepositoryId, 0);
+		for (FilePairCount item : dataList) {
+			String[] files = item.getFilePair().split("\\|\\|");
+			// System.out.println(files[0] + " , " + files[1]);
+			historyDSM.setFileHistoryRelationCount(files[0], files[1], item.getCount());
+			historyDSM.setFileHistoryRelationCount(files[1], files[0], item.getCount());
+			// System.out.println();
+		}
+		historyDSM.write2HistoryDSM(outputDir + "/" + gitRepositoryName + "_sdsm-history.dsm");
 	}
 }
