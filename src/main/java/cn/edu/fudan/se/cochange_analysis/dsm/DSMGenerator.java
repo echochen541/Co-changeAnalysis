@@ -47,7 +47,7 @@ public class DSMGenerator {
 		String inputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
 		String outputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
 		generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1, 32, 20);
-		
+
 		String inputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm";
 		String outputDir2 = inputDir2;
 		generator.generateHotspotDSM(inputDir2, outputDir2);
@@ -122,6 +122,16 @@ public class DSMGenerator {
 
 						dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)]
 								.setCharAt(relationIndexMap.get(relationType), '1');
+
+						if (compareResult == 0) {
+							if (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] == null)
+								dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] = new StringBuilder(
+										emptyCell.toString());
+
+							dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
+									.setCharAt(relationIndexMap.get(relationType), '1');
+						}
+
 					}
 				} else {
 					relationType = change2 + "--" + change1;
@@ -156,7 +166,7 @@ public class DSMGenerator {
 
 		try {
 			String outputPath = outputdir + "/" + gitRepositoryName + "_" + threshold1 + "_" + threshold2 + ".dsm";
-			// System.out.println(outputPath);
+			System.out.println(outputPath);
 			File f = new File(outputPath);
 			if (!f.exists())
 				f.createNewFile();

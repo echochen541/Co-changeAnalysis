@@ -218,7 +218,7 @@ public class GitExtractor {
 			// 设置比较器为忽略空白字符对比（Ignores all whitespace）
 			// df.setDiffComparator(RawTextComparator.WS_IGNORE_ALL);
 			df.setRepository(git.getRepository());
-			System.out.println("------------------------------start-----------------------------");
+			// System.out.println("------------------------------start-----------------------------");
 			// 每一个diffEntry都是第个文件版本之间的变动差异
 			for (DiffEntry diffEntry : diff) {
 				String newPath = diffEntry.getNewPath();
@@ -250,10 +250,10 @@ public class GitExtractor {
 							addSize += edit.getEndB() - edit.getBeginB();
 						}
 					}
-					System.out.println(fileName);
-					System.out.println("addSize=" + addSize);
-					System.out.println("subSize=" + subSize);
-					System.out.println("------------------------------end-----------------------------");
+					// System.out.println(fileName);
+					// System.out.println("addSize=" + addSize);
+					// System.out.println("subSize=" + subSize);
+					// System.out.println("------------------------------end-----------------------------");
 					file2Loc.put(fileName, addSize + subSize);
 					out.reset();
 				}
