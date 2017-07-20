@@ -30,7 +30,7 @@ public class ClusterReportParser {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ClusterReportParser a = new ClusterReportParser(gitRepository);
-		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		String inputDir = "E:\\2017-07-20\\data\\cluster";
 		a.parse("camel_32_20_cluster..clsx", inputDir);
 		System.out.println("Finished");
 	}
@@ -40,6 +40,7 @@ public class ClusterReportParser {
 		FileOutputStream fos;
 		Stack<String> stack = new Stack<String>();
 		List<String> groupLines = new ArrayList<String>();
+		int counter=0;
 		try {
 			fis = new FileInputStream(new File(dir + File.separator + fileName));
 			fos = new FileOutputStream(new File(dir + File.separator + fileName.split("\\.")[0] + ".csv"));
@@ -60,13 +61,16 @@ public class ClusterReportParser {
 				if (line.startsWith("</group>")) {
 					stack.pop();
 					if (groupFlag != 0) {
-						if (groupFlag > 1) {
+						if (groupFlag >= 1) {
 							for (String tmp : groupLines) {
 								if (tmp.startsWith("<group")) {
 									String res = match(tmp, "group", "name") + ",\n";
 									fos.write(res.getBytes());
 								} else if (tmp.startsWith("<item")) {
+									counter++;
+									String s = counter+",";
 									String res = match(tmp, "item", "name") + ",\n";
+									fos.write(s.getBytes());
 									fos.write(res.getBytes());
 								}
 
