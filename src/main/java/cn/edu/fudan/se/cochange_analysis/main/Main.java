@@ -23,7 +23,7 @@ public class Main {
 		ChangeRelationExtractor changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		String outputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
-		changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		BugExtractor extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
@@ -39,12 +39,12 @@ public class Main {
 		filePairExtractor = new FilePairExtractor(gitRepository);
 		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
+		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
@@ -56,12 +56,12 @@ public class Main {
 		filePairExtractor = new FilePairExtractor(gitRepository);
 		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
+		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
@@ -73,12 +73,12 @@ public class Main {
 		filePairExtractor = new FilePairExtractor(gitRepository);
 		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
+		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
@@ -90,12 +90,12 @@ public class Main {
 		filePairExtractor = new FilePairExtractor(gitRepository);
 		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
+		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
@@ -107,16 +107,16 @@ public class Main {
 		filePairExtractor = new FilePairExtractor(gitRepository);
 		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
-		changeExtractor.extracChange();
+		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
-		changeRelationExtractor.rankChangeRelationCount(outputDir1);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
+		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
 
-		FileUtils.analyzeChangeRelationOverlap(outputDir1);
+		// FileUtils.analyzeChangeRelationOverlap(outputDir1);
 	}
 }
