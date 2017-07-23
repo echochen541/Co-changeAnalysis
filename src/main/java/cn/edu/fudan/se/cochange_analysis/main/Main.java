@@ -29,7 +29,7 @@ public class Main {
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
 		String outputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
 		DSMGenerator generator = new DSMGenerator(gitRepository);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 
@@ -47,7 +47,7 @@ public class Main {
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 
@@ -65,7 +65,7 @@ public class Main {
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 
@@ -83,7 +83,7 @@ public class Main {
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 
@@ -101,7 +101,7 @@ public class Main {
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 
@@ -119,7 +119,7 @@ public class Main {
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
+		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 

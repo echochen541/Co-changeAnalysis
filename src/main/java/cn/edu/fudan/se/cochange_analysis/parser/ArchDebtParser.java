@@ -21,14 +21,48 @@ public class ArchDebtParser {
 		this.repository = repository;
 	}
 
-	public static void main(String args[]){
+	public static void main(String args[]) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
-		ArchDebtParser a = new ArchDebtParser(gitRepository);
-		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-camel_sdsm";
-		a.parse("ArchIssues.txt", inputDir);
-		System.out.println("Finished");
+		ArchDebtParser parser = new ArchDebtParser(gitRepository);
+		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
+				+ gitRepository.getRepositoryName() + "_sdsm";
+		parser.parse("ArchIssues.txt", inputDir);
+
+		gitRepository = new GitRepository(2, "cassandra",
+				"D:/echo/lab/research/co-change/projects/cassandra/.git");
+		parser = new ArchDebtParser(gitRepository);
+		inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
+				+ gitRepository.getRepositoryName() + "_sdsm";
+		parser.parse("ArchIssues.txt", inputDir);
 		
+		gitRepository = new GitRepository(3, "cxf",
+				"D:/echo/lab/research/co-change/projects/cxf/.git");
+		parser = new ArchDebtParser(gitRepository);
+		inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
+				+ gitRepository.getRepositoryName() + "_sdsm";
+		parser.parse("ArchIssues.txt", inputDir);
+		
+		gitRepository = new GitRepository(4, "hadoop",
+				"D:/echo/lab/research/co-change/projects/hadoop/.git");
+		parser = new ArchDebtParser(gitRepository);
+		inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
+				+ gitRepository.getRepositoryName() + "_sdsm";
+		parser.parse("ArchIssues.txt", inputDir);
+		
+		gitRepository = new GitRepository(5, "hbase",
+				"D:/echo/lab/research/co-change/projects/hbase/.git");
+		parser = new ArchDebtParser(gitRepository);
+		inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
+				+ gitRepository.getRepositoryName() + "_sdsm";
+		parser.parse("ArchIssues.txt", inputDir);
+		
+		gitRepository = new GitRepository(6, "wicket",
+				"D:/echo/lab/research/co-change/projects/wicket/.git");
+		parser = new ArchDebtParser(gitRepository);
+		inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
+				+ gitRepository.getRepositoryName() + "_sdsm";
+		parser.parse("ArchIssues.txt", inputDir);
 	}
 
 	public void parse(String fileName, String dir) {
@@ -44,12 +78,12 @@ public class ArchDebtParser {
 					continue;
 				}
 				if (line.startsWith("<")) {
-					String archIssueName=match(line)+"\n";
+					String archIssueName = match(line) + "\n";
 					fos.write(archIssueName.getBytes());
 					continue;
 				}
-				
-				String excelLine=line.replace(' ', ',')+",\n";
+
+				String excelLine = line.replace(' ', ',') + ",\n";
 				fos.write(excelLine.getBytes());
 			}
 		} catch (FileNotFoundException e) {
