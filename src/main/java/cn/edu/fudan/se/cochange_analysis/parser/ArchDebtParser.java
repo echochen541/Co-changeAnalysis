@@ -25,7 +25,7 @@ public class ArchDebtParser {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ArchDebtParser a = new ArchDebtParser(gitRepository);
-		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-camel_sdsm";
+		String inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-camel_sdsm";
 		a.parse("ArchIssues.txt", inputDir);
 		 inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-cassandra_sdsm";
 		a.parse("ArchIssues.txt", inputDir);
@@ -48,14 +48,24 @@ public class ArchDebtParser {
 			fis = new FileInputStream(new File(dir + File.separator + fileName));
 			fos = new FileOutputStream(new File(dir + File.separator + fileName.split("\\.")[0] + ".csv"));
 			Scanner sc = new Scanner(fis);
+			int flag=0;
+			String archIssueName=null;
 			while (sc.hasNextLine()) {
+				
 				String line = sc.nextLine();
 				if (line.startsWith("</")) {
+					if (line.startsWith("</"+archIssueName.trim())){
+						flag=0;
+					}
 					continue;
 				}
 				if (line.startsWith("<")) {
-					String archIssueName=match(line)+"\n";
+					if(flag==1){
+						continue;
+					}
+					archIssueName=match(line)+"\n";
 					fos.write(archIssueName.getBytes());
+					flag=1;
 					continue;
 				}
 				
@@ -72,14 +82,10 @@ public class ArchDebtParser {
 
 	public static String match(String source) {
 		String result = null;
-		String reg = "<(.*) name=";
-		Matcher m = Pattern.compile(reg).matcher(source);
-		while (m.find()) {
-			String r = m.group(1);
-			result = r;
-			return result;
-		}
-		return result;
+		String[] tmp=source.split(" ");
+		result=tmp[0].replace('<', ' ');
+		result=result.replace('>', ' ');
+		return result.trim();
 	}
 
 }
