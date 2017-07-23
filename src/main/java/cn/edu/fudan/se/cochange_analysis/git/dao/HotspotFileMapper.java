@@ -1,5 +1,8 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.HotspotFile;
 
 public interface HotspotFileMapper {
@@ -50,4 +53,6 @@ public interface HotspotFileMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(HotspotFile record);
+    
+    int insertBatch(List<HotspotFile> hotspotFiles);
 }
