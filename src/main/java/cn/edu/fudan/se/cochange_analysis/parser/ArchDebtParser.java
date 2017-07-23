@@ -30,6 +30,16 @@ public class ArchDebtParser {
 		ArchDebtParser a = new ArchDebtParser(gitRepository);
 		String inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-camel_sdsm";
 		a.parse("ArchIssues.txt", inputDir);
+		 inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-cassandra_sdsm";
+		a.parse("ArchIssues.txt", inputDir);
+		 inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-cxf_sdsm";
+		a.parse("ArchIssues.txt", inputDir);
+		 inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-hadoop_sdsm";
+		a.parse("ArchIssues.txt", inputDir);
+		 inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-hbase_sdsm";
+		a.parse("ArchIssues.txt", inputDir);
+		 inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-wicket_sdsm";
+		a.parse("ArchIssues.txt", inputDir);
 		System.out.println("Finished");
 		
 	}
