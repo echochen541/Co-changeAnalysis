@@ -127,7 +127,7 @@
   
   
   <insert id="insertBatch" useGeneratedKeys="true" parameterType="java.util.List">
-		insert into hotspot_file (hotspot_id, repository_id, type, file_name, release)
+		insert into hotspot_file (hotspot_id, repository_id, type, file_name, `release`)
 		values
 		<foreach collection="list" item="item" index="index"
 			separator=",">
@@ -136,7 +136,7 @@
 			#{item.repositoryId,jdbcType=INTEGER},
 			#{item.type,jdbcType=VARCHAR},
 			#{item.fileName,jdbcType=VARCHAR}, 
-			#{item.release,jdbcType=VARCHAR},
+			#{item.release,jdbcType=VARCHAR}
 			)
 		</foreach>
 	</insert>
