@@ -30,24 +30,14 @@ public class ClusterReportParser {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ClusterReportParser a = new ClusterReportParser(gitRepository);
-		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
-		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		String inputDir = "E:\\2017-7-21\\";
+//		a.parse("camel_32_20_cluster..clsx", inputDir);
+//		a.parse("cassandra_32_20_cluster..clsx", inputDir);
+//		a.parse("cxf_32_20_cluster..clsx", inputDir);
+		a.parse("hadoop-cluster..clsx", inputDir);
 		
-		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
-		
-		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
-		
-		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
-		
-		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
-		
-		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
-		
+		a.parse("hbase-cluster..clsx", inputDir);
+		a.parse("wicket-cluster..clsx", inputDir);
 		System.out.println("Finished");
 	}
 
