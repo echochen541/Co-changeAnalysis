@@ -46,7 +46,7 @@ public class ClusterReportParser {
 		FileOutputStream fos;
 		Stack<String> stack = new Stack<String>();
 		List<String> groupLines = new ArrayList<String>();
-		int counter=0;
+		int counter = 0;
 		try {
 			fis = new FileInputStream(new File(dir + File.separator + fileName));
 			fos = new FileOutputStream(new File(dir + File.separator + fileName.split("\\.")[0] + ".csv"));
@@ -74,7 +74,7 @@ public class ClusterReportParser {
 									fos.write(res.getBytes());
 								} else if (tmp.startsWith("<item")) {
 									counter++;
-									String s = counter+",";
+									String s = counter + ",";
 									String res = match(tmp, "item", "name") + ",\n";
 									fos.write(s.getBytes());
 									fos.write(res.getBytes());
