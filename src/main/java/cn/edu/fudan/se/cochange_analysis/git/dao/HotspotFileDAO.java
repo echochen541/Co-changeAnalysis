@@ -10,33 +10,26 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
+import cn.edu.fudan.se.cochange_analysis.git.bean.HotspotFile;
 
-public class ChangeRelationCommitDAO {
+public class HotspotFileDAO {
 	private static SqlSessionFactory sessionFactory;
 	private static Reader reader;
 	private static SqlSession sqlSession;
-	private static ChangeRelationCommitMapper changeRelationCommitMapper;
+	private static HotspotFileMapper hotspotFileMapper;
 
 	static {
 		try {
 			reader = Resources.getResourceAsReader("mybatis-config.xml");
 			sessionFactory = new SqlSessionFactoryBuilder().build(reader);
 			sqlSession = sessionFactory.openSession();
-			changeRelationCommitMapper = sqlSession.getMapper(ChangeRelationCommitMapper.class);
+			hotspotFileMapper = sqlSession.getMapper(HotspotFileMapper.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	public static void insertChangeRelationCommit(ChangeRelationCommit commit) {
-		changeRelationCommitMapper.insert(commit);
-		sqlSession.commit();
-	}
-	public static List<ChangeRelationCommit> selectAllChangeRelationCommit(int repoId){
-		return changeRelationCommitMapper.selectByRepoId(repoId);
-	}
-	public static void insertBatch(List<ChangeRelationCommit> changeRelationCommits) {
-		changeRelationCommitMapper.insertBatch(changeRelationCommits);
+	public static void insertBatch(List<HotspotFile> hotspotFile) {
+		hotspotFileMapper.insertBatch(hotspotFile);
 		sqlSession.commit();
 	}
 }

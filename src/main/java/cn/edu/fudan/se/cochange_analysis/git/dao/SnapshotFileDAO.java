@@ -9,34 +9,29 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
+import cn.edu.fudan.se.cochange_analysis.git.bean.HotspotFile;
+import cn.edu.fudan.se.cochange_analysis.git.bean.SnapshotFile;
 
-public class ChangeRelationCommitDAO {
+public class SnapshotFileDAO {
 	private static SqlSessionFactory sessionFactory;
 	private static Reader reader;
 	private static SqlSession sqlSession;
-	private static ChangeRelationCommitMapper changeRelationCommitMapper;
+	private static SnapshotFileMapper snapshotFileMapper;
 
 	static {
 		try {
 			reader = Resources.getResourceAsReader("mybatis-config.xml");
 			sessionFactory = new SqlSessionFactoryBuilder().build(reader);
 			sqlSession = sessionFactory.openSession();
-			changeRelationCommitMapper = sqlSession.getMapper(ChangeRelationCommitMapper.class);
+			snapshotFileMapper = sqlSession.getMapper(SnapshotFileMapper.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void insertBatch(List<SnapshotFile> snapshotFile) {
+		snapshotFileMapper.insertBatch(snapshotFile);
+		sqlSession.commit();
+	}
 
-	public static void insertChangeRelationCommit(ChangeRelationCommit commit) {
-		changeRelationCommitMapper.insert(commit);
-		sqlSession.commit();
-	}
-	public static List<ChangeRelationCommit> selectAllChangeRelationCommit(int repoId){
-		return changeRelationCommitMapper.selectByRepoId(repoId);
-	}
-	public static void insertBatch(List<ChangeRelationCommit> changeRelationCommits) {
-		changeRelationCommitMapper.insertBatch(changeRelationCommits);
-		sqlSession.commit();
-	}
 }
