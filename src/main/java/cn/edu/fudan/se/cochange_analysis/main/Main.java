@@ -30,7 +30,8 @@ public class Main {
 		String outputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
 		DSMGenerator generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 10);
 
 		System.out.println(2);
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
@@ -47,7 +48,8 @@ public class Main {
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 10);
 
 		System.out.println(3);
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
@@ -64,7 +66,8 @@ public class Main {
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 10);
 
 		System.out.println(4);
 		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
@@ -81,7 +84,8 @@ public class Main {
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 10);
 
 		System.out.println(5);
 		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
@@ -98,7 +102,8 @@ public class Main {
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 10);
 
 		System.out.println(6);
 		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
@@ -115,7 +120,8 @@ public class Main {
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
 		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 20);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 10);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 10);
 
 		// FileUtils.analyzeChangeRelationOverlap(outputDir1);
 	}

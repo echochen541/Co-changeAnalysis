@@ -30,8 +30,24 @@ public class ClusterReportParser {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ClusterReportParser a = new ClusterReportParser(gitRepository);
-		String inputDir = "E:\\2017-07-20\\data\\cluster";
-		a.parse("camel_32_20_cluster..clsx", inputDir);
+		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		
+		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
+		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		
+		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
+		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		
+		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		
+		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
+		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		
+		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
+		a.parse(gitRepository.getRepositoryName() + "_cluster..clsx", inputDir);
+		
 		System.out.println("Finished");
 	}
 
@@ -40,7 +56,7 @@ public class ClusterReportParser {
 		FileOutputStream fos;
 		Stack<String> stack = new Stack<String>();
 		List<String> groupLines = new ArrayList<String>();
-		int counter=0;
+		int counter = 0;
 		try {
 			fis = new FileInputStream(new File(dir + File.separator + fileName));
 			fos = new FileOutputStream(new File(dir + File.separator + fileName.split("\\.")[0] + ".csv"));
@@ -68,7 +84,7 @@ public class ClusterReportParser {
 									fos.write(res.getBytes());
 								} else if (tmp.startsWith("<item")) {
 									counter++;
-									String s = counter+",";
+									String s = counter + ",";
 									String res = match(tmp, "item", "name") + ",\n";
 									fos.write(s.getBytes());
 									fos.write(res.getBytes());

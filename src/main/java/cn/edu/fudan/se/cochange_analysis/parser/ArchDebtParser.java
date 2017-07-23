@@ -20,15 +20,12 @@ public class ArchDebtParser {
 	public ArchDebtParser(GitRepository repository) {
 		this.repository = repository;
 	}
-	
-	
-	
-	
+
 	public static void main(String args[]){
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ArchDebtParser a = new ArchDebtParser(gitRepository);
-		String inputDir = "E:\\2017-07-20\\data\\hotspot\\archIssues-camel_sdsm";
+		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-camel_sdsm";
 		a.parse("ArchIssues.txt", inputDir);
 		System.out.println("Finished");
 		

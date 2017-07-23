@@ -123,14 +123,17 @@ public class DSMGenerator {
 						dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)]
 								.setCharAt(relationIndexMap.get(relationType), '1');
 
-						if (compareResult == 0) {
-							if (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] == null)
-								dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] = new StringBuilder(
-										emptyCell.toString());
+						// if (compareResult == 0) {
+						// if
+						// (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
+						// == null)
+						// dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
+						// = new StringBuilder(
+						// emptyCell.toString());
 
-							dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
-									.setCharAt(relationIndexMap.get(relationType), '1');
-						}
+						// dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
+						// .setCharAt(relationIndexMap.get(relationType), '1');
+						// }
 
 					}
 				} else {
@@ -263,9 +266,11 @@ public class DSMGenerator {
 					if (name.getValue().equals("longName")) {
 						String path = child.attribute("value").getValue();
 						// System.out.println(id + "\t" + parseName(path));
-						if (path.contains("\\test\\") || path.contains("\\tester\\")) {
+
+						if (FileUtils.isTestFile(path)) {
 							break;
 						}
+
 						path = path.replace("\\", "/");
 						String parsedName = FileUtils.parseFilePath(path, gitRepositoryName);
 
