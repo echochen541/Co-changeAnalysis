@@ -43,38 +43,38 @@ public class LoadFileDependencyFileToDb {
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		LoadFileDependencyFileToDb a = new LoadFileDependencyFileToDb(gitRepository,"2.19.1");
 		String inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
+//		a.parse(inputDir);
+//		System.out.println(a.repository.getRepositoryName()+" finished");
+		
+		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
+		 a = new LoadFileDependencyFileToDb(gitRepository,"3.11.0");
+		 inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
 		a.parse(inputDir);
 		System.out.println(a.repository.getRepositoryName()+" finished");
 		
-//		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-//		 a = new LoadFileDependencyFileToDb(gitRepository,"3.11.0");
-//		 inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
-//		a.parse(inputDir);
-//		System.out.println(a.repository.getRepositoryName()+" finished");
-//		
-//		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-//		a = new LoadFileDependencyFileToDb(gitRepository,"3.1.11");
-//		inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
-//		a.parse(inputDir);
-//		System.out.println(a.repository.getRepositoryName()+" finished");
-//		
-//		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-//		 a = new LoadFileDependencyFileToDb(gitRepository,"YARN-5355-branch-2-2017-04-25");
-//		 inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
-//		a.parse(inputDir);
-//		System.out.println(a.repository.getRepositoryName()+" finished");
-//		
-//		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-//		 a = new LoadFileDependencyFileToDb(gitRepository,"release-0.18.0");
-//		 inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
-//		a.parse(inputDir);
-//		System.out.println(a.repository.getRepositoryName()+" finished");
-//		
-//		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-//		a = new LoadFileDependencyFileToDb(gitRepository,"wicket_1_2_b2_before_charsequence");
-//		inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
-//		a.parse(inputDir);
-//		System.out.println(a.repository.getRepositoryName()+" finished");
+		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
+		a = new LoadFileDependencyFileToDb(gitRepository,"3.1.11");
+		inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
+		a.parse(inputDir);
+		System.out.println(a.repository.getRepositoryName()+" finished");
+		
+		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		 a = new LoadFileDependencyFileToDb(gitRepository,"YARN-5355-branch-2-2017-04-25");
+		 inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
+		a.parse(inputDir);
+		System.out.println(a.repository.getRepositoryName()+" finished");
+		
+		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
+		 a = new LoadFileDependencyFileToDb(gitRepository,"release-0.18.0");
+		 inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
+		a.parse(inputDir);
+		System.out.println(a.repository.getRepositoryName()+" finished");
+		
+		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
+		a = new LoadFileDependencyFileToDb(gitRepository,"wicket_1_2_b2_before_charsequence");
+		inputDir = "D:\\Workspace\\co-change summer\\understand\\"+a.repository.getRepositoryName();
+		a.parse(inputDir);
+		System.out.println(a.repository.getRepositoryName()+" finished");
 	}
 
 
