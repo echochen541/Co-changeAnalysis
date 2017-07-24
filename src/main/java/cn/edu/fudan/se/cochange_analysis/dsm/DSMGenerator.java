@@ -45,13 +45,46 @@ public class DSMGenerator {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		DSMGenerator generator = new DSMGenerator(gitRepository);
-		String inputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
-		String outputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
-		generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1, 32, 20);
-
+		// String inputDir1 =
+		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
+		// String outputDir1 =
+		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
+		// 32, 20);
 		String inputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm";
 		String outputDir2 = inputDir2;
 		generator.generateHotspotDSM(inputDir2, outputDir2);
+
+		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
+		generator = new DSMGenerator(gitRepository);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
+		// 32, 20);
+		generator.generateHotspotDSM(inputDir2, outputDir2);
+
+		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
+		generator = new DSMGenerator(gitRepository);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
+		// 32, 20);
+		generator.generateHotspotDSM(inputDir2, outputDir2);
+
+		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		generator = new DSMGenerator(gitRepository);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
+		// 32, 20);
+		generator.generateHotspotDSM(inputDir2, outputDir2);
+
+		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
+		generator = new DSMGenerator(gitRepository);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
+		// 32, 20);
+		generator.generateHotspotDSM(inputDir2, outputDir2);
+
+		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
+		generator = new DSMGenerator(gitRepository);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
+		// 32, 20);
+		generator.generateHotspotDSM(inputDir2, outputDir2);
+
 	}
 
 	public void generateTopNRelationTopNFilePairDSM(String inputdir, String outputdir, int threshold1, int threshold2) {
@@ -231,10 +264,11 @@ public class DSMGenerator {
 	}
 
 	public List<String> getSnapshotFile(String release) {
-		List<String> fileList = SnapshotFileDAO.selectFileByRepositoryIdAndRelease(gitRepository.getRepositoryId(), release);
+		List<String> fileList = SnapshotFileDAO.selectFileByRepositoryIdAndRelease(gitRepository.getRepositoryId(),
+				release);
 		return fileList;
 	}
-	
+
 	public GitRepository getGitRepository() {
 		return gitRepository;
 	}

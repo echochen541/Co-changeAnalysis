@@ -76,13 +76,12 @@
 			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
 			selectByExampleQueryId="false"></table> <table tableName="bug_fix_file" domainObjectName="BugFixFile" 
 			enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" 
-			enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
+			enableSelectByExample="false" selectByExampleQueryId="false"></table> <table 
+			tableName="snapshot_file" domainObjectName="SnapshotFile" enableCountByExample="false" 
+			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"></table> -->
 
 		<table tableName="hotspot_file" domainObjectName="HotspotFile"
-			enableCountByExample="false" enableUpdateByExample="false"
-			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false"></table>
-		<table tableName="snapshot_file" domainObjectName="SnapshotFile"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>

@@ -9,7 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.HotspotFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.SnapshotFile;
 
 public class SnapshotFileDAO {
