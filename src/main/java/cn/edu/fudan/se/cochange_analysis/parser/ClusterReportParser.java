@@ -30,14 +30,14 @@ public class ClusterReportParser {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ClusterReportParser a = new ClusterReportParser(gitRepository);
-		String inputDir = "E:\\2017-7-21\\";
-//		a.parse("camel_32_20_cluster..clsx", inputDir);
-//		a.parse("cassandra_32_20_cluster..clsx", inputDir);
-//		a.parse("cxf_32_20_cluster..clsx", inputDir);
-		a.parse("hadoop-cluster..clsx", inputDir);
-		
-		a.parse("hbase-cluster..clsx", inputDir);
-		a.parse("wicket-cluster..clsx", inputDir);
+		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
+		a.parse("camel_cluster..clsx", inputDir);
+		a.parse("cassandra_cluster..clsx", inputDir);
+		a.parse("cxf_cluster..clsx", inputDir);
+		a.parse("hadoop_cluster..clsx", inputDir);
+
+		a.parse("hbase_cluster..clsx", inputDir);
+		a.parse("wicket_cluster..clsx", inputDir);
 		System.out.println("Finished");
 	}
 
@@ -52,7 +52,7 @@ public class ClusterReportParser {
 			fos = new FileOutputStream(new File(dir + File.separator + fileName.split("\\.")[0] + ".csv"));
 			Scanner sc = new Scanner(fis);
 			int groupFlag = 0;
-
+			String groupName = null;
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				line = line.trim();
@@ -62,6 +62,7 @@ public class ClusterReportParser {
 				}
 				if (line.startsWith("<group")) {
 					stack.push(line);
+					groupName = match(line, "group", "name");
 					continue;
 				}
 				if (line.startsWith("</group>")) {
@@ -69,10 +70,7 @@ public class ClusterReportParser {
 					if (groupFlag != 0) {
 						if (groupFlag >= 1) {
 							for (String tmp : groupLines) {
-								if (tmp.startsWith("<group")) {
-									String res = match(tmp, "group", "name") + ",\n";
-									fos.write(res.getBytes());
-								} else if (tmp.startsWith("<item")) {
+								if (tmp.startsWith("<item")) {
 									counter++;
 									String s = counter + ",";
 									String res = match(tmp, "item", "name") + ",\n";
@@ -90,6 +88,9 @@ public class ClusterReportParser {
 					continue;
 				}
 				if (line.startsWith("<item")) {
+					if (groupName.equals("I0")) {
+						continue;
+					}
 					groupFlag++;
 					groupLines.add(line);
 					// System.out.println(line);
@@ -116,5 +117,5 @@ public class ClusterReportParser {
 		}
 		return result;
 	}
-	
+
 }

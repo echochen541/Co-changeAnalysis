@@ -187,11 +187,6 @@ public class DSMGenerator {
 		}
 	}
 
-	private List<FilePairCount> filterBySnapshot(List<FilePairCount> filePairCountList, String release) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public List<String> getTopNRelation(String intputFileName, int threshold1) {
 		List<String> relationList = new ArrayList<String>();
 		FileInputStream fis = null;
