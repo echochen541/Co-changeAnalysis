@@ -80,7 +80,9 @@ public class DSMGenerator {
 		// get top n file
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(gitRepositoryId,
 				threshold2);
+
 		List<String> fileList = getTopNFile(filePairCountList);
+
 		Map<String, Integer> fileIndexMap = new HashMap<String, Integer>();
 		for (int index = 0; index < fileList.size(); index++) {
 			fileIndexMap.put(fileList.get(index), index);

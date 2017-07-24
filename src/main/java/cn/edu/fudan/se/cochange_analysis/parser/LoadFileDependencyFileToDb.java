@@ -42,19 +42,18 @@ public class LoadFileDependencyFileToDb {
 	public static void main(String[] args) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
-
-		LoadFileDependencyFileToDb a = new LoadFileDependencyFileToDb(gitRepository, "2.19.1");
+		LoadFileDependencyFileToDb a = new LoadFileDependencyFileToDb(gitRepository, "camel-2.19.1");
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm";
 		a.parse(inputDir);
 		System.out.println(a.repository.getRepositoryName() + " finished");
 
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		a = new LoadFileDependencyFileToDb(gitRepository, "3.11.0");
+		a = new LoadFileDependencyFileToDb(gitRepository, "cassandra-3.11.0");
 		a.parse(inputDir);
 		System.out.println(a.repository.getRepositoryName() + " finished");
 
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		a = new LoadFileDependencyFileToDb(gitRepository, "3.1.11");
+		a = new LoadFileDependencyFileToDb(gitRepository, "cxf-3.1.11");
 		a.parse(inputDir);
 		System.out.println(a.repository.getRepositoryName() + " finished");
 
@@ -96,9 +95,8 @@ public class LoadFileDependencyFileToDb {
 						String path = child.attribute("value").getValue();
 						path = path.replace("\\", "/");
 
-						if (FileUtils.isTestFile(path)) {
+						if (FileUtils.isTestFile(path))
 							break;
-						}
 
 						String parsedName = FileUtils.parseFilePath(path, gitRepositoryName);
 						String startsWithStr = "org/apache/";
@@ -107,9 +105,9 @@ public class LoadFileDependencyFileToDb {
 						} else {
 							startsWithStr += gitRepositoryName;
 						}
-						if (!parsedName.startsWith(startsWithStr)) {
+						if (!parsedName.startsWith(startsWithStr))
 							break;
-						}
+
 						fileList.add(parsedName);
 					}
 				}
