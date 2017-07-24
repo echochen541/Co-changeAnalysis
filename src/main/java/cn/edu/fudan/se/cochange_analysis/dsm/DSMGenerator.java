@@ -267,11 +267,12 @@ public class DSMGenerator {
 						String path = child.attribute("value").getValue();
 						// System.out.println(id + "\t" + parseName(path));
 
+						path = path.replace("\\", "/");
+
 						if (FileUtils.isTestFile(path)) {
 							break;
 						}
 
-						path = path.replace("\\", "/");
 						String parsedName = FileUtils.parseFilePath(path, gitRepositoryName);
 
 						String startsWithStr = "org/apache/";

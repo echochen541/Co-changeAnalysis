@@ -39,5 +39,4 @@ public class ChangeRelationCommitDAO {
 		changeRelationCommitMapper.insertBatch(changeRelationCommits);
 		sqlSession.commit();
 	}
-
 }

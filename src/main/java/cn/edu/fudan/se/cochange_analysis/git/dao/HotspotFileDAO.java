@@ -32,6 +32,4 @@ public class HotspotFileDAO {
 		hotspotFileMapper.insertBatch(hotspotFile);
 		sqlSession.commit();
 	}
-
-
 }
