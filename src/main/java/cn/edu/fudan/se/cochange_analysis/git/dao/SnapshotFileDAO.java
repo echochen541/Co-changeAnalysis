@@ -37,5 +37,4 @@ public class SnapshotFileDAO {
 	public static List<String> selectFileByRepositoryIdAndRelease(Integer repositoryId, String release) {
 		return snapshotFileMapper.selectFileByRepositoryIdAndRelease(repositoryId, release);
 	}
-
 }

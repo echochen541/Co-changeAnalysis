@@ -29,6 +29,7 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.SnapshotFileDAO;
 
 public class DSMGenerator {
 	private GitRepository gitRepository;
@@ -229,6 +230,11 @@ public class DSMGenerator {
 		return fileList;
 	}
 
+	public List<String> getSnapshotFile(String release) {
+		List<String> fileList = SnapshotFileDAO.selectFileByRepositoryIdAndRelease(gitRepository.getRepositoryId(), release);
+		return fileList;
+	}
+	
 	public GitRepository getGitRepository() {
 		return gitRepository;
 	}

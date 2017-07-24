@@ -62,4 +62,9 @@
 			)
 		</foreach>
 	</insert>
+	
+	<select id = "selectFileByRepositoryIdAndRelease" resultType="java.lang.String">
+		select file_name from snapshot_file where repository_id = #{repositoryId, jdbcType=VARCHAR} and `release` = #{release, jdbcType=VARCHAR} 
+	</select>
+	
 </mapper>
