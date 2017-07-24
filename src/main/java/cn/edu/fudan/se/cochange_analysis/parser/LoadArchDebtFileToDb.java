@@ -24,18 +24,18 @@ public class LoadArchDebtFileToDb {
 	public static void main(String args[]) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
-		LoadArchDebtFileToDb parser = new LoadArchDebtFileToDb(gitRepository, "2.19.1");
+		LoadArchDebtFileToDb parser = new LoadArchDebtFileToDb(gitRepository, "camel-2.19.1");
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm/archIssues-"
 				+ gitRepository.getRepositoryName() + "_sdsm";
 		parser.parse("ArchIssues.txt", inputDir);
 
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		parser = new LoadArchDebtFileToDb(gitRepository, "3.11.0");
+		parser = new LoadArchDebtFileToDb(gitRepository, "cassandra-3.11.0");
 		inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm/archIssues-"
 				+ gitRepository.getRepositoryName() + "_sdsm";
 		parser.parse("ArchIssues.txt", inputDir);
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		parser = new LoadArchDebtFileToDb(gitRepository, "3.1.11");
+		parser = new LoadArchDebtFileToDb(gitRepository, "cxf-3.1.11");
 		inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm/archIssues-"
 				+ gitRepository.getRepositoryName() + "_sdsm";
 		parser.parse("ArchIssues.txt", inputDir);

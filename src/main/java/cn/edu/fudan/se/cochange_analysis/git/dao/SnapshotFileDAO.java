@@ -34,4 +34,8 @@ public class SnapshotFileDAO {
 		sqlSession.commit();
 	}
 
+	public static List<String> selectFileByRepositoryIdAndRelease(Integer repositoryId, String release) {
+		return snapshotFileMapper.selectFileByRepositoryIdAndRelease(repositoryId, release);
+	}
+
 }
