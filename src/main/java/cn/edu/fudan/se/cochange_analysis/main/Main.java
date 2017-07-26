@@ -1,5 +1,7 @@
 package cn.edu.fudan.se.cochange_analysis.main;
 
+import java.util.List;
+
 import cn.edu.fudan.se.cochange_analysis.dsm.DSMGenerator;
 import cn.edu.fudan.se.cochange_analysis.extractor.BugExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.ChangeExtractor;
@@ -29,6 +31,8 @@ public class Main {
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
 		String outputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
 		DSMGenerator generator = new DSMGenerator(gitRepository);
+		// List<String> fileList = generator.getSnapshotFile("camel-2.19.1");
+		// System.out.println(fileList.size());
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
@@ -124,7 +128,8 @@ public class Main {
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
 		generator = new DSMGenerator(gitRepository);
-//		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 5);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
 

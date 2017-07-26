@@ -28,7 +28,7 @@ public class ArchDebtParser {
 		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"
 				+ gitRepository.getRepositoryName() + "_sdsm";
 		parser.parse("ArchIssues.txt", inputDir);
-
+		
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
 		parser = new ArchDebtParser(gitRepository);
 		inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\hotspot-dsm\\archIssues-"

@@ -28,8 +28,8 @@ public class HotspotFileDAO {
 			e.printStackTrace();
 		}
 	}
-	public static void insertBatch(List<HotspotFile> hotspotFile) {
-		hotspotFileMapper.insertBatch(hotspotFile);
+	public static void insertBatch(List<HotspotFile> hotspotFileList) {
+		hotspotFileMapper.insertBatch(hotspotFileList);
 		sqlSession.commit();
 	}
 }

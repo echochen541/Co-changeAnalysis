@@ -9,7 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.HotspotFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.SnapshotFile;
 
 public class SnapshotFileDAO {
@@ -37,5 +36,4 @@ public class SnapshotFileDAO {
 	public static List<String> selectFileByRepositoryIdAndRelease(Integer repositoryId, String release) {
 		return snapshotFileMapper.selectFileByRepositoryIdAndRelease(repositoryId, release);
 	}
-
 }
