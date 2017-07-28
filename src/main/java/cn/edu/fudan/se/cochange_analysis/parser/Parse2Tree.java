@@ -10,6 +10,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.edu.fudan.se.cochange_analysis.dsm.GenerateDSM;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 
 public class Parse2Tree {
@@ -46,15 +47,45 @@ public class Parse2Tree {
 		this.repository = repository;
 	}
 
-
+	public void parseDSM(String dst){
+		try {
+			GenerateDSM generateDSM=null;
+			FileInputStream fis=new FileInputStream(new File(dst));
+			Scanner sc=new Scanner(fis);
+			sc.nextLine();
+			int size=sc.nextInt();
+			System.out.println(size);
+			int[][] tempMatrix=new int[size][size];
+			List<String> fileList=new ArrayList<String>();
+			for(int i=0;i<size;i++){
+				for(int j=0;j<size;j++){
+					int num=0;
+					String tmp=sc.next();
+					if(tmp.length()!=1){
+						num=1;
+					}
+					tempMatrix[i][j]=num;
+				}
+			}
+			for(int i=0;i<size;i++){
+				String line=sc.nextLine().trim();
+				fileList.add(line);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public static void main(String[] args) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		Parse2Tree a = new Parse2Tree(gitRepository);
 		String inputDir = "D:\\2017-07-20\\data\\cluster";
-		a.parse("camel_32_20_cluster..clsx", inputDir);
+//		a.parse("camel_32_20_cluster..clsx", inputDir);
+		a.parseDSM("D:\\2017.7.12\\camel_20_top10.dsm");
 		System.out.println("Finished");
+		
 	}
 	
 	public TreeNode parse(String fileName, String dir) {
@@ -110,5 +141,9 @@ public class Parse2Tree {
 		return result;
 	}
 	
+	public void visit(TreeNode root){
+		
+		
+	}
 
 }
