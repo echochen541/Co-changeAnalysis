@@ -10,10 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenerateDSM <T> {
-	private Class<T> type;
-	private StringBuilder[][] stringDataMatrix;
-	private int[][] intDataMatrix;
+public class GenerateDSM {
+	private StringBuilder[][] structureDsmMatrix;
+	private int[][] historyDsmMatrix;
 	private List<String> typeList;
 	private List<String> fileList;
 
@@ -22,63 +21,31 @@ public class GenerateDSM <T> {
 	private StringBuilder fileListBuilder;
 
 	private StringBuilder matrixCell;
-	
-	public GenerateDSM(Class<T> type,List<String> mTypeList, List<String> mFileList) {
-		this.type=type;
-		if(type.equals(Integer.class)){
-			stringDataMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
-			matrixCell = new StringBuilder();
-			for (int i = 0; i < typeList.size(); i++) {
-				matrixCell.append("0");
-			}
-		}else if(type.equals(String.class)){
-			intDataMatrix=new int[mFileList.size()][mFileList.size()];
-		}
+
+	public GenerateDSM(List<String> mTypeList, List<String> mFileList) {
+		// Collections.sort(mTypeList);
+		// Collections.sort(mFileList);
+		structureDsmMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
 		typeList = mTypeList;
 		fileList = mFileList;
 		matrixBuilder = new StringBuilder();
 		typeBuilder = new StringBuilder();
 		fileListBuilder = new StringBuilder();
-		
+		matrixCell = new StringBuilder();
+		for (int i = 0; i < typeList.size(); i++) {
+			matrixCell.append("0");
+		}
+		buildString();
 	}
 
-//	public GenerateDSM(List<String> mTypeList, List<String> mFileList) {
-//		// Collections.sort(mTypeList);
-//		// Collections.sort(mFileList);
-//		stringDataMatrix = new StringBuilder[mFileList.size()][mFileList.size()];
-//		
-//		typeList = mTypeList;
-//		fileList = mFileList;
-//		matrixBuilder = new StringBuilder();
-//		typeBuilder = new StringBuilder();
-//		fileListBuilder = new StringBuilder();
-//		matrixCell = new StringBuilder();
-//		for (int i = 0; i < typeList.size(); i++) {
-//			matrixCell.append("0");
-//		}
-//		buildString();
-//	}
+	public GenerateDSM(List<String> mFileList) {
+		// Collections.sort(mFileList);
+		historyDsmMatrix = new int[mFileList.size()][mFileList.size()];
+		fileList = mFileList;
+		fileListBuilder = new StringBuilder();
 
-//	public GenerateDSM(List<String> mFileList) {
-//		// Collections.sort(mFileList);
-//		intDataMatrix = new int[mFileList.size()][mFileList.size()];
-//		fileList = mFileList;
-//		fileListBuilder = new StringBuilder();
-//
-//		for (String fileName : fileList) {
-//			fileListBuilder.append(fileName + "\n");
-//		}
-//	}
-	private void setMatrixRelation(int x,int y,Object content1){
-		if(content1 instanceof String){
-			String content= (String) content1;
-			if (stringDataMatrix[x][y] == null) {
-				stringDataMatrix[x][y] = new StringBuilder(matrixCell.toString());
-			}
-			stringDataMatrix[x][y].setCharAt(this.typeList.indexOf(content), '1');
-		}else {
-			Integer tmp=(Integer) content1;
-			intDataMatrix[x][y] = tmp.intValue();
+		for (String fileName : fileList) {
+			fileListBuilder.append(fileName + "\n");
 		}
 	}
 
@@ -86,26 +53,22 @@ public class GenerateDSM <T> {
 		// System.out.println(fromFileA + "," + toFileB + "," + typeList2);
 		int x = fileList.indexOf(fromFileA);
 		int y = fileList.indexOf(toFileB);
-		for (String tmp : typeList2) {
-			this.setMatrixRelation(x, y, tmp);
+		if (structureDsmMatrix[x][y] == null) {
+			structureDsmMatrix[x][y] = new StringBuilder(matrixCell.toString());
 		}
-//		if (stringDataMatrix[x][y] == null) {
-//			stringDataMatrix[x][y] = new StringBuilder(matrixCell.toString());
-//		}
-//		for (String tmp : typeList2) {
-//			stringDataMatrix[x][y].setCharAt(this.typeList.indexOf(tmp), '1');
-//		}
+		for (String tmp : typeList2) {
+			structureDsmMatrix[x][y].setCharAt(this.typeList.indexOf(tmp), '1');
+		}
 		// System.out.println(structureDsmMatrix[x][y]);
 	}
 
 	public void setFileStructureRelationType(String fromFileA, String toFileB, String type) {
 		int x = fileList.indexOf(fromFileA);
 		int y = fileList.indexOf(toFileB);
-		this.setMatrixRelation(x, y, type);
-//		if (stringDataMatrix[x][y] == null) {
-//			stringDataMatrix[x][y] = new StringBuilder(matrixCell.toString());
-//		}
-//		stringDataMatrix[x][y].setCharAt(this.typeList.indexOf(type), '1');
+		if (structureDsmMatrix[x][y] == null) {
+			structureDsmMatrix[x][y] = new StringBuilder(matrixCell.toString());
+		}
+		structureDsmMatrix[x][y].setCharAt(this.typeList.indexOf(type), '1');
 	}
 
 	public void setFileHistoryRelationCount(String fromFileA, String toFileB, int count) {
@@ -115,7 +78,7 @@ public class GenerateDSM <T> {
 			return;
 		}
 		// System.out.println(fileList.get(x) + " , " + fileList.get(y));
-		intDataMatrix[x][y] = count;
+		historyDsmMatrix[x][y] = count;
 		// System.out.println(historyDsmMatrix[x][y]);
 	}
 
@@ -135,17 +98,16 @@ public class GenerateDSM <T> {
 	}
 
 	public void write2StructureDSM(String outputPath) {
-		buildString();
 		try {
 			FileOutputStream fos = new FileOutputStream(new File(outputPath));
 			fos.write(typeBuilder.toString().getBytes());
-			for (int m = 0; m < stringDataMatrix.length; m++) {
+			for (int m = 0; m < structureDsmMatrix.length; m++) {
 				matrixBuilder = new StringBuilder();
-				for (int n = 0; n < stringDataMatrix[0].length; n++) {
-					if (stringDataMatrix[m][n] == null) {
+				for (int n = 0; n < structureDsmMatrix[0].length; n++) {
+					if (structureDsmMatrix[m][n] == null) {
 						matrixBuilder.append("0 ");
 					} else {
-						matrixBuilder.append(stringDataMatrix[m][n].toString() + " ");
+						matrixBuilder.append(structureDsmMatrix[m][n].toString() + " ");
 					}
 				}
 				matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
@@ -162,17 +124,14 @@ public class GenerateDSM <T> {
 	}
 
 	public void write2HistoryDSM(String outputPath) {
-		for (String fileName : fileList) {
-			fileListBuilder.append(fileName + "\n");
-		}
 		try {
 			FileOutputStream fos = new FileOutputStream(new File(outputPath));
 			String tmp = this.fileList.size() + "\n";
 			fos.write(tmp.getBytes());
-			for (int m = 0; m < intDataMatrix.length; m++) {
+			for (int m = 0; m < historyDsmMatrix.length; m++) {
 				matrixBuilder = new StringBuilder();
-				for (int n = 0; n < intDataMatrix[0].length; n++) {
-					matrixBuilder.append(String.valueOf(intDataMatrix[m][n]) + " ");
+				for (int n = 0; n < historyDsmMatrix[0].length; n++) {
+					matrixBuilder.append(String.valueOf(historyDsmMatrix[m][n]) + " ");
 				}
 				matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
 				matrixBuilder.append("\n");
