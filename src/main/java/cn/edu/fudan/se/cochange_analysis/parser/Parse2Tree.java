@@ -35,9 +35,9 @@ public class Parse2Tree {
 		public void extractInfo(String line) {
 			String[] tmp = line.split(" ");
 			this.tagName = tmp[0].substring(1);
-			if(tmp[0].endsWith(">")){
-				this.tagName=this.tagName.substring(0, this.tagName.length()-1);
-				this.name=this.tagName;
+			if (tmp[0].endsWith(">")) {
+				this.tagName = this.tagName.substring(0, this.tagName.length() - 1);
+				this.name = this.tagName;
 			}
 			if (tmp.length >= 2 && tmp[1].startsWith("name")) {
 				this.name = match(tmp[1]);
@@ -60,15 +60,13 @@ public class Parse2Tree {
 		this.repository = repository;
 	}
 
-
-
 	public void parseDSM(String dst) {
 		try {
 			FileInputStream fis = new FileInputStream(new File(dst));
 			Scanner sc = new Scanner(fis);
 			sc.nextLine();
 			int size = sc.nextInt();
-			System.out.println("DSMSize:"+size);
+			System.out.println("DSMSize:" + size);
 			int[][] tempMatrix = new int[size][size];
 			List<String> fileList = new ArrayList<String>();
 			for (int i = 0; i < size; i++) {
@@ -83,7 +81,7 @@ public class Parse2Tree {
 
 			}
 			dsmMatrixData = tempMatrix;
-			String a=sc.nextLine();
+			String a = sc.nextLine();
 			for (int i = 0; i < size; i++) {
 				String line = sc.nextLine().trim();
 				if (!"".equals(line) && line != null) {
@@ -167,17 +165,17 @@ public class Parse2Tree {
 					}
 				}
 			}
-			System.out.println("ClusterSize:"+this.clusterFileList.size());
+			System.out.println("ClusterSize:" + this.clusterFileList.size());
 			sc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		int b=0;
-		for(String a:this.clusterFileList){
+		int b = 0;
+		for (String a : this.clusterFileList) {
 			b++;
-			System.out.print(b+" "+a+"\n");
-//			System.out.println(a);
-			
+			System.out.print(b + " " + a + "\n");
+			// System.out.println(a);
+
 		}
 	}
 
@@ -205,101 +203,111 @@ public class Parse2Tree {
 			totalList.addAll(dfs(tmp));
 		}
 		if (name.startsWith("org")) {
-//			System.out.println(name);
+			// System.out.println(name);
 			t.subChildrenIndexList = new ArrayList<Integer>(totalList);
 		}
 		return totalList;
 
 	}
 
-
-
-	public void dfsPrint(TreeNode t){
-		System.out.print(t.tagName+" "+t.name);
-		if(t.subChildrenIndexList!=null){
-			for(Integer a:t.subChildrenIndexList){
-				System.out.print(a.intValue()+" ");
+	public void dfsPrint(TreeNode t) {
+		System.out.print(t.tagName + " " + t.name);
+		if (t.subChildrenIndexList != null) {
+			for (Integer a : t.subChildrenIndexList) {
+				System.out.print(a.intValue() + " ");
 			}
 		}
 		System.out.print("\n");
-		for(TreeNode t1:t.children){
+		for (TreeNode t1 : t.children) {
 			dfsPrint(t1);
 		}
 	}
-	public void dfsPick(TreeNode t){
-		
-		if(t.tagName.equals("group")&&t.name.contains("/")){
-			System.out.print(t.tagName+" "+t.name);
-			if(t.subChildrenIndexList!=null){
-				for(Integer a:t.subChildrenIndexList){
-					System.out.print(a.intValue()+" ");
+
+	public void dfsPick(TreeNode t) {
+
+		if (t.tagName.equals("group") && t.name.contains("/")) {
+			System.out.print(t.tagName + " " + t.name);
+			if (t.subChildrenIndexList != null) {
+				for (Integer a : t.subChildrenIndexList) {
+					System.out.print((a.intValue() + 1) + " ");
 				}
 			}
 			System.out.print("\n");
 			this.pickedGroups.add(t);
 		}
-		for(TreeNode t1:t.children){
+		for (TreeNode t1 : t.children) {
 			dfsPick(t1);
 		}
 	}
-	public void printResult(){
+
+	public void printResult() {
 		dfsPrint(this.rootNode);
 	}
+
 	public List<TreeNode> pickedGroups;
-	public void pickGroups(){
-		pickedGroups=new ArrayList<TreeNode>();
+
+	public void pickGroups() {
+		pickedGroups = new ArrayList<TreeNode>();
 		dfsPick(this.rootNode);
 	}
+
 	private int[] countDenpendencyNum(int root, List<Integer> fileGroup) {
 		int numx = 0;
 		int numy = 0;
 		int x = this.dsmFileList.indexOf(this.clusterFileList.get(root));
 		for (int fileId : fileGroup) {
 			int y = this.dsmFileList.indexOf(this.clusterFileList.get(fileId));
-			if(x==-1){
+			if (x == -1) {
 				System.out.println("aa");
-			}else if(y==-1){
+			} else if (y == -1) {
 				System.out.println("BB");
 			}
 			if (this.dsmMatrixData[x][y] == 1) {
 				numx++;
 			}
-			if (this.dsmMatrixData[y][x]==1){
+			if (this.dsmMatrixData[y][x] == 1) {
 				numy++;
 			}
 		}
-		int [] res={numx,numy};
+		int[] res = { numx, numy };
 		return res;
 	}
-	public void findHotspots(List<TreeNode> list,int t1,int t2){
-		for(TreeNode tmp:list){
-			int rootId=this.clusterFileList.indexOf(tmp.name);
-			List<Integer> subList=tmp.subChildrenIndexList;
-			int[] result=this.countDenpendencyNum(rootId, subList);
-			int m=subList.size();
-			int numx=result[0];
-			int numy=result[1];
-			if(m>=t1&&numx>=(m-1)*t2&&numy>=(m-1)*t2){
-				System.out.println(tmp.name);
+
+	public void findHotspots(List<TreeNode> list, int t1, double t2) {
+		for (TreeNode tmp : list) {
+			int rootId = this.clusterFileList.indexOf(tmp.name);
+			List<Integer> subList = tmp.subChildrenIndexList;
+			int[] result = this.countDenpendencyNum(rootId, subList);
+			int m = subList.size();
+			int numx = result[0];
+			int numy = result[1];
+			if (m >= t1 && numx >= (m - 1) * t2 && numy >= (m - 1) * t2) {
+				System.out.print(tmp.name + " ");
+				for (Integer a : tmp.subChildrenIndexList) {
+					System.out.print((a.intValue() + 1) + " ");
+				}
+				System.out.println();
 			}
 		}
-		
+
 	}
+
 	public static void main(String[] args) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		Parse2Tree a = new Parse2Tree(gitRepository);
-		String inputDir = "D:\\2017.7.12\\";
-		a.rootNode = a.parse(inputDir + "camel_20_top32_cluster..clsx");
-		a.getFileList(inputDir + "camel_20_top32_cluster..clsx");
-		a.parseDSM("D:\\2017.7.12\\camel_20_top32.dsm");
+		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\change-relation-dsm\\";
+		a.rootNode = a.parse(inputDir + "camel_32_5_cluster..clsx");
+		a.getFileList(inputDir + "camel_32_5_cluster..clsx");
+		System.exit(0);
+		a.parseDSM("D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\change-relation-dsm\\camel_32_5.dsm");
 		a.calculate();
 		System.out.println("Finished");
 		a.printResult();
 		System.out.println("#################################");
 		a.pickGroups();
 		System.out.println("#################################");
-		a.findHotspots(a.pickedGroups,6,0);
+		a.findHotspots(a.pickedGroups, 20, 0.2);
 	}
 
 }
