@@ -87,9 +87,9 @@ public class BugExtractor {
 					BugFixFile bugFixFile = new BugFixFile(gitRepositoryId, commitId, fileName, shortName, issueId,
 							lineOfCode, fixDate);
 					bugFixFileList.add(bugFixFile);
-					BugFixFileDAO.insert(bugFixFile);
+					// BugFixFileDAO.insert(bugFixFile);
 				}
-				// BugFixFileDAO.insertBatch(bugFixFileList);
+				BugFixFileDAO.insertBatch(bugFixFileList);
 			}
 		}
 	}

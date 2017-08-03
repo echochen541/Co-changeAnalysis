@@ -317,15 +317,15 @@ public class DSMGenerator {
 
 						String parsedName = FileUtils.parseFilePath(path, gitRepositoryName);
 
-						String startsWithStr = "org/apache/";
-						if (gitRepositoryName.equals("hbase")) {
-							startsWithStr += "hadoop/hbase";
-						} else {
-							startsWithStr += gitRepositoryName;
-						}
-						if (!parsedName.startsWith(startsWithStr)) {
-							break;
-						}
+						// String startsWithStr = "org/apache/";
+						// if (gitRepositoryName.equals("hbase")) {
+						// startsWithStr += "hadoop/hbase";
+						// } else {
+						// startsWithStr += gitRepositoryName;
+						// }
+						// if (!parsedName.startsWith(startsWithStr)) {
+						// break;
+						// }
 						hm.put(id, parsedName);
 						fileList.add(parsedName);
 					}
