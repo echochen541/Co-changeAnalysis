@@ -68,7 +68,7 @@ public class Parse2Tree {
 			Scanner sc = new Scanner(fis);
 			sc.nextLine();
 			int size = sc.nextInt();
-			System.out.println(size);
+			System.out.println("DSMSize:"+size);
 			int[][] tempMatrix = new int[size][size];
 			List<String> fileList = new ArrayList<String>();
 			for (int i = 0; i < size; i++) {
@@ -83,6 +83,7 @@ public class Parse2Tree {
 
 			}
 			dsmMatrixData = tempMatrix;
+			String a=sc.nextLine();
 			for (int i = 0; i < size; i++) {
 				String line = sc.nextLine().trim();
 				if (!"".equals(line) && line != null) {
@@ -252,9 +253,14 @@ public class Parse2Tree {
 	private int[] countDenpendencyNum(int root, List<Integer> fileGroup) {
 		int numx = 0;
 		int numy = 0;
-		int x = root;
+		int x = this.dsmFileList.indexOf(this.clusterFileList.get(root));
 		for (int fileId : fileGroup) {
-			int y = fileId;
+			int y = this.dsmFileList.indexOf(this.clusterFileList.get(fileId));
+			if(x==-1){
+				System.out.println("aa");
+			}else if(y==-1){
+				System.out.println("BB");
+			}
 			if (this.dsmMatrixData[x][y] == 1) {
 				numx++;
 			}
@@ -267,14 +273,14 @@ public class Parse2Tree {
 	}
 	public void findHotspots(List<TreeNode> list,int t1,int t2){
 		for(TreeNode tmp:list){
-			int rootId=this.clusterFileList.indexOf(tmp);
+			int rootId=this.clusterFileList.indexOf(tmp.name);
 			List<Integer> subList=tmp.subChildrenIndexList;
 			int[] result=this.countDenpendencyNum(rootId, subList);
 			int m=subList.size();
 			int numx=result[0];
 			int numy=result[1];
 			if(m>=t1&&numx>=(m-1)*t2&&numy>=(m-1)*t2){
-				System.out.println("XXX");
+				System.out.println(tmp.name);
 			}
 		}
 		
@@ -290,11 +296,10 @@ public class Parse2Tree {
 		a.calculate();
 		System.out.println("Finished");
 		a.printResult();
-		System.out.println("###########################");
+		System.out.println("#################################");
 		a.pickGroups();
 		System.out.println("#################################");
-		a.findHotspots(a.pickedGroups,0,0);
-		
+		a.findHotspots(a.pickedGroups,6,0);
 	}
 
 }
