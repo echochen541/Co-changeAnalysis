@@ -270,7 +270,12 @@ public class Parse2Tree {
 			int rootId=this.clusterFileList.indexOf(tmp);
 			List<Integer> subList=tmp.subChildrenIndexList;
 			int[] result=this.countDenpendencyNum(rootId, subList);
-			
+			int m=subList.size();
+			int numx=result[0];
+			int numy=result[1];
+			if(m>=t1&&numx>=(m-1)*t2&&numy>=(m-1)*t2){
+				System.out.println("XXX");
+			}
 		}
 		
 	}
