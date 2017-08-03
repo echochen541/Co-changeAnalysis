@@ -204,7 +204,8 @@ public class Parse2Tree {
 		for (TreeNode tmp : t.children) {
 			totalList.addAll(dfs(tmp));
 		}
-		if (name.startsWith("org")) {
+		
+		if (name.contains("/")) {
 //			System.out.println(name);
 			t.subChildrenIndexList = new ArrayList<Integer>(totalList);
 		}
@@ -280,7 +281,11 @@ public class Parse2Tree {
 			int numx=result[0];
 			int numy=result[1];
 			if(m>=t1&&numx>=(m-1)*t2&&numy>=(m-1)*t2){
-				System.out.println(tmp.name);
+				System.out.print(tmp.name);
+				for(Integer item:subList){
+					System.out.print(" "+(item+1));
+				}
+				System.out.print("\n");
 			}
 		}
 		
@@ -289,10 +294,10 @@ public class Parse2Tree {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		Parse2Tree a = new Parse2Tree(gitRepository);
-		String inputDir = "D:\\2017.7.12\\";
-		a.rootNode = a.parse(inputDir + "camel_20_top32_cluster..clsx");
-		a.getFileList(inputDir + "camel_20_top32_cluster..clsx");
-		a.parseDSM("D:\\2017.7.12\\camel_20_top32.dsm");
+		String inputDir = "D:\\";
+		a.rootNode = a.parse(inputDir + "camel_32_5_cluster..clsx");
+		a.getFileList(inputDir + "camel_32_5_cluster..clsx");
+		a.parseDSM("D:\\camel_32_5.dsm");
 		a.calculate();
 		System.out.println("Finished");
 		a.printResult();
