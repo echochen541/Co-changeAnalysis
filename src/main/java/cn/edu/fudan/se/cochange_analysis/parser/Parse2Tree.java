@@ -202,9 +202,9 @@ public class Parse2Tree {
 		for (TreeNode tmp : t.children) {
 			totalList.addAll(dfs(tmp));
 		}
-		
+
 		if (name.contains("/")) {
-//			System.out.println(name);
+			// System.out.println(name);
 			t.subChildrenIndexList = new ArrayList<Integer>(totalList);
 		}
 		return totalList;
@@ -273,18 +273,19 @@ public class Parse2Tree {
 		int[] res = { numx, numy };
 		return res;
 	}
-	public void findHotspots(List<TreeNode> list,int t1,double t2){
-		for(TreeNode tmp:list){
-			int rootId=this.clusterFileList.indexOf(tmp.name);
-			List<Integer> subList=tmp.subChildrenIndexList;
-			int[] result=this.countDenpendencyNum(rootId, subList);
-			int m=subList.size();
-			int numx=result[0];
-			int numy=result[1];
-			if(m>=t1&&numx>=(m-1)*t2&&numy>=(m-1)*t2){
+
+	public void findHotspots(List<TreeNode> list, int t1, double t2) {
+		for (TreeNode tmp : list) {
+			int rootId = this.clusterFileList.indexOf(tmp.name);
+			List<Integer> subList = tmp.subChildrenIndexList;
+			int[] result = this.countDenpendencyNum(rootId, subList);
+			int m = subList.size();
+			int numx = result[0];
+			int numy = result[1];
+			if (m >= t1 && numx >= (m - 1) * t2 && numy >= (m - 1) * t2) {
 				System.out.print(tmp.name);
-				for(Integer item:subList){
-					System.out.print(" "+(item+1));
+				for (Integer item : subList) {
+					System.out.print(" " + (item + 1));
 				}
 				System.out.print("\n");
 			}

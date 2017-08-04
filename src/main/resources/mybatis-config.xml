@@ -32,5 +32,6 @@
 		<mapper resource="mapper/BugFixFileMapper.xml" />
 		<mapper resource="mapper/HotspotFileMapper.xml" />
 		<mapper resource="mapper/SnapshotFileMapper.xml" />
+		<mapper resource="mapper/AccumutiveBugMapper.xml" />
 	</mappers>
 </configuration>
