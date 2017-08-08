@@ -31,7 +31,7 @@ public class ClusterReportParser {
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ClusterReportParser a = new ClusterReportParser(gitRepository);
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
-		a.parse("camel_32_5_cluster..clsx", inputDir);
+		a.parse("camel_32_9_cluster..clsx", inputDir);
 		System.out.println("Finished");
 	}
 

@@ -159,17 +159,17 @@ public class DSMGenerator {
 						dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)]
 								.setCharAt(relationIndexMap.get(relationType), '1');
 
-						// if (compareResult == 0) {
-						// if
-						// (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
-						// == null)
-						// dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
-						// = new StringBuilder(
-						// emptyCell.toString());
+						// if (dsmMatrix[idx1][idx2] == null)
+						// dsmMatrix[idx1][idx2] = new
+						// StringBuilder(emptyCell.toString());
+						// dsmMatrix[idx1][idx2].setCharAt(relationIndexMap.get(relationType),
+						// '1');
 
-						// dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
-						// .setCharAt(relationIndexMap.get(relationType), '1');
-						// }
+						// if (dsmMatrix[idx2][idx1] == null)
+						// dsmMatrix[idx2][idx1] = new
+						// StringBuilder(emptyCell.toString());
+						// dsmMatrix[idx2][idx1].setCharAt(relationIndexMap.get(relationType),
+						// '1');
 
 					}
 				} else {
@@ -181,6 +181,18 @@ public class DSMGenerator {
 
 						dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
 								.setCharAt(relationIndexMap.get(relationType), '1');
+
+						// if (dsmMatrix[idx1][idx2] == null)
+						// dsmMatrix[idx1][idx2] = new
+						// StringBuilder(emptyCell.toString());
+						// dsmMatrix[idx1][idx2].setCharAt(relationIndexMap.get(relationType),
+						// '1');
+
+						// if (dsmMatrix[idx2][idx1] == null)
+						// dsmMatrix[idx2][idx1] = new
+						// StringBuilder(emptyCell.toString());
+						// dsmMatrix[idx2][idx1].setCharAt(relationIndexMap.get(relationType),
+						// '1');
 					}
 				}
 			}
