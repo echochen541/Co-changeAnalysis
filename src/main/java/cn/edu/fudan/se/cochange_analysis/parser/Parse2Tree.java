@@ -300,7 +300,7 @@ public class Parse2Tree {
 		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\change-relation-dsm\\";
 		a.rootNode = a.parse(inputDir + "camel_32_5_cluster..clsx");
 		a.getFileList(inputDir + "camel_32_5_cluster..clsx");
-		System.exit(0);
+		// System.exit(0);
 		a.parseDSM("D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\change-relation-dsm\\camel_32_5.dsm");
 		a.calculate();
 		System.out.println("Finished");
@@ -310,5 +310,4 @@ public class Parse2Tree {
 		System.out.println("#################################");
 		a.findHotspots(a.pickedGroups, 20, 0.2);
 	}
-
 }

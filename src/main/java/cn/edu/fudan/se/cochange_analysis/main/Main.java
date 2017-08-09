@@ -1,13 +1,10 @@
 package cn.edu.fudan.se.cochange_analysis.main;
 
-import java.util.List;
-
 import cn.edu.fudan.se.cochange_analysis.dsm.DSMGenerator;
 import cn.edu.fudan.se.cochange_analysis.extractor.BugExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.ChangeExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.ChangeRelationExtractor;
 import cn.edu.fudan.se.cochange_analysis.extractor.FilePairExtractor;
-import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.preprocess.CommitFilter;
 
