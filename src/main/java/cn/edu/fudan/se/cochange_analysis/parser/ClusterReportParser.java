@@ -30,8 +30,8 @@ public class ClusterReportParser {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		ClusterReportParser a = new ClusterReportParser(gitRepository);
-		String inputDir = "D:\\2017.7.12\\";
-		a.parse("camel_20_top32_cluster..clsx", inputDir);
+		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		a.parse("camel_32_9_cluster..clsx", inputDir);
 		System.out.println("Finished");
 	}
 
