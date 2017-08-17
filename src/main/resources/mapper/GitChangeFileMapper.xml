@@ -87,12 +87,12 @@
 		values
 		<foreach collection="list" item="item" index="index"
 			separator=",">
-	(#{item.repositoryId,jdbcType=INTEGER},
-	#{item.commitId,jdbcType=VARCHAR},
-	#{item.fileName,jdbcType=VARCHAR},
-	#{item.changeType,jdbcType=VARCHAR},
-	#{item.oldPath,jdbcType=VARCHAR}, #{item.newPath,jdbcType=VARCHAR}
-	)
+			(#{item.repositoryId,jdbcType=INTEGER},
+			#{item.commitId,jdbcType=VARCHAR},
+			#{item.fileName,jdbcType=VARCHAR},
+			#{item.changeType,jdbcType=VARCHAR},
+			#{item.oldPath,jdbcType=VARCHAR}, #{item.newPath,jdbcType=VARCHAR}
+			)
 		</foreach>
 	</insert>
 

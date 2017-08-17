@@ -28,8 +28,8 @@ public class ChangeRelationCountDAO {
 		}
 	}
 
-	public static void insertChangeRelationCount(ChangeRelationCount commit) {
-		changeRelationCountMapper.insert(commit);
+	public static void insertChangeRelationCount(ChangeRelationCount changeRelationCount) {
+		changeRelationCountMapper.insert(changeRelationCount);
 		sqlSession.commit();
 	}
 	public static List<ChangeRelationCount> selectAllChangeRelationCount(int repoId,String myFilePair,int threshold ){
@@ -44,5 +44,9 @@ public class ChangeRelationCountDAO {
 	
 	public static List<ChangeRelationCount> selectByRepositoryIdAndFilePair(int repositoryId, String filePair) {
 		return changeRelationCountMapper.selectByRepositoryIdAndFilePair(repositoryId, filePair);
+	}
+	public static void insertBatch(List<ChangeRelationCount> changeRelationCounts) {
+		changeRelationCountMapper.insertBatch(changeRelationCounts);
+		sqlSession.commit();
 	}
 }

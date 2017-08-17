@@ -168,11 +168,11 @@
 	</update>
 
 	<insert id="insertBatch" parameterType="java.util.List"
-	useGeneratedKeys="true">
-	insert into bug_fix_file (repository_id, commit_id, file_name,
-	short_name, issue_id, line_of_code,
-	fix_date)
-	values
+		useGeneratedKeys="true">
+		insert into bug_fix_file (repository_id, commit_id, file_name,
+		short_name, issue_id, line_of_code,
+		fix_date)
+		values
 		<foreach collection="list" index="index" item="item"
 			separator=","> (#{item.repositoryId,jdbcType=INTEGER},
 			#{item.commitId,jdbcType=VARCHAR}, #{item.fileName,jdbcType=VARCHAR},

@@ -59,9 +59,11 @@ public class ChangeRelationExtractor {
 		int repositoryId = repository.getRepositoryId();
 		// System.out.println("repository id : " + repositoryId);
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId,
-				threshold1);
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId, threshold1);
 		// System.out.println(filePairCountList.size());
+
+		List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
+		List<ChangeRelationCount> changeRelationCounts = new ArrayList<ChangeRelationCount>();
 
 		for (FilePairCount filePairCountItem : filePairCountList) {
 			String filePair = filePairCountItem.getFilePair();
@@ -115,28 +117,40 @@ public class ChangeRelationExtractor {
 			// System.out.println(result.size());
 
 			for (Map.Entry<String, Set<String>> entry : result.entrySet()) {
-				String[] tmp = entry.getKey().split("--");
 				Set<String> commitIds = entry.getValue();
 				int size = commitIds.size();
 				// if change relation occurs >= threshold2 times
 				if (size >= threshold2) {
+					String[] tmp = entry.getKey().split("--");
 					ChangeRelationCount changeRelationCount = new ChangeRelationCount(0, repositoryId, tmp[0], tmp[1],
 							tmp[2], tmp[3], tmp[4], size);
-					ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
+					// ChangeRelationCountDAO.insertChangeRelationCount(changeRelationCount);
+					changeRelationCounts.add(changeRelationCount);
 
-					List<ChangeRelationCommit> changeRelationCommits = new ArrayList<ChangeRelationCommit>();
+					if (changeRelationCounts.size() >= 100) {
+						ChangeRelationCountDAO.insertBatch(changeRelationCounts);
+						changeRelationCounts.clear();
+					} 
+
 					Iterator<String> i = commitIds.iterator();
 					while (i.hasNext()) {
 						String commitId = (String) i.next();
 						ChangeRelationCommit changeRelationCommit = new ChangeRelationCommit(0, repositoryId, commitId,
 								tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]);
 						changeRelationCommits.add(changeRelationCommit);
+
+						if (changeRelationCommits.size() >= 100) {
+							ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
+							changeRelationCommits.clear();
+						}
 					}
-					ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
+					// ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 				}
 			}
 			result.clear();
 		}
+		ChangeRelationCountDAO.insertBatch(changeRelationCounts);
+		ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 	}
 
 	public void rankChangeRelationCount(String outputdir) {
@@ -195,8 +209,7 @@ public class ChangeRelationExtractor {
 
 	public void generateDSM(int threshold1, int threshold2) {
 		int repositoryId = repository.getRepositoryId();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId,
-				threshold1);
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId, threshold1);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
 		for (FilePairCount filePairItem : filePairCountList) {
@@ -389,8 +402,7 @@ public class ChangeRelationExtractor {
 
 	public void generateTopNTypeDSM(int threshold1, int threshold2, Map<String, Integer> typeMap) {
 		int repositoryId = repository.getRepositoryId();
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId,
-				threshold1);
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId, threshold1);
 		List<String> fileList = new ArrayList<String>();
 		Set<String> fileSet = new HashSet<String>();
 		for (FilePairCount filePairItem : filePairCountList) {

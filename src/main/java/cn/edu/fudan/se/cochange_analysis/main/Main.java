@@ -11,6 +11,7 @@ import cn.edu.fudan.se.cochange_analysis.preprocess.CommitFilter;
 public class Main {
 	public static void main(String[] args) {
 		System.out.println(1);
+		System.exit(0);
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		CommitFilter commitFilter = new CommitFilter(gitRepository);
@@ -20,7 +21,7 @@ public class Main {
 		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		ChangeRelationExtractor changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.extractChangeRelation(3, 0);
 		String outputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		BugExtractor extractor = new BugExtractor(gitRepository);
@@ -34,7 +35,8 @@ public class Main {
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 3);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 3);
 
 		System.out.println(2);
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
@@ -45,7 +47,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.extractChangeRelation(3, 0);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -54,7 +56,8 @@ public class Main {
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 3);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 3);
 
 		System.out.println(3);
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
@@ -65,7 +68,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.extractChangeRelation(3, 0);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -74,7 +77,8 @@ public class Main {
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 3);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 3);
 
 		System.out.println(4);
 		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
@@ -85,7 +89,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.extractChangeRelation(3, 0);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -94,7 +98,8 @@ public class Main {
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 3);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 3);
 
 		System.out.println(5);
 		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
@@ -105,7 +110,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.extractChangeRelation(3, 0);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -114,7 +119,8 @@ public class Main {
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 3);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 3);
 
 		System.out.println(6);
 		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
@@ -125,7 +131,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationExtractor.extractChangeRelation(3, 0);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -134,7 +140,8 @@ public class Main {
 		// 32, 5);
 		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
 		// 32, 10);
-		generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2, 32, 3);
+		// generator.generateTopNRelationTopNFilePairDSM(inputDir, outputDir2,
+		// 32, 3);
 
 		// FileUtils.analyzeChangeRelationOverlap(outputDir1);
 	}

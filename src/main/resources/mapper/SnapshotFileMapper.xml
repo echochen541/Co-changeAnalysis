@@ -18,7 +18,8 @@
 			MyBatis Generator, do not modify. -->
 		insert into snapshot_file (repository_id, file_name, release
 		)
-		values (#{repositoryId,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},
+		values
+		(#{repositoryId,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},
 		#{release,jdbcType=VARCHAR}
 		)
 	</insert>
