@@ -67,6 +67,11 @@ public interface ChangeOperationMapper {
 
 	int insertBatch(List<ChangeOperationWithBLOBs> operations);
 
-	List<UniqueChangeOperation> selectUniqueChangeOperationsByCommitIdAndFileName(@Param(value = "commitId") String commitId,
-			@Param(value = "fileName") String fileName);
+	List<UniqueChangeOperation> selectUniqueChangeOperationsByCommitIdAndFileName(
+			@Param(value = "commitId") String commitId, @Param(value = "fileName") String fileName);
+
+	List<ChangeOperationWithBLOBs> selectByRepositoryIdAndCommitIdAndFileNameAndChangeTypeAndChangedEntityType(
+			@Param(value = "repositoryId") int repositoryId, @Param(value = "commitId") String commitId,
+			@Param(value = "fileName") String fileName, @Param(value = "changeType") String changeType,
+			@Param(value = "changedEntityType") String changedEntityType);
 }

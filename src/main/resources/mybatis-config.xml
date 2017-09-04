@@ -33,5 +33,7 @@
 		<mapper resource="mapper/HotspotFileMapper.xml" />
 		<mapper resource="mapper/SnapshotFileMapper.xml" />
 		<mapper resource="mapper/AccumutiveBugMapper.xml" />
+		<mapper resource="mapper/RawFilterSharedDependencyMapper.xml" />
+		<mapper resource="mapper/SharedDependencyMapper.xml" />
 	</mappers>
 </configuration>

@@ -11,7 +11,7 @@ import cn.edu.fudan.se.cochange_analysis.preprocess.CommitFilter;
 public class Main {
 	public static void main(String[] args) {
 		System.out.println(1);
-		System.exit(0);
+//		System.exit(0);
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		CommitFilter commitFilter = new CommitFilter(gitRepository);

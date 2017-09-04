@@ -60,4 +60,7 @@ public interface FilePairCommitMapper {
 
 	List<FilePairCommit> selectByRepositoryIdAndFilePair(@Param(value = "repoId") int repoId,
 			@Param(value = "filePair") String filePair);
+
+	List<FilePairCommit> selectByRepositoryIdAndCommitIdAndFilePair(@Param(value = "repositoryId") int repositoryId,
+			@Param(value = "commitId") String commitId, @Param(value = "filePair") String filePair);
 }

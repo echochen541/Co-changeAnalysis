@@ -1,4 +1,4 @@
-package cn.edu.fudan.se.cochange_analysis.ast;
+package cn.edu.fudan.se.cochange_analysis.shared.dependency;
 
 import org.eclipse.jdt.core.dom.*;
 
