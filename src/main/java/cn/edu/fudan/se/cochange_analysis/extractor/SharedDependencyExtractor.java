@@ -37,25 +37,25 @@ public class SharedDependencyExtractor {
 	public static void main(String[] args) {
 		GitRepository gitRepository = null;
 		SharedDependencyExtractor extractor = null;
-		// GitRepository gitRepository = new GitRepository(1, "camel",
+		// gitRepository = new GitRepository(1, "camel",
 		// "D:/echo/lab/research/co-change/projects/camel/.git");
-		// SharedDependencyExtractor extractor = new
+		// extractor = new
 		// SharedDependencyExtractor(gitRepository);
 		// extractor.extractSharedDependency();
 
-		// GitRepository gitRepository = new GitRepository(2, "cassandra",
+		// gitRepository = new GitRepository(2, "cassandra",
 		// "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		// SharedDependencyExtractor extractor = new
+		// extractor = new
 		// SharedDependencyExtractor(gitRepository);
 		// extractor.extractSharedDependency();
 
-//		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-//		extractor = new SharedDependencyExtractor(gitRepository);
-//		extractor.extractSharedDependency();
+		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
+		extractor = new SharedDependencyExtractor(gitRepository);
+		extractor.extractSharedDependency();
 
-//		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-//		extractor = new SharedDependencyExtractor(gitRepository);
-//		extractor.extractSharedDependency();
+		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
+		extractor = new SharedDependencyExtractor(gitRepository);
+		extractor.extractSharedDependency();
 
 		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
 		extractor = new SharedDependencyExtractor(gitRepository);
@@ -78,12 +78,12 @@ public class SharedDependencyExtractor {
 			if (isSharedDependency(rawDependency)) {
 				// store
 				if (sharedDependencyList.size() >= 100) {
-					// SharedDependencyDAO.insertBatch(sharedDependencyList);
+					SharedDependencyDAO.insertBatch(sharedDependencyList);
 					sharedDependencyList.clear();
 				}
 			}
 		}
-		// SharedDependencyDAO.insertBatch(sharedDependencyList);
+		SharedDependencyDAO.insertBatch(sharedDependencyList);
 	}
 
 	private boolean isSharedDependency(RawFilterSharedDependency rawDependency) {
@@ -99,13 +99,13 @@ public class SharedDependencyExtractor {
 		List<FilePairCommit> filePairCommits = FilePairCommitDAO
 				.selectByRepositoryIdAndCommitIdAndFilePair(repositoryId, commitId, filePair);
 
-//		if (filePairCommits.size() != 1) {
-//			System.out.println(filePairCommits.size());
-//			System.out.println(commitId + ", " + filePair + ", " + changeType +
-//					 ", " + changedEntityType);
-//			System.out.println(filePairCommits);
-//		}
-		
+		// if (filePairCommits.size() != 1) {
+		// System.out.println(filePairCommits.size());
+		// System.out.println(commitId + ", " + filePair + ", " + changeType +
+		// ", " + changedEntityType);
+		// System.out.println(filePairCommits);
+		// }
+
 		FilePairCommit filePairCommit = filePairCommits.get(0);
 		String fileName1 = filePairCommit.getFileName1();
 		String fileName2 = filePairCommit.getFileName2();
@@ -124,7 +124,7 @@ public class SharedDependencyExtractor {
 
 		for (ChangeOperationWithBLOBs co1 : changeOperationList1) {
 			for (ChangeOperationWithBLOBs co2 : changeOperationList2) {
-				if (compareChangeOperation(co1, co2, changeType, changedEntityType)) {
+				if (isSameChangeOperation(co1, co2, changeType, changedEntityType)) {
 					SharedDependency sharedDependency = new SharedDependency(repositoryId, commitId, filePair,
 							changeType, changedEntityType, changeType, changedEntityType, co1.getChangeOperationId(),
 							co2.getChangeOperationId());
@@ -136,8 +136,8 @@ public class SharedDependencyExtractor {
 		return false;
 	}
 
-	private boolean compareChangeOperation(ChangeOperationWithBLOBs co1, ChangeOperationWithBLOBs co2,
-			String changeType, String changedEntityType) {
+	private boolean isSameChangeOperation(ChangeOperationWithBLOBs co1, ChangeOperationWithBLOBs co2, String changeType,
+			String changedEntityType) {
 		String changedEntityContent1 = co1.getChangedEntityContent();
 		String newEntityContent1 = co1.getNewEntityContent();
 		String parentEntityContent1 = co1.getParentEntityContent();
@@ -147,6 +147,11 @@ public class SharedDependencyExtractor {
 		String newEntityContent2 = co2.getNewEntityContent();
 		String parentEntityContent2 = co2.getParentEntityContent();
 		String rootEntityContent2 = co2.getRootEntityContent();
+
+		// System.out.println(changeType + " , " + changedEntityType);
+		// System.out.println(co1);
+		// System.out.println(co2);
+		// System.out.println();
 
 		// add/remove field
 		if (changeType.equals("ADDITIONAL_OBJECT_STATE") || changeType.equals("REMOVED_OBJECT_STATE")) {
@@ -233,18 +238,40 @@ public class SharedDependencyExtractor {
 			String modifier1 = parentEntityContent1;
 			String parsedModifier1 = modifier1.replace("_", "").toLowerCase();
 
-			String[] oldTypeAndModifier1 = changedEntityContent1.split(": ");
-			String[] newTypeAndModifier1 = newEntityContent1.split(": ");
-			String oldType1 = oldTypeAndModifier1[1];
-			String newType1 = newTypeAndModifier1[1];
+			String oldType1 = "dummy";
+			if (changedEntityContent1.contains(": ")) {
+				String[] oldTypeAndModifier1 = changedEntityContent1.split(": ");
+				oldType1 = oldTypeAndModifier1[1];
+			} else {
+				oldType1 = changedEntityContent1;
+			}
+
+			String newType1 = "dummy";
+			if (newEntityContent1.contains(": ")) {
+				String[] newTypeAndModifier1 = newEntityContent1.split(": ");
+				newType1 = newTypeAndModifier1[1];
+			} else {
+				newType1 = newEntityContent1;
+			}
 
 			String modifier2 = parentEntityContent2;
 			String parsedModifier2 = modifier2.replace("_", "").toLowerCase();
 
-			String[] oldTypeAndModifier2 = changedEntityContent2.split(": ");
-			String[] newTypeAndModifier2 = newEntityContent2.split(": ");
-			String oldType2 = oldTypeAndModifier2[1];
-			String newType2 = newTypeAndModifier2[1];
+			String oldType2 = "dummy";
+			if (changedEntityContent2.contains(": ")) {
+				String[] oldTypeAndModifier2 = changedEntityContent2.split(": ");
+				oldType2 = oldTypeAndModifier2[1];
+			} else {
+				oldType1 = changedEntityContent1;
+			}
+
+			String newType2 = "dummy";
+			if (newEntityContent2.contains(": ")) {
+				String[] newTypeAndModifier2 = newEntityContent2.split(": ");
+				newType2 = newTypeAndModifier2[1];
+			} else {
+				newType2 = newEntityContent2;
+			}
 
 			String methodName1 = getMethodName(rootEntityContent1);
 			String methodName2 = getMethodName(rootEntityContent2);
