@@ -377,4 +377,19 @@
 		changed_entity_type =
 		#{changedEntityType,jdbcType=INTEGER}
 	</select>
+
+	<select id="selectByChangeTypeAndChangedEntityType" resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from
+		change_operation
+		where
+		change_type =
+		#{changeType,jdbcType=VARCHAR}
+		and
+		changed_entity_type =
+		#{changedEntityType,jdbcType=INTEGER}
+	</select>
 </mapper>
