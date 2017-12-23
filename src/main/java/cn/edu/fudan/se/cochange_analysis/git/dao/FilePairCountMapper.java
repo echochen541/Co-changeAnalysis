@@ -56,9 +56,9 @@ public interface FilePairCountMapper {
 	 */
 	int updateByPrimaryKey(FilePairCount record);
 
-	List<FilePairCount> selectByRepositoryIdAndCount(@Param(value = "repoId") int repoId,
-			@Param(value = "num") int num);
+	List<FilePairCount> selectByRepositoryIdAndCount(@Param(value = "repositoryId") int repositoryId,
+			@Param(value = "threshold") int threshold);
 	
-	FilePairCount selectByRepositoryIdAndFilePairName(@Param(value="repoId")int repoId,
+	FilePairCount selectByRepositoryIdAndFilePair(@Param(value="repositoryId")int repoId,
 			@Param(value="filePair")String filePair);
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.PrefixExpression.Operator;
 
+import cn.edu.fudan.se.cochange_analysis.expression.parser.ExpressionParser;
+import cn.edu.fudan.se.cochange_analysis.expression.parser.ExpressionTree;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationWithBLOBs;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
 
@@ -33,9 +35,11 @@ public class Parser {
 				}
 
 				if (expression instanceof InfixExpression) {
-					System.out.println(expression);
-					parseExpression(expression);
-					System.out.println();
+					// System.out.println(expression);
+					// parseExpression(expression);
+					// System.out.println();
+					ExpressionParser ep = new ExpressionParser(expressionStr);
+					ExpressionTree tree = ep.parse2Tree(expression);
 				}
 			}
 		}
@@ -123,14 +127,14 @@ public class Parser {
 		} else if (expression instanceof TypeLiteral) {
 			TypeLiteral tl = (TypeLiteral) expression;
 			System.out.println("TypeLiteral: " + tl.getType().toString());
-		} else if (expression instanceof PostfixExpression){
-			PostfixExpression pex = (PostfixExpression)expression;
+		} else if (expression instanceof PostfixExpression) {
+			PostfixExpression pex = (PostfixExpression) expression;
 			org.eclipse.jdt.core.dom.PostfixExpression.Operator operator = pex.getOperator();
 			Expression operand = pex.getOperand();
 			System.out.println("PostfixExpression: " + operator + " , " + operand);
 			parseExpression(operand);
 		} else {
-			SuperFieldAccess sfa = (SuperFieldAccess)expression;
+			SuperFieldAccess sfa = (SuperFieldAccess) expression;
 			System.out.println("SuperFieldAccess: " + sfa.getName());
 		}
 	}

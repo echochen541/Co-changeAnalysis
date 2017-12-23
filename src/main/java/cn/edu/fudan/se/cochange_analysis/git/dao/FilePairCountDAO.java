@@ -28,10 +28,11 @@ public class FilePairCountDAO {
 		}
 	}
 
-	public static List<FilePairCount> selectByRepositoryIdAndCount(int repoId, int threshold1) {
-		return filePairCountMapper.selectByRepositoryIdAndCount(repoId, threshold1);
+	public static List<FilePairCount> selectByRepositoryIdAndCount(int repositoryId, int threshold) {
+		return filePairCountMapper.selectByRepositoryIdAndCount(repositoryId, threshold);
 	}
-	public static FilePairCount selectByRepositoryIdAndFilePairName(int repoId,String filePair){
-		return filePairCountMapper.selectByRepositoryIdAndFilePairName(repoId,filePair);
+
+	public static FilePairCount selectByRepositoryIdAndFilePair(int repositoryId, String filePair) {
+		return filePairCountMapper.selectByRepositoryIdAndFilePair(repositoryId, filePair);
 	}
 }

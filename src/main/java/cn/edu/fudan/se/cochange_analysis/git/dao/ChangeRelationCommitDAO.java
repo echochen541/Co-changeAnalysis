@@ -32,9 +32,11 @@ public class ChangeRelationCommitDAO {
 		changeRelationCommitMapper.insert(commit);
 		sqlSession.commit();
 	}
-	public static List<ChangeRelationCommit> selectAllChangeRelationCommit(int repoId){
-		return changeRelationCommitMapper.selectByRepoId(repoId);
+
+	public static List<ChangeRelationCommit> selectByRepositoryId(int repositoryId) {
+		return changeRelationCommitMapper.selectByRepositoryId(repositoryId);
 	}
+
 	public static void insertBatch(List<ChangeRelationCommit> changeRelationCommits) {
 		changeRelationCommitMapper.insertBatch(changeRelationCommits);
 		sqlSession.commit();

@@ -140,8 +140,8 @@ public class DSMGenerator {
 			for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
 				String changeType1 = changeRelationCount.getChangeType1();
 				String changeType2 = changeRelationCount.getChangeType2();
-				String changedEntityType1 = changeRelationCount.getChangedEntityType1();
-				String changedEntityType2 = changeRelationCount.getChangedEntityType2();
+				String changedEntityType1 = "";
+				String changedEntityType2 = "";
 
 				String change1 = changeType1 + "(" + changedEntityType1 + ")";
 				String change2 = changeType2 + "(" + changedEntityType2 + ")";

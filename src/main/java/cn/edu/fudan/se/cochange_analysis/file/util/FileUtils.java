@@ -161,4 +161,8 @@ public class FileUtils {
 			return true;
 		return false;
 	}
+
+	public static String parseModifier(String name) {
+		return name.replace("_", "").toLowerCase();
+	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 
 public interface ChangeRelationCountMapper {
 	/**
@@ -55,12 +54,6 @@ public interface ChangeRelationCountMapper {
 	 * @mbg.generated
 	 */
 	int updateByPrimaryKey(ChangeRelationCount record);
-
-	List<ChangeRelationCount> selectByRepoId(@Param(value = "repoId") int repoId,
-			@Param(value = "myFilePair") String myFilePair, @Param(value = "threshold") int threshold2);
-
-	List<ChangeRelationUnique> selectDistinctChangeType(@Param(value = "repoId") int repoId,
-			@Param(value = "threshold") int threshold2);
 
 	List<ChangeRelationCount> selectByRepositoryId(int repositoryId);
 

@@ -3,6 +3,10 @@ package cn.edu.fudan.se.cochange_analysis.extractor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.core.dom.Expression;
+
+import cn.edu.fudan.se.cochange_analysis.expression.parser.ExpressionParser;
+import cn.edu.fudan.se.cochange_analysis.expression.parser.ExpressionTree;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationWithBLOBs;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
@@ -357,6 +361,51 @@ public class SharedDependencyExtractor {
 				return true;
 			}
 		}
+
+		if ((changeType.equals("STATEMENT_INSERT") || changeType.equals("STATEMENT_DELETE"))
+				&& changedEntityType.equals("IF_STATEMENT")) {
+			String expressionStr1 = changedEntityContent1;
+			ExpressionParser parser1 = new ExpressionParser(expressionStr1);
+			Expression expression1 = parser1.parse2Expression();
+			ExpressionTree expressionTree1 = parser1.parse2Tree(expression1);
+
+			String expressionStr2 = changedEntityContent2;
+			ExpressionParser parser2 = new ExpressionParser(expressionStr2);
+			Expression expression2 = parser2.parse2Expression();
+			ExpressionTree expressionTree2 = parser2.parse2Tree(expression2);
+
+			if (expressionTree1.isSameExpressionTree(expressionTree2)) {
+				return true;
+			}
+		}
+
+		if (changeType.equals("CONDITION_EXPRESSION_CHANGE") && changedEntityType.equals("IF_STATEMENT")) {
+			String oldExpressionStr1 = changedEntityContent1;
+			ExpressionParser oldParser1 = new ExpressionParser(oldExpressionStr1);
+			Expression oldExpression1 = oldParser1.parse2Expression();
+			ExpressionTree oldExpressionTree1 = oldParser1.parse2Tree(oldExpression1);
+
+			String newExpressionStr1 = newEntityContent1;
+			ExpressionParser newParser1 = new ExpressionParser(newExpressionStr1);
+			Expression newExpression1 = newParser1.parse2Expression();
+			ExpressionTree newExpressionTree1 = newParser1.parse2Tree(newExpression1);
+
+			String oldExpressionStr2 = changedEntityContent2;
+			ExpressionParser oldParser2 = new ExpressionParser(oldExpressionStr2);
+			Expression oldExpression2 = oldParser2.parse2Expression();
+			ExpressionTree oldExpressionTree2 = oldParser2.parse2Tree(oldExpression2);
+
+			String newExpressionStr2 = newEntityContent2;
+			ExpressionParser newParser2 = new ExpressionParser(newExpressionStr2);
+			Expression newExpression2 = newParser2.parse2Expression();
+			ExpressionTree newExpressionTree2 = newParser2.parse2Tree(newExpression2);
+
+			if ((oldExpressionTree1.isSameExpressionTree(oldExpressionTree2))
+					&& (newExpressionTree1.isSameExpressionTree(newExpressionTree2))) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 

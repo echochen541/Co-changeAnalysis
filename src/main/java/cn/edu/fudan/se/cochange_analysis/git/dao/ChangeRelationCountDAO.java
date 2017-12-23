@@ -9,7 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationUnique;
 
 public class ChangeRelationCountDAO {
 	private static SqlSessionFactory sessionFactory;
@@ -32,19 +31,15 @@ public class ChangeRelationCountDAO {
 		changeRelationCountMapper.insert(changeRelationCount);
 		sqlSession.commit();
 	}
-	public static List<ChangeRelationCount> selectAllChangeRelationCount(int repoId,String myFilePair,int threshold ){
-		return changeRelationCountMapper.selectByRepoId(repoId,myFilePair,threshold);
-	}
-	public static List<ChangeRelationUnique> selectDistinctChangeType(int repoId,int threshold){
-		return changeRelationCountMapper.selectDistinctChangeType(repoId,threshold);
-	}
+
 	public static List<ChangeRelationCount> selectByRepositoryId(int repositoryId) {
 		return changeRelationCountMapper.selectByRepositoryId(repositoryId);
 	}
-	
+
 	public static List<ChangeRelationCount> selectByRepositoryIdAndFilePair(int repositoryId, String filePair) {
 		return changeRelationCountMapper.selectByRepositoryIdAndFilePair(repositoryId, filePair);
 	}
+
 	public static void insertBatch(List<ChangeRelationCount> changeRelationCounts) {
 		changeRelationCountMapper.insertBatch(changeRelationCounts);
 		sqlSession.commit();

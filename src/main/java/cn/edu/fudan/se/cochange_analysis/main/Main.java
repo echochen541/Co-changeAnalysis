@@ -11,7 +11,7 @@ import cn.edu.fudan.se.cochange_analysis.preprocess.CommitFilter;
 public class Main {
 	public static void main(String[] args) {
 		System.out.println(1);
-//		System.exit(0);
+		// System.exit(0);
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		CommitFilter commitFilter = new CommitFilter(gitRepository);
@@ -21,13 +21,16 @@ public class Main {
 		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		ChangeRelationExtractor changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 0);
-		String outputDir1 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
+		changeRelationExtractor.extractChangeRelation(3, 3);
+		// String outputDir1 =
+		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		BugExtractor extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
-		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
-		String outputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
+		// String inputDir =
+		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
+		// String outputDir2 =
+		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
 		DSMGenerator generator = new DSMGenerator(gitRepository);
 		// List<String> fileList = generator.getSnapshotFile("camel-2.19.1");
 		// System.out.println(fileList.size());
@@ -47,7 +50,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 0);
+		changeRelationExtractor.extractChangeRelation(3, 3);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -68,7 +71,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 0);
+		changeRelationExtractor.extractChangeRelation(3, 3);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -88,8 +91,8 @@ public class Main {
 		// filePairExtractor.extractFilePairHistory();
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
-		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 0);
+		// changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
+		changeRelationExtractor.extractChangeRelation(3, 3);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -110,7 +113,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 0);
+		changeRelationExtractor.extractChangeRelation(3, 3);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();
@@ -131,7 +134,7 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 0);
+		changeRelationExtractor.extractChangeRelation(3, 3);
 		// changeRelationExtractor.rankChangeRelationCount(outputDir1);
 		extractor = new BugExtractor(gitRepository);
 		// extractor.extractBug();

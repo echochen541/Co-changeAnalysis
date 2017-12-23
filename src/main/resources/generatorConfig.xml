@@ -84,14 +84,13 @@
 			enableSelectByExample="false" selectByExampleQueryId="false"></table> <table 
 			tableName="accumutive_bug" domainObjectName="AccumutiveBug" enableCountByExample="false" 
 			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
-			selectByExampleQueryId="false"></table> -->
-
-		<table tableName="raw_filter_shared_dependency" domainObjectName="RawFilterSharedDependency"
-			enableCountByExample="false" enableUpdateByExample="false"
-			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false"></table>
-			
-		<table tableName="shared_dependency" domainObjectName="SharedDependency"
+			selectByExampleQueryId="false"></table> <table tableName="raw_filter_shared_dependency" 
+			domainObjectName="RawFilterSharedDependency" enableCountByExample="false" 
+			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"></table> <table tableName="shared_dependency" 
+			domainObjectName="SharedDependency" enableCountByExample="false" enableUpdateByExample="false" 
+			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
+		<table tableName="change_relation_count" domainObjectName="ChangeRelationCount"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
