@@ -128,20 +128,20 @@ public class ChangeRelationExtractor {
 		ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
 	}
 
-	public void rankChangeRelationCount(String outputdir) {
+	public void sumChangeRelation(String outputdir) {
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		int repositoryId = repository.getRepositoryId();
 		List<ChangeRelationCount> changeRelationCountList = ChangeRelationCountDAO.selectByRepositoryId(repositoryId);
 
 		// System.out.println(changeRelationCountList.size());
 		for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
-			String change1 = changeRelationCount.getChangeType1();
-			String change2 = changeRelationCount.getChangeType2();
+			String changeType1 = changeRelationCount.getChangeType1();
+			String changeType2 = changeRelationCount.getChangeType2();
 			String changeRelation = null;
-			if (change1.compareTo(change2) <= 0)
-				changeRelation = change1 + "--" + change2;
+			if (changeType1.compareTo(changeType2) <= 0)
+				changeRelation = changeType1 + "--" + changeType2;
 			else
-				changeRelation = change2 + "--" + change1;
+				changeRelation = changeType2 + "--" + changeType1;
 
 			if (result.containsKey(changeRelation)) {
 				result.put(changeRelation, result.get(changeRelation) + changeRelationCount.getCount());
@@ -150,26 +150,24 @@ public class ChangeRelationExtractor {
 			}
 		}
 
-		List<Entry<String, Integer>> rankList = new ArrayList<Entry<String, Integer>>(result.entrySet());
-		Collections.sort(rankList, new Comparator<Map.Entry<String, Integer>>() {
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return (o2.getValue() - o1.getValue());
-			}
-		});
+		List<Entry<String, Integer>> sumList = new ArrayList<Entry<String, Integer>>(result.entrySet());
 
-		int line = rankList.size();
+		int line = sumList.size();
 		try {
 			String outputFileName = outputdir + "/" + this.repository.getRepositoryName()
-					+ "_change-relation-count-rank.csv";
+					+ "_change-relation-sum.csv";
 			System.out.println(outputFileName);
 			File f = new File(outputFileName);
 			if (!f.exists())
 				f.createNewFile();
 
 			FileOutputStream fos = new FileOutputStream(f);
+
+			String header = "repository_id,relation_type,sum\n";
+			fos.write(header.getBytes());
 			for (int i = 0; i < line; i++) {
-				Entry<String, Integer> tmp = rankList.get(i);
-				String byteS = tmp.getKey() + "," + tmp.getValue() + ",\n";
+				Entry<String, Integer> tmp = sumList.get(i);
+				String byteS = repositoryId + "," + tmp.getKey() + "," + tmp.getValue() + ",\n";
 				fos.write(byteS.getBytes());
 			}
 			fos.close();

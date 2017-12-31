@@ -35,5 +35,6 @@
 		<mapper resource="mapper/AccumutiveBugMapper.xml" />
 		<mapper resource="mapper/RawFilterSharedDependencyMapper.xml" />
 		<mapper resource="mapper/SharedDependencyMapper.xml" />
+		<mapper resource="mapper/ChangeRelationSumMapper.xml" />
 	</mappers>
 </configuration>

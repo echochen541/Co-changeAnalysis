@@ -41,52 +41,6 @@ public class DSMGenerator {
 		this.gitRepository = gitRepository;
 	}
 
-	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
-				"D:/echo/lab/research/co-change/projects/camel/.git");
-		DSMGenerator generator = new DSMGenerator(gitRepository);
-		// String inputDir1 =
-		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-count";
-		// String outputDir1 =
-		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
-		// 32, 20);
-		String inputDir2 = "D:/echo/lab/research/co-change/ICSE-2018/data/hotspot-dsm";
-		String outputDir2 = inputDir2;
-		generator.generateHotspotDSM(inputDir2, outputDir2);
-
-		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
-		generator = new DSMGenerator(gitRepository);
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
-		// 32, 20);
-		generator.generateHotspotDSM(inputDir2, outputDir2);
-
-		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
-		generator = new DSMGenerator(gitRepository);
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
-		// 32, 20);
-		generator.generateHotspotDSM(inputDir2, outputDir2);
-
-		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
-		generator = new DSMGenerator(gitRepository);
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
-		// 32, 20);
-		generator.generateHotspotDSM(inputDir2, outputDir2);
-
-		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
-		generator = new DSMGenerator(gitRepository);
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
-		// 32, 20);
-		generator.generateHotspotDSM(inputDir2, outputDir2);
-
-		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
-		generator = new DSMGenerator(gitRepository);
-		// generator.generateTopNRelationTopNFilePairDSM(inputDir1, outputDir1,
-		// 32, 20);
-		generator.generateHotspotDSM(inputDir2, outputDir2);
-
-	}
-
 	public void generateTopNRelationTopNFilePairDSM(String inputdir, String outputdir, int threshold1, int threshold2) {
 		String gitRepositoryName = gitRepository.getRepositoryName();
 		int gitRepositoryId = gitRepository.getRepositoryId();
@@ -114,7 +68,6 @@ public class DSMGenerator {
 		// get top n file
 		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(gitRepositoryId,
 				threshold2);
-
 		List<String> fileList = getTopNFile(filePairCountList);
 
 		Map<String, Integer> fileIndexMap = new HashMap<String, Integer>();
@@ -140,59 +93,32 @@ public class DSMGenerator {
 			for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
 				String changeType1 = changeRelationCount.getChangeType1();
 				String changeType2 = changeRelationCount.getChangeType2();
-				String changedEntityType1 = "";
-				String changedEntityType2 = "";
 
-				String change1 = changeType1 + "(" + changedEntityType1 + ")";
-				String change2 = changeType2 + "(" + changedEntityType2 + ")";
-				int compareResult = change1.compareTo(change2);
+				int compareResult = changeType1.compareTo(changeType2);
 
 				String relationType = null;
 
 				if (compareResult <= 0) {
-					relationType = change1 + "--" + change2;
+					relationType = changeType1 + "--" + changeType2;
 					if (relationIndexMap.containsKey(relationType)) {
-						if (dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] == null)
+						if (dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] == null) {
 							dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] = new StringBuilder(
 									emptyCell.toString());
-
+						}
+						
 						dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)]
 								.setCharAt(relationIndexMap.get(relationType), '1');
-
-						// if (dsmMatrix[idx1][idx2] == null)
-						// dsmMatrix[idx1][idx2] = new
-						// StringBuilder(emptyCell.toString());
-						// dsmMatrix[idx1][idx2].setCharAt(relationIndexMap.get(relationType),
-						// '1');
-
-						// if (dsmMatrix[idx2][idx1] == null)
-						// dsmMatrix[idx2][idx1] = new
-						// StringBuilder(emptyCell.toString());
-						// dsmMatrix[idx2][idx1].setCharAt(relationIndexMap.get(relationType),
-						// '1');
-
 					}
 				} else {
-					relationType = change2 + "--" + change1;
+					relationType = changeType2 + "--" + changeType1;
 					if (relationIndexMap.containsKey(relationType)) {
-						if (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] == null)
+						if (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] == null) {
 							dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] = new StringBuilder(
 									emptyCell.toString());
-
+						}
+						
 						dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
 								.setCharAt(relationIndexMap.get(relationType), '1');
-
-						// if (dsmMatrix[idx1][idx2] == null)
-						// dsmMatrix[idx1][idx2] = new
-						// StringBuilder(emptyCell.toString());
-						// dsmMatrix[idx1][idx2].setCharAt(relationIndexMap.get(relationType),
-						// '1');
-
-						// if (dsmMatrix[idx2][idx1] == null)
-						// dsmMatrix[idx2][idx1] = new
-						// StringBuilder(emptyCell.toString());
-						// dsmMatrix[idx2][idx1].setCharAt(relationIndexMap.get(relationType),
-						// '1');
 					}
 				}
 			}
@@ -329,15 +255,6 @@ public class DSMGenerator {
 
 						String parsedName = FileUtils.parseFilePath(path, gitRepositoryName);
 
-						// String startsWithStr = "org/apache/";
-						// if (gitRepositoryName.equals("hbase")) {
-						// startsWithStr += "hadoop/hbase";
-						// } else {
-						// startsWithStr += gitRepositoryName;
-						// }
-						// if (!parsedName.startsWith(startsWithStr)) {
-						// break;
-						// }
 						hm.put(id, parsedName);
 						fileList.add(parsedName);
 					}

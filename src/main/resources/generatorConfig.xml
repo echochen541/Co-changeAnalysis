@@ -89,8 +89,12 @@
 			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
 			selectByExampleQueryId="false"></table> <table tableName="shared_dependency" 
 			domainObjectName="SharedDependency" enableCountByExample="false" enableUpdateByExample="false" 
-			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
-		<table tableName="change_relation_count" domainObjectName="ChangeRelationCount"
+			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
+			<table tableName="change_relation_count" domainObjectName="ChangeRelationCount" 
+			enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" 
+			enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
+
+		<table tableName="change_relation_sum" domainObjectName="ChangeRelationSum"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>
