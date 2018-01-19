@@ -340,7 +340,8 @@
 		where
 		file_name = #{fileName,jdbcType=VARCHAR}
 		and
-		commit_id = #{commitId,jdbcType=VARCHAR}
+		commit_id =
+		#{commitId,jdbcType=VARCHAR}
 	</select>
 
 	<select
@@ -383,4 +384,17 @@
 		changed_entity_type =
 		#{changedEntityType,jdbcType=INTEGER}
 	</select>
+
+	<select id="selectByChangeType" resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from
+		change_operation
+		where
+		change_type =
+		#{changeType,jdbcType=VARCHAR}
+	</select>
+
 </mapper>

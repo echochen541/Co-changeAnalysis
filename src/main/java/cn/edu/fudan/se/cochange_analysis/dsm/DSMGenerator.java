@@ -25,9 +25,11 @@ import org.dom4j.io.SAXReader;
 
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationSum;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationSumDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.SnapshotFileDAO;
 
@@ -41,34 +43,39 @@ public class DSMGenerator {
 		this.gitRepository = gitRepository;
 	}
 
-	public void generateTopNRelationTopNFilePairDSM(String inputdir, String outputdir, int threshold1, int threshold2) {
+	// top threshold1 relation, file pair count >= threshold2 and file in
+	// snapshot file list
+	public void generateCRDSM(List<String> snapshotFileList, String outputdir, int threshold1, int threshold2) {
 		String gitRepositoryName = gitRepository.getRepositoryName();
-		int gitRepositoryId = gitRepository.getRepositoryId();
-		String intputFileName = inputdir + "/" + gitRepository.getRepositoryName() + "_change-relation-count-rank.csv";
+		int repositoryId = gitRepository.getRepositoryId();
 
 		// get top n relation
-		List<String> relationList = getTopNRelation(intputFileName, threshold1);
-		System.out.println("RelationSize: " + relationList.size());
+		List<ChangeRelationSum> relationSumList = ChangeRelationSumDAO.selectTopNByRepositoryId(threshold1,
+				repositoryId);
+
+		System.out.println("RelationSize: " + relationSumList.size());
+		System.out.println("RelationList: " + relationSumList);
+
+		Map<String, Integer> relationIndexMap = new HashMap<String, Integer>();
+
 		StringBuilder emptyCell = new StringBuilder();
-		for (int j = 0; j < relationList.size(); j++) {
+		for (int j = 0; j < relationSumList.size(); j++) {
 			emptyCell.append("0");
 		}
-		Map<String, Integer> relationIndexMap = new HashMap<String, Integer>();
 
 		// change relation buffer
 		StringBuilder relationBuilder = new StringBuilder();
 		relationBuilder.append("[");
-		for (int i = 0; i < relationList.size(); i++) {
-			relationIndexMap.put(relationList.get(i), i);
-			relationBuilder.append(relationList.get(i) + ",");
+		for (int i = 0; i < relationSumList.size(); i++) {
+			relationIndexMap.put(relationSumList.get(i).getRelationType(), i);
+			relationBuilder.append(relationSumList.get(i).getRelationType() + ",");
 		}
 		relationBuilder.deleteCharAt(relationBuilder.length() - 1);
 		relationBuilder.append("]\n");
 
-		// get top n file
-		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(gitRepositoryId,
-				threshold2);
-		List<String> fileList = getTopNFile(filePairCountList);
+		// get file in snapshot in file pair count >= threshold2
+		List<FilePairCount> filePairCountList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId, threshold2);
+		List<String> fileList = getFileInSnapshot(snapshotFileList, filePairCountList);
 
 		Map<String, Integer> fileIndexMap = new HashMap<String, Integer>();
 		for (int index = 0; index < fileList.size(); index++) {
@@ -87,38 +94,39 @@ public class DSMGenerator {
 			String[] tokens = filePair.split("\\|\\|");
 			String fileName1 = tokens[0];
 			String fileName2 = tokens[1];
-			List<ChangeRelationCount> changeRelationCountList = ChangeRelationCountDAO
-					.selectByRepositoryIdAndFilePair(gitRepositoryId, filePair);
-			// System.out.println(++k + " : " + filePair);
-			for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
-				String changeType1 = changeRelationCount.getChangeType1();
-				String changeType2 = changeRelationCount.getChangeType2();
 
-				int compareResult = changeType1.compareTo(changeType2);
+			if (fileList.contains(fileName1) && fileList.contains(fileName2)) {
+				List<ChangeRelationCount> changeRelationCountList = ChangeRelationCountDAO
+						.selectByRepositoryIdAndFilePair(repositoryId, filePair);
+				// System.out.println(++k + " : " + filePair);
+				for (ChangeRelationCount changeRelationCount : changeRelationCountList) {
+					String changeType1 = changeRelationCount.getChangeType1();
+					String changeType2 = changeRelationCount.getChangeType2();
+					int compareResult = changeType1.compareTo(changeType2);
+					String relationType = null;
 
-				String relationType = null;
+					if (compareResult <= 0) {
+						relationType = changeType1 + "--" + changeType2;
+						if (relationIndexMap.containsKey(relationType)) {
+							if (dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] == null) {
+								dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] = new StringBuilder(
+										emptyCell.toString());
+							}
 
-				if (compareResult <= 0) {
-					relationType = changeType1 + "--" + changeType2;
-					if (relationIndexMap.containsKey(relationType)) {
-						if (dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] == null) {
-							dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)] = new StringBuilder(
-									emptyCell.toString());
+							dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)]
+									.setCharAt(relationIndexMap.get(relationType), '1');
 						}
-						
-						dsmMatrix[fileIndexMap.get(fileName1)][fileIndexMap.get(fileName2)]
-								.setCharAt(relationIndexMap.get(relationType), '1');
-					}
-				} else {
-					relationType = changeType2 + "--" + changeType1;
-					if (relationIndexMap.containsKey(relationType)) {
-						if (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] == null) {
-							dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] = new StringBuilder(
-									emptyCell.toString());
+					} else {
+						relationType = changeType2 + "--" + changeType1;
+						if (relationIndexMap.containsKey(relationType)) {
+							if (dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] == null) {
+								dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)] = new StringBuilder(
+										emptyCell.toString());
+							}
+
+							dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
+									.setCharAt(relationIndexMap.get(relationType), '1');
 						}
-						
-						dsmMatrix[fileIndexMap.get(fileName2)][fileIndexMap.get(fileName1)]
-								.setCharAt(relationIndexMap.get(relationType), '1');
 					}
 				}
 			}
@@ -131,6 +139,9 @@ public class DSMGenerator {
 					matrixBuilder.append("0 ");
 				} else {
 					matrixBuilder.append(dsmMatrix[i][j].toString() + " ");
+					// displayVector(i, j,
+					// dsmMatrix[i][j].toString().toCharArray(), fileList,
+					// relationSumList);
 				}
 			}
 			matrixBuilder.deleteCharAt(matrixBuilder.length() - 1);
@@ -159,8 +170,37 @@ public class DSMGenerator {
 		}
 	}
 
+	private void displayVector(int i, int j, char[] relationArray, List<String> fileList,
+			List<ChangeRelationSum> relationSumList) {
+		System.out.println(fileList.get(i));
+		System.out.println(fileList.get(j));
+		for (int k = 0; k < relationArray.length; k++) {
+			if (relationArray[k] == '1') {
+				System.out.println(relationSumList.get(k).getRelationType());
+			}
+		}
+		System.out.println();
+	}
+
+	private List<String> getFileInSnapshot(List<String> snapshotFileList, List<FilePairCount> filePairCountList) {
+		Set<String> fileSet = new HashSet<String>();
+		for (FilePairCount filePairItem : filePairCountList) {
+			String[] filePairs = filePairItem.getFilePair().split("\\|\\|");
+			if (snapshotFileList.contains(filePairs[0])) {
+				fileSet.add(filePairs[0]);
+			}
+			if (snapshotFileList.contains(filePairs[1])) {
+				fileSet.add(filePairs[1]);
+			}
+		}
+
+		List<String> fileList = new ArrayList<String>(fileSet);
+		Collections.sort(fileList);
+		return fileList;
+	}
+
 	public List<String> getTopNRelation(String intputFileName, int threshold1) {
-		List<String> relationList = new ArrayList<String>();
+		List<String> relationSumList = new ArrayList<String>();
 		FileInputStream fis = null;
 		InputStreamReader isw = null;
 		BufferedReader br = null;
@@ -172,7 +212,7 @@ public class DSMGenerator {
 			for (int i = 0; i < threshold1; i++) {
 				String line = br.readLine();
 				String[] tokens = line.split(",");
-				relationList.add(tokens[0]);
+				relationSumList.add(tokens[0]);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -184,21 +224,8 @@ public class DSMGenerator {
 			}
 		}
 
-		Collections.sort(relationList);
-		return relationList;
-	}
-
-	public List<String> getTopNFile(List<FilePairCount> filePairCountList) {
-		Set<String> fileSet = new HashSet<String>();
-		for (FilePairCount filePairItem : filePairCountList) {
-			String[] filePairs = filePairItem.getFilePair().split("\\|\\|");
-			fileSet.add(filePairs[0]);
-			fileSet.add(filePairs[1]);
-		}
-
-		List<String> fileList = new ArrayList<String>(fileSet);
-		Collections.sort(fileList);
-		return fileList;
+		Collections.sort(relationSumList);
+		return relationSumList;
 	}
 
 	public List<String> getSnapshotFile(String release) {
@@ -293,8 +320,8 @@ public class DSMGenerator {
 		structureDSM.write2StructureDSM(outputDir + "/" + gitRepositoryName + "_sdsm.dsm");
 
 		historyDSM = new GenerateDSM(fileList);
-		int gitRepositoryId = gitRepository.getRepositoryId();
-		List<FilePairCount> dataList = FilePairCountDAO.selectByRepositoryIdAndCount(gitRepositoryId, 0);
+		int repositoryId = gitRepository.getRepositoryId();
+		List<FilePairCount> dataList = FilePairCountDAO.selectByRepositoryIdAndCount(repositoryId, 0);
 		for (FilePairCount item : dataList) {
 			String[] files = item.getFilePair().split("\\|\\|");
 			// System.out.println(files[0] + " , " + files[1]);

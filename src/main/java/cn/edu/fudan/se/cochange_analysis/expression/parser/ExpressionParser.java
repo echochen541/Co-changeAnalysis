@@ -44,11 +44,13 @@ public class ExpressionParser {
 	}
 
 	public static void main(String[] args) {
-		String changeType = "CONDITION_EXPRESSION_CHANGE";
+		String changeType = "IF_STATEMENT_CONDITION_EXPRESSION_CHANGE";
 		String changedEntityType = "IF_STATEMENT";
-		List<ChangeOperationWithBLOBs> cos = ChangeOperationDAO.selectByChangeTypeAndChangedEntityType(changeType,
-				changedEntityType);
 
+		List<ChangeOperationWithBLOBs> cos = ChangeOperationDAO.selectByChangeType(changeType);
+		
+		System.out.println(cos.size());
+		
 		for (ChangeOperationWithBLOBs co : cos) {
 			String content = co.getChangedEntityContent();
 			ExpressionParser parser = new ExpressionParser(content);

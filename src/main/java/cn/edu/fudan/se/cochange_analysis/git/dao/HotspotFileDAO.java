@@ -28,8 +28,13 @@ public class HotspotFileDAO {
 			e.printStackTrace();
 		}
 	}
+
 	public static void insertBatch(List<HotspotFile> hotspotFileList) {
 		hotspotFileMapper.insertBatch(hotspotFileList);
 		sqlSession.commit();
+	}
+
+	public static List<String> selectByRepositoryId(Integer repositoryId) {
+		return hotspotFileMapper.selectByRepositoryId(repositoryId);
 	}
 }

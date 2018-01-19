@@ -54,4 +54,6 @@ public interface HotspotFileMapper {
     int updateByPrimaryKey(HotspotFile record);
 
 	int insertBatch(List<HotspotFile> hotspotFileList);
+
+	List<String> selectByRepositoryId(Integer repositoryId);
 }

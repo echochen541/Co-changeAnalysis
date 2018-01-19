@@ -16,49 +16,11 @@ import cn.edu.fudan.se.cochange_analysis.dsm.GenerateDSM;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 
 public class Parse2Tree {
-	class TreeNode {
-		TreeNode parent;
-		List<TreeNode> children;
-
-		public TreeNode(String line) {
-			this.children = new ArrayList<TreeNode>();
-			this.orignalContent = line;
-			extractInfo(line);
-		}
-
-		List<Integer> subChildrenIndexList;
-
-		String orignalContent;
-		String tagName;
-		String name;
-
-		public void extractInfo(String line) {
-			String[] tmp = line.split(" ");
-			this.tagName = tmp[0].substring(1);
-			if (tmp[0].endsWith(">")) {
-				this.tagName = this.tagName.substring(0, this.tagName.length() - 1);
-				this.name = this.tagName;
-			}
-			if (tmp.length >= 2 && tmp[1].startsWith("name")) {
-				this.name = match(tmp[1]);
-			}
-		}
-
-		public String toString() {
-			return orignalContent;
-		}
-	}
-
 	private int[][] dsmMatrixData;
 	private List<String> dsmFileList;
 	private List<String> clusterFileList;
 	private TreeNode rootNode;
-	private GitRepository repository;
-
-	public Parse2Tree(GitRepository repository) {
-		super();
-		this.repository = repository;
-	}
+	private Map<String, Integer> fileIndexMap;
 
 	public void parseDSM(String dst) {
 		try {
@@ -81,7 +43,7 @@ public class Parse2Tree {
 
 			}
 			dsmMatrixData = tempMatrix;
-			String a = sc.nextLine();
+			sc.nextLine();
 			for (int i = 0; i < size; i++) {
 				String line = sc.nextLine().trim();
 				if (!"".equals(line) && line != null) {
@@ -94,7 +56,6 @@ public class Parse2Tree {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public TreeNode parse(String dst) {
@@ -133,7 +94,6 @@ public class Parse2Tree {
 			e.printStackTrace();
 		}
 		return null;
-
 	}
 
 	public static String match(String source) {
@@ -151,9 +111,12 @@ public class Parse2Tree {
 	public void getFileList(String dst) {
 		FileInputStream fis;
 		clusterFileList = new ArrayList<String>();
+		fileIndexMap = new HashMap<String, Integer>();
 		try {
 			fis = new FileInputStream(new File(dst));
 			Scanner sc = new Scanner(fis);
+			int i = 0;
+
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				line = line.trim();
@@ -162,53 +125,15 @@ public class Parse2Tree {
 					if (tmp.length >= 2 && tmp[1].startsWith("name")) {
 						String fileName = match(tmp[1]);
 						this.clusterFileList.add(fileName);
+						// System.out.println(fileName + " " + i);
+						fileIndexMap.put(fileName, i++);
 					}
 				}
 			}
-			System.out.println("ClusterSize:" + this.clusterFileList.size());
 			sc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		int b = 0;
-		for (String a : this.clusterFileList) {
-			b++;
-			System.out.print(b + " " + a + "\n");
-			// System.out.println(a);
-
-		}
-	}
-
-	private Map<String, Integer> fileIndexMap;
-
-	public void calculate() {
-		fileIndexMap = new HashMap<String, Integer>();
-		for (int i = 0; i < this.clusterFileList.size(); i++) {
-			fileIndexMap.put(this.clusterFileList.get(i), i);
-		}
-		List<Integer> bigList = dfs(this.rootNode);
-	}
-
-	private List<Integer> dfs(TreeNode t) {
-		String name = t.name;
-		// children
-		if (t.tagName.equals("item")) {
-			List<Integer> tmp = new ArrayList<Integer>();
-			tmp.add(this.fileIndexMap.get(t.name));
-			return tmp;
-		}
-		// non-children
-		List<Integer> totalList = new ArrayList<Integer>();
-		for (TreeNode tmp : t.children) {
-			totalList.addAll(dfs(tmp));
-		}
-
-		if (name.contains("/")) {
-			// System.out.println(name);
-			t.subChildrenIndexList = new ArrayList<Integer>(totalList);
-		}
-		return totalList;
-
 	}
 
 	public void dfsPrint(TreeNode t) {
@@ -283,31 +208,63 @@ public class Parse2Tree {
 			int numx = result[0];
 			int numy = result[1];
 			if (m >= t1 && numx >= (m - 1) * t2 && numy >= (m - 1) * t2) {
-				System.out.print(tmp.name);
+				System.out.print("Core File: " + tmp.name + "(" + (fileIndexMap.get(tmp.name) + 1) + ")");
 				for (Integer item : subList) {
 					System.out.print(" " + (item + 1));
 				}
-				System.out.print("\n");
+				System.out.println();
+				System.out.println();
 			}
 		}
-
 	}
 
 	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
-				"D:/echo/lab/research/co-change/projects/camel/.git");
-		Parse2Tree a = new Parse2Tree(gitRepository);
-		String inputDir = "D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\change-relation-dsm\\";
-		a.rootNode = a.parse(inputDir + "cxf_32_5_cluster..clsx");
-		a.getFileList(inputDir + "cxf_32_5_cluster..clsx");
-		// System.exit(0);
-		a.parseDSM("D:\\echo\\lab\\research\\co-change\\ICSE-2018\\data\\change-relation-dsm\\cxf_32_5.dsm");
-		a.calculate();
-		System.out.println("Finished");
-		a.printResult();
-		System.out.println("#################################");
-		a.pickGroups();
-		System.out.println("#################################");
-		a.findHotspots(a.pickedGroups, 10, 0.1);
+		Parse2Tree parser = new Parse2Tree();
+		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
+
+		parser.rootNode = parser.parse(inputDir + "camel_32_3_cluster..clsx");
+
+		parser.getFileList(inputDir + "camel_32_3_cluster..clsx");
+
+		parser.parseDSM("D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/camel_32_3.dsm");
+
+		parser.pickGroups();
+		
+		System.exit(0);
+
+		parser.findHotspots(parser.pickedGroups, 4, 0.1);
+	}
+
+	class TreeNode {
+		TreeNode parent;
+		List<TreeNode> children;
+
+		public TreeNode(String line) {
+			this.children = new ArrayList<TreeNode>();
+			this.orignalContent = line;
+			extractInfo(line);
+		}
+
+		List<Integer> subChildrenIndexList;
+
+		String orignalContent;
+		String tagName;
+		String name;
+
+		public void extractInfo(String line) {
+			String[] tmp = line.split(" ");
+			this.tagName = tmp[0].substring(1);
+			if (tmp[0].endsWith(">")) {
+				this.tagName = this.tagName.substring(0, this.tagName.length() - 1);
+				this.name = this.tagName;
+			}
+			if (tmp.length >= 2 && tmp[1].startsWith("name")) {
+				this.name = match(tmp[1]);
+			}
+		}
+
+		public String toString() {
+			return orignalContent;
+		}
 	}
 }

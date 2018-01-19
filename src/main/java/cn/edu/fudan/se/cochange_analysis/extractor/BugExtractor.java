@@ -2,6 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.extractor;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.edu.fudan.se.cochange_analysis.file.util.FileUtils;
+import cn.edu.fudan.se.cochange_analysis.git.bean.AccumutiveBug;
 import cn.edu.fudan.se.cochange_analysis.git.bean.BugFixFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitChangeFile;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitCommitParentKey;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.bean.IssueBug;
+import cn.edu.fudan.se.cochange_analysis.git.dao.AccumutiveBugDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.BugFixFileDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitChangeFileDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.GitCommitDAO;
@@ -30,13 +33,6 @@ public class BugExtractor {
 
 	public BugExtractor(GitRepository gitRepository) {
 		this.gitRepository = gitRepository;
-	}
-
-	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
-				"D:/echo/lab/research/co-change/projects/camel/.git");
-		BugExtractor extractor = new BugExtractor(gitRepository);
-		extractor.extractBug();
 	}
 
 	public void extractBug() {
@@ -92,6 +88,42 @@ public class BugExtractor {
 				BugFixFileDAO.insertBatch(bugFixFileList);
 			}
 		}
+	}
+
+	public double[] computeAverageBFAndBC(List<String> fileList) {
+		// System.out.println("fileList.size() " + fileList.size());
+		double[] result = new double[2];
+		double avgBugFrequency = 0.0;
+		double avgBugChurn = 0.0;
+		double sumBugFrequency = 0.0;
+		double sumBugChurn = 0.0;
+
+		List<AccumutiveBug> accumutiveBugList = AccumutiveBugDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		Map<String, Integer> bugFrequencyMap = new HashMap<String, Integer>();
+		Map<String, Integer> bugChurnMap = new HashMap<String, Integer>();
+
+		for (AccumutiveBug accumutiveBug : accumutiveBugList) {
+			bugFrequencyMap.put(accumutiveBug.getFileName(), accumutiveBug.getBugFrequency());
+			bugChurnMap.put(accumutiveBug.getFileName(), accumutiveBug.getBugChurn());
+		}
+
+		for (String fileName : fileList) {
+			if (bugFrequencyMap.containsKey(fileName)) {
+				sumBugFrequency += bugFrequencyMap.get(fileName);
+				sumBugChurn += bugChurnMap.get(fileName);
+			}
+		}
+
+		avgBugFrequency = sumBugFrequency / fileList.size();
+		avgBugChurn = sumBugChurn / fileList.size();
+		result[0] = avgBugFrequency;
+		result[1] = avgBugChurn;
+		// System.out.println("sumBugFrequency " + sumBugFrequency);
+		// System.out.println("sumBugChurn " + sumBugChurn);
+		System.out.println("avgBugFrequency " + avgBugFrequency);
+		System.out.println("avgBugChurn " + avgBugChurn);
+		System.out.println();
+		return result;
 	}
 
 	public GitRepository getRepository() {

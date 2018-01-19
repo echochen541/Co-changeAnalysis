@@ -77,4 +77,8 @@ public class ChangeOperationDAO {
 	public static List<String> selectUniqueChangeTypesByCommitIdAndFileName(String commitId, String fileName) {
 		return changeOperationMapper.selectUniqueChangeTypesByCommitIdAndFileName(commitId, fileName);
 	}
+
+	public static List<ChangeOperationWithBLOBs> selectByChangeType(String changeType) {
+		return changeOperationMapper.selectByChangeType(changeType);
+	}
 }

@@ -1,5 +1,7 @@
 package cn.edu.fudan.se.cochange_analysis.git.dao;
 
+import java.util.List;
+
 import cn.edu.fudan.se.cochange_analysis.git.bean.AccumutiveBug;
 import cn.edu.fudan.se.cochange_analysis.git.bean.AccumutiveBugKey;
 
@@ -51,4 +53,6 @@ public interface AccumutiveBugMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(AccumutiveBug record);
+
+	List<AccumutiveBug> selectByRepositoryId(int repositoryId);
 }

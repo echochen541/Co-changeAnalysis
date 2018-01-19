@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationSum;
 
 public interface ChangeRelationSumMapper {
@@ -24,6 +23,6 @@ public interface ChangeRelationSumMapper {
 	 */
 	int insertSelective(ChangeRelationSum record);
 
-	List<ChangeRelationCount> selectTopNByRepositoryId(@Param(value = "n") int n,
+	List<ChangeRelationSum> selectTopNByRepositoryId(@Param(value = "n") int n,
 			@Param(value = "repositoryId") int repositoryId);
 }

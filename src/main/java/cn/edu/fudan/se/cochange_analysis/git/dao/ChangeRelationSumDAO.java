@@ -34,7 +34,7 @@ public class ChangeRelationSumDAO {
 		sqlSession.commit();
 	}
 
-	public static List<ChangeRelationCount> selectTopNByRepositoryId(int n, int repositoryId) {
+	public static List<ChangeRelationSum> selectTopNByRepositoryId(int n, int repositoryId) {
 		return changeRelationSumMapper.selectTopNByRepositoryId(n, repositoryId);
 	}
 }
