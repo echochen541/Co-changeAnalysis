@@ -37,28 +37,7 @@ public class ChangeOperationDAO {
 		sqlSession.commit();
 	}
 
-	public static void insertChanges(List<SourceCodeChange> changes, int repositoryId, String commitId,
-			String filePath) {
-		List<ChangeOperationWithBLOBs> operations = new ArrayList<ChangeOperationWithBLOBs>();
-		for (SourceCodeChange change : changes) {
-			String newEntity = "";
-			// if update, store new entity content
-			if (change instanceof Update) {
-				Update update = (Update) change;
-				newEntity = update.getNewEntity().getUniqueName();
-			}
-
-			ChangeOperationWithBLOBs operation = new ChangeOperationWithBLOBs(0, repositoryId, commitId, filePath,
-					change.getRootEntity().getType().toString(), change.getParentEntity().getType().toString(),
-					change.getChangeType().toString(), change.getSignificanceLevel().toString(),
-					change.getChangedEntity().getType().toString(), change.getRootEntity().getUniqueName().toString(),
-					change.getParentEntity().getUniqueName().toString(),
-					change.getChangedEntity().getUniqueName().toString(), newEntity);
-			// System.out.println(operation.toString());
-			operations.add(operation);
-			// changeOperationMapper.insert(operation);
-			// sqlSession.commit();
-		}
+	public static void insertChanges(List<ChangeOperationWithBLOBs> operations) {
 		changeOperationMapper.insertBatch(operations);
 		sqlSession.commit();
 	}

@@ -419,8 +419,8 @@ public class ParallelChangeRelationExtrctor {
 					&& (newExpressionTree1.isSameExpressionTree(newExpressionTree2))) {
 				System.out.println("IF_STATEMENT_CONDITION_EXPRESSION_CHANGE");
 				System.out.println(oldExpressionTree1.content);
-				System.out.println(oldExpressionTree2.content);
 				System.out.println(newExpressionTree1.content);
+				System.out.println(oldExpressionTree2.content);
 				System.out.println(newExpressionTree2.content);
 				System.out.println();
 				return true;
