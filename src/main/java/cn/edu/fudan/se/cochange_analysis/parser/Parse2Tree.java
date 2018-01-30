@@ -12,6 +12,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.edu.fudan.se.cochange_analysis.detector.Hotspot;
 import cn.edu.fudan.se.cochange_analysis.dsm.GenerateDSM;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 
@@ -19,7 +20,7 @@ public class Parse2Tree {
 	private int[][] dsmMatrixData;
 	private List<String> dsmFileList;
 	private List<String> clusterFileList;
-	private TreeNode rootNode;
+	public TreeNode rootNode;
 	private Map<String, Integer> fileIndexMap;
 
 	public void parseDSM(String dst) {
@@ -28,7 +29,7 @@ public class Parse2Tree {
 			Scanner sc = new Scanner(fis);
 			sc.nextLine();
 			int size = sc.nextInt();
-			System.out.println("DSMSize:" + size);
+			// System.out.println("DSMSize:" + size);
 			int[][] tempMatrix = new int[size][size];
 			List<String> fileList = new ArrayList<String>();
 			for (int i = 0; i < size; i++) {
@@ -149,16 +150,38 @@ public class Parse2Tree {
 		}
 	}
 
-	public void dfsPick(TreeNode t) {
+	public List<Integer> dfs(TreeNode t) {
+		String name = t.name;
+		// children
+		if (t.tagName.equals("item")) {
+			List<Integer> tmp = new ArrayList<Integer>();
+			tmp.add(this.fileIndexMap.get(t.name));
+			return tmp;
+		}
+		// non-children
+		List<Integer> totalList = new ArrayList<Integer>();
+		for (TreeNode tmp : t.children) {
+			totalList.addAll(dfs(tmp));
+		}
 
+		if (name.contains("/")) {
+			// System.out.println(name);
+			t.subChildrenIndexList = new ArrayList<Integer>(totalList);
+		}
+		return totalList;
+
+	}
+
+	public void dfsPick(TreeNode t) {
 		if (t.tagName.equals("group") && t.name.contains("/")) {
-			System.out.print(t.tagName + " " + t.name);
-			if (t.subChildrenIndexList != null) {
-				for (Integer a : t.subChildrenIndexList) {
-					System.out.print((a.intValue() + 1) + " ");
-				}
-			}
-			System.out.print("\n");
+			// System.out.print(t.tagName + " " + t.name + " ");
+			// if (t.subChildrenIndexList != null) {
+			// for (Integer a : t.subChildrenIndexList) {
+			// System.out.print((a.intValue() + 1) + " ");
+			// }
+			// System.out.println();
+			// }
+			// System.out.print("\n");
 			this.pickedGroups.add(t);
 		}
 		for (TreeNode t1 : t.children) {
@@ -199,7 +222,8 @@ public class Parse2Tree {
 		return res;
 	}
 
-	public void findHotspots(List<TreeNode> list, int t1, double t2) {
+	public List<Hotspot> findHotspots(List<TreeNode> list, int t1, double t2) {
+		List<Hotspot> hotspotList = new ArrayList<Hotspot>();
 		for (TreeNode tmp : list) {
 			int rootId = this.clusterFileList.indexOf(tmp.name);
 			List<Integer> subList = tmp.subChildrenIndexList;
@@ -208,14 +232,27 @@ public class Parse2Tree {
 			int numx = result[0];
 			int numy = result[1];
 			if (m >= t1 && numx >= (m - 1) * t2 && numy >= (m - 1) * t2) {
-				System.out.print("Core File: " + tmp.name + "(" + (fileIndexMap.get(tmp.name) + 1) + ")");
+				Hotspot hotspot = new Hotspot();
+				hotspot.setCoreFile(tmp.name);
+				List<String> fileList = new ArrayList<String>();
+
+				// System.out.print("Core File: " + tmp.name + "(" +
+				// (fileIndexMap.get(tmp.name) + 1) + ")");
 				for (Integer item : subList) {
-					System.out.print(" " + (item + 1));
+					if (item != rootId) {
+						fileList.add(clusterFileList.get(item));
+					}
+					// System.out.print(" " + (item + 1));
 				}
-				System.out.println();
-				System.out.println();
+				hotspot.setFileList(fileList);
+				// System.out.println();
+				// System.out.println(hotspot.getCoreFile());
+				// System.out.println(hotspot.getFileList());
+				hotspotList.add(hotspot);
+				// System.out.println();
 			}
 		}
+		return hotspotList;
 	}
 
 	public static void main(String[] args) {
@@ -228,11 +265,11 @@ public class Parse2Tree {
 
 		parser.parseDSM("D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/camel_32_3.dsm");
 
-		parser.pickGroups();
-		
-		System.exit(0);
+		parser.dfs(parser.rootNode);
 
-		parser.findHotspots(parser.pickedGroups, 4, 0.1);
+		parser.pickGroups();
+
+		parser.findHotspots(parser.pickedGroups, 4, 0.25);
 	}
 
 	class TreeNode {

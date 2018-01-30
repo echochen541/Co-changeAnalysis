@@ -81,4 +81,10 @@ public class ChangeOperationDAO {
 	public static List<ChangeOperationWithBLOBs> selectByChangeType(String changeType) {
 		return changeOperationMapper.selectByChangeType(changeType);
 	}
+
+	public static List<ChangeOperationWithBLOBs> selectByRepositoryIdAndCommitIdAndFileNameAndChangeType(
+			int repositoryId, String commitId, String fileName, String changeType) {
+		return changeOperationMapper.selectByRepositoryIdAndCommitIdAndFileNameAndChangeType(repositoryId, commitId,
+				fileName, changeType);
+	}
 }

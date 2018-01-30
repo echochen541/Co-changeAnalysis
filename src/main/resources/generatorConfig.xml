@@ -92,11 +92,17 @@
 			enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table> 
 			<table tableName="change_relation_count" domainObjectName="ChangeRelationCount" 
 			enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" 
-			enableSelectByExample="false" selectByExampleQueryId="false"></table> -->
+			enableSelectByExample="false" selectByExampleQueryId="false"></table> <table 
+			tableName="change_relation_sum" domainObjectName="ChangeRelationSum" enableCountByExample="false" 
+			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"></table> <table tableName="raw_parallel_change_relation_commit" 
+			domainObjectName="RawParallelChangeRelationCommit" enableCountByExample="false" 
+			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"></table> -->
 
-		<table tableName="change_relation_sum" domainObjectName="ChangeRelationSum"
-			enableCountByExample="false" enableUpdateByExample="false"
-			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false"></table>
+		<table tableName="parallel_change_relation_commit"
+			domainObjectName="ParallelChangeRelationCommit" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"></table>
 	</context>
 </generatorConfiguration>

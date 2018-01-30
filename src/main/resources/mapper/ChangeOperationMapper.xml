@@ -370,6 +370,28 @@
 		#{changedEntityType,jdbcType=INTEGER}
 	</select>
 
+	<select id="selectByRepositoryIdAndCommitIdAndFileNameAndChangeType"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from
+		change_operation
+		where
+		repository_id =
+		#{repositoryId,jdbcType=INTEGER}
+		and
+		commit_id =
+		#{commitId,jdbcType=INTEGER}
+		and
+		file_name =
+		#{fileName,jdbcType=INTEGER}
+		and
+		change_type =
+		#{changeType,jdbcType=VARCHAR}
+	</select>
+
 	<select id="selectByChangeTypeAndChangedEntityType" resultMap="ResultMapWithBLOBs">
 		select
 		<include refid="Base_Column_List" />

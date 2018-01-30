@@ -79,4 +79,8 @@ public interface ChangeOperationMapper {
 			@Param(value = "fileName") String fileName);
 
 	List<ChangeOperationWithBLOBs> selectByChangeType(String changeType);
+
+	List<ChangeOperationWithBLOBs> selectByRepositoryIdAndCommitIdAndFileNameAndChangeType(
+			@Param(value = "repositoryId") int repositoryId, @Param(value = "commitId") String commitId,
+			@Param(value = "fileName") String fileName, @Param(value = "changeType") String changeType);
 }
