@@ -45,22 +45,41 @@ public class ExpressionParser {
 
 	public static void main(String[] args) {
 		String changeType = "IF_STATEMENT_CONDITION_EXPRESSION_CHANGE";
-		String changedEntityType = "IF_STATEMENT";
 
 		List<ChangeOperationWithBLOBs> cos = ChangeOperationDAO.selectByChangeType(changeType);
-		
+
 		System.out.println(cos.size());
-		
+
 		for (ChangeOperationWithBLOBs co : cos) {
 			String content = co.getChangedEntityContent();
 			ExpressionParser parser = new ExpressionParser(content);
 			Expression expression = parser.parse2Expression();
 			ExpressionTree pTree = parser.parse2Tree(expression);
+
 			if (pTree != null) {
 				pTree.printTree();
-				System.out.println();
+
+				BinaryTree bTree1 = ExpressionTree.convert2BinaryTree(pTree);
+				bTree1.printTree();
+
 			} else {
 				System.out.println(content);
+			}
+
+			String content2 = co.getNewEntityContent();
+			ExpressionParser parser2 = new ExpressionParser(content2);
+			Expression expression2 = parser2.parse2Expression();
+			ExpressionTree pTree2 = parser2.parse2Tree(expression2);
+
+			if (pTree2 != null) {
+				pTree2.printTree();
+
+				BinaryTree bTree2 = ExpressionTree.convert2BinaryTree(pTree2);
+				bTree2.printTree();
+
+				System.out.println();
+			} else {
+				System.out.println(content2);
 				System.out.println();
 			}
 		}

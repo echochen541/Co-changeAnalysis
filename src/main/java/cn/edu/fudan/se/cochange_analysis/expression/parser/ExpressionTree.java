@@ -34,9 +34,47 @@ public class ExpressionTree {
 	}
 
 	public boolean isSameExpressionTree(ExpressionTree pTree2) {
-		ExpressionNode root1 = root;
-		ExpressionNode root2 = pTree2.root;
-		
-		return false;
+		BinaryTree bTree1 = convert2BinaryTree(this);
+		BinaryTree bTree2 = convert2BinaryTree(pTree2);
+		return bTree1.isSameTree(bTree2);
+	}
+
+	public static BinaryTree convert2BinaryTree(ExpressionTree eTree) {
+		BinaryTreeNode bTreeRoot = convert2BinaryNode(eTree.root);
+		BinaryTree bTree = new BinaryTree();
+		bTree.setRoot(bTreeRoot);
+		return bTree;
+	}
+
+	public static BinaryTreeNode convert2BinaryNode(ExpressionNode eNode) {
+		BinaryTreeNode bNode = new BinaryTreeNode();
+		convert2BinaryNodeHelper(eNode, bNode);
+		return bNode;
+	}
+
+	public static void convert2BinaryNodeHelper(ExpressionNode eNode, BinaryTreeNode bNode) {
+		if (eNode == null) {
+			return;
+		}
+
+		if (eNode.getLeft() == null && eNode.getRight() == null) {
+			// if (eNode.getType().equals("MethodInvocation") ||
+			// eNode.getType().equals("SuperMethodInvocation")) {
+			bNode.setContent(eNode.getContent());
+			// } else {
+			bNode.setContent("T");
+			// }
+			return;
+		}
+
+		bNode.setContent(eNode.getContent());
+
+		if (eNode.getLeft() != null) {
+			bNode.setLeft(convert2BinaryNode(eNode.getLeft()));
+		}
+
+		if (eNode.getRight() != null) {
+			bNode.setRight(convert2BinaryNode(eNode.getRight()));
+		}
 	}
 }
