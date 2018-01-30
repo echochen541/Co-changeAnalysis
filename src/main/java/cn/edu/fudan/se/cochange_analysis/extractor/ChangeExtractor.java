@@ -56,6 +56,8 @@ public class ChangeExtractor {
 	public void extracChange() {
 		List<ChangeOperationWithBLOBs> operations = new ArrayList<ChangeOperationWithBLOBs>();
 		int repositoryId = repository.getRepositoryId();
+		System.out.println(repositoryId);
+
 		GitExtractor gitExtractor = new GitExtractor(repository);
 		// create temp directory to store files to be extracted
 		String userDirPath = System.getProperty("user.dir");
@@ -66,6 +68,18 @@ public class ChangeExtractor {
 		List<GitChangeFile> changeFiles = GitChangeFileDAO.selectByRepositoryId(repositoryId);
 
 		for (GitChangeFile changeFile : changeFiles) {
+			String fileName = changeFile.getFileName();
+
+			// non java file
+			if (!fileName.endsWith(".java")) {
+				continue;
+			}
+
+			// test file
+			if (FileUtils.isTestFile(fileName)) {
+				continue;
+			}
+
 			// not MODIFY
 			if (!changeFile.getChangeType().equals("MODIFY")) {
 				continue;
@@ -80,6 +94,9 @@ public class ChangeExtractor {
 
 			String parentCommitId = commitParents.get(0).getParentCommitId();
 			String filePath = changeFile.getFileName();
+
+			// System.out.println(repositoryId + "," + commitId + "," +
+			// filePath);
 
 			byte[] content1 = gitExtractor.getFileContentByCommitId(parentCommitId, filePath);
 			byte[] content2 = gitExtractor.getFileContentByCommitId(commitId, filePath);
@@ -100,6 +117,7 @@ public class ChangeExtractor {
 			right.delete();
 
 			List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+
 			if (!changes.isEmpty()) {
 				for (SourceCodeChange change : changes) {
 					String newEntity = "";
@@ -109,10 +127,29 @@ public class ChangeExtractor {
 						newEntity = update.getNewEntity().getUniqueName();
 					}
 
+					String changeType = change.getChangeType().toString();
+					String changedEntityType = change.getChangedEntity().getType().toString();
+
+					if (changeType.equals("STATEMENT_DELETE") || changeType.equals("STATEMENT_INSERT")
+							|| changeType.equals("STATEMENT_ORDERING_CHANGE")
+							|| changeType.equals("STATEMENT_PARENT_CHANGE") || changeType.equals("STATEMENT_UPDATE")) {
+						changeType = changedEntityType + changeType.substring(9);
+						// System.out.println(changeType);
+					}
+
+					if (changeType.equals("CONDITION_EXPRESSION_CHANGE")) {
+						changeType = changedEntityType + "_" + changeType;
+						// System.out.println(changeType);
+					}
+
+					if (changeType.contains("COMMENT") || changeType.contains("DOC")) {
+						continue;
+					}
+
 					ChangeOperationWithBLOBs operation = new ChangeOperationWithBLOBs(0, repositoryId, commitId,
 							filePath, change.getRootEntity().getType().toString(),
-							change.getParentEntity().getType().toString(), change.getChangeType().toString(),
-							change.getSignificanceLevel().toString(), change.getChangedEntity().getType().toString(),
+							change.getParentEntity().getType().toString(), changeType,
+							change.getSignificanceLevel().toString(), changedEntityType,
 							change.getRootEntity().getUniqueName().toString(),
 							change.getParentEntity().getUniqueName().toString(),
 							change.getChangedEntity().getUniqueName().toString(), newEntity);
