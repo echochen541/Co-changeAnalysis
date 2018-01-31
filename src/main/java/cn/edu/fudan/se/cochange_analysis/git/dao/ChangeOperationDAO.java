@@ -2,7 +2,6 @@ package cn.edu.fudan.se.cochange_analysis.git.dao;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.io.Resources;
@@ -10,8 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
-import ch.uzh.ifi.seal.changedistiller.model.entities.Update;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeOperationWithBLOBs;
 
 public class ChangeOperationDAO {

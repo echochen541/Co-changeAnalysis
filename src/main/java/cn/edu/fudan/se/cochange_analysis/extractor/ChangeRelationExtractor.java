@@ -124,8 +124,12 @@ public class ChangeRelationExtractor {
 			}
 			result.clear();
 		}
-		ChangeRelationCountDAO.insertBatch(changeRelationCounts);
-		ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
+		if (!changeRelationCounts.isEmpty()) {
+			ChangeRelationCountDAO.insertBatch(changeRelationCounts);
+		}
+		if (!changeRelationCommits.isEmpty()) {
+			ChangeRelationCommitDAO.insertBatch(changeRelationCommits);
+		}
 	}
 
 	public void sumChangeRelation(String outputdir) {
@@ -154,8 +158,7 @@ public class ChangeRelationExtractor {
 
 		int line = sumList.size();
 		try {
-			String outputFileName = outputdir + "/" + this.repository.getRepositoryName()
-					+ "_change-relation-sum.csv";
+			String outputFileName = outputdir + "/" + this.repository.getRepositoryName() + "_change-relation-sum.csv";
 			System.out.println(outputFileName);
 			File f = new File(outputFileName);
 			if (!f.exists())

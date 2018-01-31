@@ -91,9 +91,9 @@ public class ParallelChangeRelationExtrctor {
 		String filePair = rawPCRC.getFilePair();
 		String changeType = rawPCRC.getChangeType1();
 
-		if (!changeType.contains("IF_STATEMENT")) {
-			return false;
-		}
+		// if (!changeType.contains("IF_STATEMENT")) {
+		// return false;
+		// }
 
 		List<FilePairCommit> filePairCommits = FilePairCommitDAO
 				.selectByRepositoryIdAndCommitIdAndFilePair(repositoryId, commitId, filePair);
@@ -106,6 +106,22 @@ public class ParallelChangeRelationExtrctor {
 				.selectByRepositoryIdAndCommitIdAndFileNameAndChangeType(repositoryId, commitId, fileName1, changeType);
 		List<ChangeOperationWithBLOBs> changeOperationList2 = ChangeOperationDAO
 				.selectByRepositoryIdAndCommitIdAndFileNameAndChangeType(repositoryId, commitId, fileName2, changeType);
+
+		if (changeOperationList1.isEmpty()) {
+			System.out.println(commitId);
+			System.out.println(fileName1);
+			System.out.println(changeType);
+			System.out.println();
+			System.exit(0);
+		}
+		
+		if (changeOperationList2.isEmpty()) {
+			System.out.println(commitId);
+			System.out.println(fileName2);
+			System.out.println(changeType);
+			System.out.println();
+			System.exit(0);
+		}
 
 		for (ChangeOperationWithBLOBs co1 : changeOperationList1) {
 			for (ChangeOperationWithBLOBs co2 : changeOperationList2) {
