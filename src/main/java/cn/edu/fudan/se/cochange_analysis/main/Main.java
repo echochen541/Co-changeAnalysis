@@ -25,7 +25,9 @@ public class Main {
 		ChangeExtractor changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		ChangeRelationExtractor changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		String changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
+		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		BugExtractor bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		DSMGenerator dsmGenerator = new DSMGenerator(gitRepository);
@@ -70,7 +72,9 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
+		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
@@ -104,7 +108,9 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
+		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
@@ -138,7 +144,9 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
+		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
@@ -173,7 +181,9 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
+		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
@@ -207,7 +217,9 @@ public class Main {
 		changeExtractor = new ChangeExtractor(gitRepository);
 		// changeExtractor.extracChange();
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
-		changeRelationExtractor.extractChangeRelation(3, 3);
+		// changeRelationExtractor.extractChangeRelation(3, 3);
+		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
+		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);

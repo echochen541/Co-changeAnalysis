@@ -91,10 +91,6 @@ public class ParallelChangeRelationExtrctor {
 		String filePair = rawPCRC.getFilePair();
 		String changeType = rawPCRC.getChangeType1();
 
-		// if (!changeType.contains("IF_STATEMENT")) {
-		// return false;
-		// }
-
 		List<FilePairCommit> filePairCommits = FilePairCommitDAO
 				.selectByRepositoryIdAndCommitIdAndFilePair(repositoryId, commitId, filePair);
 
@@ -107,28 +103,12 @@ public class ParallelChangeRelationExtrctor {
 		List<ChangeOperationWithBLOBs> changeOperationList2 = ChangeOperationDAO
 				.selectByRepositoryIdAndCommitIdAndFileNameAndChangeType(repositoryId, commitId, fileName2, changeType);
 
-		if (changeOperationList1.isEmpty()) {
-			System.out.println(commitId);
-			System.out.println(fileName1);
-			System.out.println(changeType);
-			System.out.println();
-			System.exit(0);
-		}
-		
-		if (changeOperationList2.isEmpty()) {
-			System.out.println(commitId);
-			System.out.println(fileName2);
-			System.out.println(changeType);
-			System.out.println();
-			System.exit(0);
-		}
-
 		for (ChangeOperationWithBLOBs co1 : changeOperationList1) {
 			for (ChangeOperationWithBLOBs co2 : changeOperationList2) {
 				if (isSameChangeOperation(co1, co2, changeType)) {
 					ParallelChangeRelationCommit pCRC = new ParallelChangeRelationCommit(repositoryId, commitId,
 							filePair, changeType, changeType, co1.getChangeOperationId(), co2.getChangeOperationId());
-					// parallelChangeRelationCommitList.add(pCRC);
+					parallelChangeRelationCommitList.add(pCRC);
 					return true;
 				}
 			}
@@ -163,10 +143,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (type1.equals(type2) && parsedModifier1.equals(parsedModifier2)) {
 				if (!modifier1.equals(modifier2)) {
-					System.out.println(changeType);
-					System.out.println(co1);
-					System.out.println(co2);
-					System.out.println();
+					// System.out.println(changeType);
+					// System.out.println(co1);
+					// System.out.println(co2);
+					// System.out.println();
 				}
 				return true;
 			}
@@ -185,10 +165,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (parsedModifier1.equals(parsedModifier2) && changedEntityContent1.equals(changedEntityContent2)
 					&& newEntityContent1.equals(newEntityContent2)) {
-				System.out.println(changeType);
-				System.out.println(co1);
-				System.out.println(co2);
-				System.out.println();
+				// System.out.println(changeType);
+				// System.out.println(co1);
+				// System.out.println(co2);
+				// System.out.println();
 				return true;
 			}
 		}
@@ -219,10 +199,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (oldType1.equals(oldType2) && oldParsedModifier1.equals(oldParsedModifier2) && newType1.equals(newType2)
 					&& newParsedModifier1.equals(newParsedModifier2)) {
-				System.out.println(changeType);
-				System.out.println(co1);
-				System.out.println(co2);
-				System.out.println();
+				// System.out.println(changeType);
+				// System.out.println(co1);
+				// System.out.println(co2);
+				// System.out.println();
 				return true;
 			}
 		}
@@ -239,10 +219,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (parsedModifier1.equals(parsedModifier2)) {
 				if (!methodName1.equals(methodName2)) {
-					System.out.println(changeType);
-					System.out.println(co1);
-					System.out.println(co2);
-					System.out.println();
+					// System.out.println(changeType);
+					// System.out.println(co1);
+					// System.out.println(co2);
+					// System.out.println();
 				}
 				return true;
 			}
@@ -265,10 +245,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (oldParsedModifier1.equals(oldParsedModifier2) && newParsedModifier1.equals(newParsedModifier2)) {
 				if (!methodName1.equals(methodName2)) {
-					System.out.println(changeType);
-					System.out.println(co1);
-					System.out.println(co2);
-					System.out.println();
+					// System.out.println(changeType);
+					// System.out.println(co1);
+					// System.out.println(co2);
+					// System.out.println();
 				}
 				return true;
 			}
@@ -319,10 +299,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (parsedModifier1.equals(parsedModifier2) && oldType1.equals(oldType2) && newType1.equals(newType2)) {
 				if (!methodName1.equals(methodName2)) {
-					System.out.println(changeType);
-					System.out.println(co1);
-					System.out.println(co2);
-					System.out.println();
+					// System.out.println(changeType);
+					// System.out.println(co1);
+					// System.out.println(co2);
+					// System.out.println();
 				}
 				return true;
 			}
@@ -366,10 +346,10 @@ public class ParallelChangeRelationExtrctor {
 
 				if (oldType1.equals(oldType2) && newType1.equals(newType2)) {
 					if (!methodName1.equals(methodName2)) {
-						System.out.println(changeType);
-						System.out.println(co1);
-						System.out.println(co2);
-						System.out.println();
+						// System.out.println(changeType);
+						// System.out.println(co1);
+						// System.out.println(co2);
+						// System.out.println();
 					}
 					return true;
 				}
@@ -387,10 +367,10 @@ public class ParallelChangeRelationExtrctor {
 
 			if (type1.equals(type2)) {
 				if (!methodName1.equals(methodName2)) {
-					System.out.println(changeType);
-					System.out.println(co1);
-					System.out.println(co2);
-					System.out.println();
+					// System.out.println(changeType);
+					// System.out.println(co1);
+					// System.out.println(co2);
+					// System.out.println();
 				}
 				return true;
 			}
@@ -406,7 +386,7 @@ public class ParallelChangeRelationExtrctor {
 			ExpressionTree expressionTree2 = parser2.parse2Tree(parser2.parse2Expression());
 
 			if (expressionTree1.isSameExpressionTree(expressionTree2)) {
-				System.out.println("IF_STATEMENT_INSERT/DELETE");
+				// System.out.println("IF_STATEMENT_INSERT/DELETE");
 				// System.out.println(expressionTree1.content);
 				// System.out.println(expressionTree2.content);
 				// System.out.println();
@@ -433,12 +413,12 @@ public class ParallelChangeRelationExtrctor {
 
 			if ((oldExpressionTree1.isSameExpressionTree(oldExpressionTree2))
 					&& (newExpressionTree1.isSameExpressionTree(newExpressionTree2))) {
-				System.out.println("IF_STATEMENT_CONDITION_EXPRESSION_CHANGE");
-				System.out.println(oldExpressionTree1.content);
-				System.out.println(newExpressionTree1.content);
-				System.out.println(oldExpressionTree2.content);
-				System.out.println(newExpressionTree2.content);
-				System.out.println();
+				// System.out.println("IF_STATEMENT_CONDITION_EXPRESSION_CHANGE");
+				// System.out.println(oldExpressionTree1.content);
+				// System.out.println(newExpressionTree1.content);
+				// System.out.println(oldExpressionTree2.content);
+				// System.out.println(newExpressionTree2.content);
+				// System.out.println();
 				return true;
 			}
 		}

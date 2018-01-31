@@ -60,7 +60,7 @@ public class ExpressionTree {
 		if (eNode.getLeft() == null && eNode.getRight() == null) {
 			// if (eNode.getType().equals("MethodInvocation") ||
 			// eNode.getType().equals("SuperMethodInvocation")) {
-			bNode.setContent(eNode.getContent());
+			// bNode.setContent(eNode.getContent());
 			// } else {
 			bNode.setContent("T");
 			// }
