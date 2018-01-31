@@ -29,7 +29,7 @@ public class ChangeRelationSumDAO {
 		}
 	}
 
-	public static void insertChangeRelationCount(ChangeRelationSum changeRelationSum) {
+	public static void insertChangeRelationSum(ChangeRelationSum changeRelationSum) {
 		changeRelationSumMapper.insert(changeRelationSum);
 		sqlSession.commit();
 	}
