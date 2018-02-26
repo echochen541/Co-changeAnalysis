@@ -131,11 +131,11 @@ public class ParallelChangeRelationExtrctor {
 		// add/remove field
 		if (changeType.equals("ADDITIONAL_OBJECT_STATE") || changeType.equals("REMOVED_OBJECT_STATE")) {
 			String[] typeAndModifier1 = changedEntityContent1.split(" : ");
-			String type1 = typeAndModifier1[1];
+			String type1 = parseType(typeAndModifier1[1]);
 			String modifier1 = typeAndModifier1[0].substring(typeAndModifier1[0].lastIndexOf(".") + 1);
 
 			String[] typeAndModifier2 = changedEntityContent2.split(" : ");
-			String type2 = typeAndModifier2[1];
+			String type2 = parseType(typeAndModifier2[1]);
 			String modifier2 = typeAndModifier2[0].substring(typeAndModifier2[0].lastIndexOf(".") + 1);
 
 			String parsedModifier1 = parseModifier(modifier1);
@@ -163,8 +163,9 @@ public class ParallelChangeRelationExtrctor {
 			String parsedModifier1 = parseModifier(modifier1);
 			String parsedModifier2 = parseModifier(modifier2);
 
-			if (parsedModifier1.equals(parsedModifier2) && changedEntityContent1.equals(changedEntityContent2)
-					&& newEntityContent1.equals(newEntityContent2)) {
+			if (parsedModifier1.equals(parsedModifier2)
+					&& parseType(changedEntityContent1).equals(parseType(changedEntityContent2))
+					&& parseType(newEntityContent1).equals(parseType(newEntityContent2))) {
 				// System.out.println(changeType);
 				// System.out.println(co1);
 				// System.out.println(co2);
@@ -177,22 +178,22 @@ public class ParallelChangeRelationExtrctor {
 		if (changeType.equals("ATTRIBUTE_RENAMING")) {
 			String[] oldTypeAndModifier1 = changedEntityContent1.split(" : ");
 			String oldModifier1 = oldTypeAndModifier1[0].substring(oldTypeAndModifier1[0].lastIndexOf(".") + 1);
-			String oldType1 = oldTypeAndModifier1[1];
+			String oldType1 = parseType(oldTypeAndModifier1[1]);
 
 			String[] oldTypeAndModifier2 = changedEntityContent2.split(" : ");
 			String oldModifier2 = oldTypeAndModifier2[0].substring(oldTypeAndModifier2[0].lastIndexOf(".") + 1);
-			String oldType2 = oldTypeAndModifier2[1];
+			String oldType2 = parseType(oldTypeAndModifier2[1]);
 
 			String oldParsedModifier1 = parseModifier(oldModifier1);
 			String oldParsedModifier2 = parseModifier(oldModifier2);
 
 			String[] newTypeAndModifier1 = newEntityContent1.split(" : ");
 			String newModifier1 = newTypeAndModifier1[0].substring(newTypeAndModifier1[0].lastIndexOf(".") + 1);
-			String newType1 = newTypeAndModifier1[1];
+			String newType1 = parseType(newTypeAndModifier1[1]);
 
 			String[] newTypeAndModifier2 = newEntityContent2.split(" : ");
 			String newModifier2 = newTypeAndModifier2[0].substring(newTypeAndModifier2[0].lastIndexOf(".") + 1);
-			String newType2 = newTypeAndModifier2[1];
+			String newType2 = parseType(newTypeAndModifier2[1]);
 
 			String newParsedModifier1 = parseModifier(newModifier1);
 			String newParsedModifier2 = parseModifier(newModifier2);
@@ -262,17 +263,17 @@ public class ParallelChangeRelationExtrctor {
 			String oldType1 = "dummy";
 			if (changedEntityContent1.contains(": ")) {
 				String[] oldTypeAndModifier1 = changedEntityContent1.split(": ");
-				oldType1 = oldTypeAndModifier1[1];
+				oldType1 = parseType(oldTypeAndModifier1[1]);
 			} else {
-				oldType1 = changedEntityContent1;
+				oldType1 = parseType(changedEntityContent1);
 			}
 
 			String newType1 = "dummy";
 			if (newEntityContent1.contains(": ")) {
 				String[] newTypeAndModifier1 = newEntityContent1.split(": ");
-				newType1 = newTypeAndModifier1[1];
+				newType1 = parseType(newTypeAndModifier1[1]);
 			} else {
-				newType1 = newEntityContent1;
+				newType1 = parseType(newEntityContent1);
 			}
 
 			String modifier2 = parentEntityContent2;
@@ -281,17 +282,17 @@ public class ParallelChangeRelationExtrctor {
 			String oldType2 = "dummy";
 			if (changedEntityContent2.contains(": ")) {
 				String[] oldTypeAndModifier2 = changedEntityContent2.split(": ");
-				oldType2 = oldTypeAndModifier2[1];
+				oldType2 = parseType(oldTypeAndModifier2[1]);
 			} else {
-				oldType1 = changedEntityContent1;
+				oldType2 = parseType(changedEntityContent2);
 			}
 
 			String newType2 = "dummy";
 			if (newEntityContent2.contains(": ")) {
 				String[] newTypeAndModifier2 = newEntityContent2.split(": ");
-				newType2 = newTypeAndModifier2[1];
+				newType2 = parseType(newTypeAndModifier2[1]);
 			} else {
-				newType2 = newEntityContent2;
+				newType2 = parseType(newEntityContent2);
 			}
 
 			String methodName1 = getMethodName(rootEntityContent1);
@@ -315,30 +316,30 @@ public class ParallelChangeRelationExtrctor {
 
 				if (changedEntityContent1.contains(": ")) {
 					String[] oldTypeAndModifier1 = changedEntityContent1.split(": ");
-					oldType1 = oldTypeAndModifier1[1];
+					oldType1 = parseType(oldTypeAndModifier1[1]);
 				} else {
-					oldType1 = changedEntityContent1;
+					oldType1 = parseType(changedEntityContent1);
 				}
 
 				if (newEntityContent1.contains(": ")) {
 					String[] newTypeAndModifier1 = newEntityContent1.split(": ");
-					newType1 = newTypeAndModifier1[1];
+					newType1 = parseType(newTypeAndModifier1[1]);
 				} else {
-					newType1 = newEntityContent1;
+					newType1 = parseType(newEntityContent1);
 				}
 
 				if (changedEntityContent2.contains(": ")) {
 					String[] oldTypeAndModifier2 = changedEntityContent2.split(": ");
-					oldType2 = oldTypeAndModifier2[1];
+					oldType2 = parseType(oldTypeAndModifier2[1]);
 				} else {
-					oldType2 = changedEntityContent2;
+					oldType2 = parseType(changedEntityContent2);
 				}
 
 				if (newEntityContent2.contains(": ")) {
 					String[] newTypeAndModifier2 = newEntityContent2.split(": ");
-					newType2 = newTypeAndModifier2[1];
+					newType2 = parseType(newTypeAndModifier2[1]);
 				} else {
-					newType2 = newEntityContent2;
+					newType2 = parseType(newEntityContent2);
 				}
 
 				String methodName1 = getMethodName(rootEntityContent1);
@@ -359,8 +360,8 @@ public class ParallelChangeRelationExtrctor {
 		if (changeType.equals("RETURN_TYPE_INSERT") || changeType.equals("RETURN_TYPE_DELETE")) {
 			String[] tokens1 = changedEntityContent1.split(": ");
 			String[] tokens2 = changedEntityContent2.split(": ");
-			String type1 = tokens1[1];
-			String type2 = tokens2[1];
+			String type1 = parseType(tokens1[1]);
+			String type2 = parseType(tokens2[1]);
 
 			String methodName1 = getMethodName(rootEntityContent1);
 			String methodName2 = getMethodName(rootEntityContent2);
@@ -423,6 +424,28 @@ public class ParallelChangeRelationExtrctor {
 			}
 		}
 		return false;
+	}
+
+	private String parseType(String rawType) {
+		if (rawType.equals("Byte")) {
+			return "byte";
+		} else if (rawType.equals("Boolean")) {
+			return "boolean";
+		} else if (rawType.equals("Short")) {
+			return "short";
+		} else if (rawType.equals("Character")) {
+			return "character";
+		} else if (rawType.equals("Integer")) {
+			return "int";
+		} else if (rawType.equals("Long")) {
+			return "long";
+		} else if (rawType.equals("Float")) {
+			return "float";
+		} else if (rawType.equals("Double")) {
+			return "double";
+		} else {
+			return rawType;
+		}
 	}
 
 	private String getMethodName(String content) {

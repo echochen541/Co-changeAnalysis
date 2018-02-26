@@ -27,41 +27,32 @@ public class Main {
 		ChangeRelationExtractor changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		String changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
-		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
+		// changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		BugExtractor bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		DSMGenerator dsmGenerator = new DSMGenerator(gitRepository);
-		// List<String> snapshotFileList =
-		// dsmGenerator.getSnapshotFile("camel-2.19.1");
-		// System.out.println("snapshotFileList.size(): " +
-		// snapshotFileList.size());
+		List<String> snapshotFileList = dsmGenerator.getSnapshotFile("camel-2.19.1");
 		String crdsmOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm";
-		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 32, 3);
-		// List<String> hotspotFileList =
-		// HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
-		// System.out.println("snapshot");
-		// bugExtractor.computeAverageBFAndBC(snapshotFileList);
-		// System.out.println("ranmo hotspot");
-		// bugExtractor.computeAverageBFAndBC(hotspotFileList);
-		// String clusterDir =
-		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
-		// String crdsmDir =
-		// "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
-		// HotspotDetector hotspotDetector = new HotspotDetector(gitRepository);
-		// List<Hotspot> hotspotList = hotspotDetector.detectHotspot(clusterDir,
-		// crdsmDir, 4, 0.25);
-		// List<String> totalList =
-		// HotspotDetector.getTotalFileList(hotspotList);
-		// List<String> coreFileList =
-		// HotspotDetector.getCoreFileList(hotspotList);
-		// List<String> otherFileList =
-		// HotspotDetector.getOtherFileList(hotspotList);
-		// System.out.println("echo hotspot");
-		// System.out.println("totalList " + totalList.size());
-		// bugExtractor.computeAverageBFAndBC(totalList);
-		// bugExtractor.computeAverageBFAndBC(coreFileList);
-		// System.out.println(otherFileList.size());
-		// bugExtractor.computeAverageBFAndBC(otherFileList);
+		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 64, 3);
+		List<String> hotspotFileList = HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		System.out.println("snapshot");
+		System.out.println(snapshotFileList.size());
+		bugExtractor.computeAverageBFAndBC(snapshotFileList);
+		System.out.println("ranmo hotspot");
+		System.out.println(hotspotFileList.size());
+		bugExtractor.computeAverageBFAndBC(hotspotFileList);
+		String clusterDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
+		String crdsmDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
+		HotspotDetector hotspotDetector = new HotspotDetector(gitRepository);
+		List<Hotspot> hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		List<String> totalList = HotspotDetector.getTotalFileList(hotspotList);
+		List<String> coreFileList = HotspotDetector.getCoreFileList(hotspotList);
+		List<String> otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);
+		System.out.println("echo hotspot");
+		System.out.println("totalList " + totalList.size());
+		bugExtractor.computeAverageBFAndBC(totalList);
+		bugExtractor.computeAverageBFAndBC(coreFileList);
+		bugExtractor.computeAverageBFAndBC(otherFileList);
 
 		System.out.println(2);
 		gitRepository = new GitRepository(2, "cassandra", "D:/echo/lab/research/co-change/projects/cassandra/.git");
@@ -74,30 +65,29 @@ public class Main {
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
-		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
+		// changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
-		// snapshotFileList = dsmGenerator.getSnapshotFile("cassandra-3.11.0");
-		// System.out.println("snapshotFileList.size(): " +
-		// snapshotFileList.size());
-		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 32, 3);
-		// hotspotFileList =
-		// HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
-		// System.out.println("snapshot");
-		// bugExtractor.computeAverageBFAndBC(snapshotFileList);
-		// System.out.println("ranmo hotspot");
-		// bugExtractor.computeAverageBFAndBC(hotspotFileList);
-		// hotspotDetector = new HotspotDetector(gitRepository);
-		// hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 8,
-		// 0.1);
-		// totalList = HotspotDetector.getTotalFileList(hotspotList);
-		// coreFileList = HotspotDetector.getCoreFileList(hotspotList);
-		// otherFileList = HotspotDetector.getOtherFileList(hotspotList);
-		// System.out.println("echo hotspot");
-		// bugExtractor.computeAverageBFAndBC(totalList);
-		// bugExtractor.computeAverageBFAndBC(coreFileList);
-		// bugExtractor.computeAverageBFAndBC(otherFileList);
+		snapshotFileList = dsmGenerator.getSnapshotFile("cassandra-3.11.0");
+		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 64, 3);
+		hotspotFileList = HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		System.out.println("snapshot");
+		System.out.println(snapshotFileList.size());
+		bugExtractor.computeAverageBFAndBC(snapshotFileList);
+		System.out.println("ranmo hotspot");
+		System.out.println(hotspotFileList.size());
+		bugExtractor.computeAverageBFAndBC(hotspotFileList);
+		hotspotDetector = new HotspotDetector(gitRepository);
+		hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		totalList = HotspotDetector.getTotalFileList(hotspotList);
+		coreFileList = HotspotDetector.getCoreFileList(hotspotList);
+		otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);
+		System.out.println("echo hotspot");
+		System.out.println("totalList " + totalList.size());
+		bugExtractor.computeAverageBFAndBC(totalList);
+		bugExtractor.computeAverageBFAndBC(coreFileList);
+		bugExtractor.computeAverageBFAndBC(otherFileList);
 
 		System.out.println(3);
 		gitRepository = new GitRepository(3, "cxf", "D:/echo/lab/research/co-change/projects/cxf/.git");
@@ -110,30 +100,29 @@ public class Main {
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
-		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
+		// changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
-		// snapshotFileList = dsmGenerator.getSnapshotFile("cxf-3.1.11");
-		// System.out.println("snapshotFileList.size(): " +
-		// snapshotFileList.size());
-		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 32, 3);
-		// hotspotFileList =
-		// HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
-		// System.out.println("snapshot");
-		// bugExtractor.computeAverageBFAndBC(snapshotFileList);
-		// System.out.println("ranmo hotspot");
-		// bugExtractor.computeAverageBFAndBC(hotspotFileList);
-		// hotspotDetector = new HotspotDetector(gitRepository);
-		// hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 8,
-		// 0.1);
-		// totalList = HotspotDetector.getTotalFileList(hotspotList);
-		// coreFileList = HotspotDetector.getCoreFileList(hotspotList);
-		// otherFileList = HotspotDetector.getOtherFileList(hotspotList);
-		// System.out.println("echo hotspot");
-		// bugExtractor.computeAverageBFAndBC(totalList);
-		// bugExtractor.computeAverageBFAndBC(coreFileList);
-		// bugExtractor.computeAverageBFAndBC(otherFileList);
+		snapshotFileList = dsmGenerator.getSnapshotFile("cxf-3.1.11");
+		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 64, 3);
+		hotspotFileList = HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		System.out.println("snapshot");
+		System.out.println(snapshotFileList.size());
+		bugExtractor.computeAverageBFAndBC(snapshotFileList);
+		System.out.println("ranmo hotspot");
+		System.out.println(hotspotFileList.size());
+		bugExtractor.computeAverageBFAndBC(hotspotFileList);
+		hotspotDetector = new HotspotDetector(gitRepository);
+		hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		totalList = HotspotDetector.getTotalFileList(hotspotList);
+		coreFileList = HotspotDetector.getCoreFileList(hotspotList);
+		otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);
+		System.out.println("echo hotspot");
+		System.out.println("totalList " + totalList.size());
+		bugExtractor.computeAverageBFAndBC(totalList);
+		bugExtractor.computeAverageBFAndBC(coreFileList);
+		bugExtractor.computeAverageBFAndBC(otherFileList);
 
 		System.out.println(4);
 		gitRepository = new GitRepository(4, "hadoop", "D:/echo/lab/research/co-change/projects/hadoop/.git");
@@ -146,31 +135,29 @@ public class Main {
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
-		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
+		// changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
-		// snapshotFileList =
-		// dsmGenerator.getSnapshotFile("YARN-5355-branch-2-2017-04-25");
-		// System.out.println("snapshotFileList.size(): " +
-		// snapshotFileList.size());
-		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 32, 3);
-		// hotspotFileList =
-		// HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
-		// System.out.println("snapshot");
-		// bugExtractor.computeAverageBFAndBC(snapshotFileList);
-		// System.out.println("ranmo hotspot");
-		// bugExtractor.computeAverageBFAndBC(hotspotFileList);
-		// hotspotDetector = new HotspotDetector(gitRepository);
-		// hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 8,
-		// 0.1);
-		// totalList = HotspotDetector.getTotalFileList(hotspotList);
-		// coreFileList = HotspotDetector.getCoreFileList(hotspotList);
-		// otherFileList = HotspotDetector.getOtherFileList(hotspotList);
-		// System.out.println("echo hotspot");
-		// bugExtractor.computeAverageBFAndBC(totalList);
-		// bugExtractor.computeAverageBFAndBC(coreFileList);
-		// bugExtractor.computeAverageBFAndBC(otherFileList);
+		snapshotFileList = dsmGenerator.getSnapshotFile("YARN-5355-branch-2-2017-04-25");
+		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 64, 3);
+		hotspotFileList = HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		System.out.println("snapshot");
+		System.out.println(snapshotFileList.size());
+		bugExtractor.computeAverageBFAndBC(snapshotFileList);
+		System.out.println("ranmo hotspot");
+		System.out.println(hotspotFileList.size());
+		bugExtractor.computeAverageBFAndBC(hotspotFileList);
+		hotspotDetector = new HotspotDetector(gitRepository);
+		hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		totalList = HotspotDetector.getTotalFileList(hotspotList);
+		coreFileList = HotspotDetector.getCoreFileList(hotspotList);
+		otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);
+		System.out.println("echo hotspot");
+		System.out.println("totalList " + totalList.size());
+		bugExtractor.computeAverageBFAndBC(totalList);
+		bugExtractor.computeAverageBFAndBC(coreFileList);
+		bugExtractor.computeAverageBFAndBC(otherFileList);
 
 		System.out.println(5);
 		gitRepository = new GitRepository(5, "hbase", "D:/echo/lab/research/co-change/projects/hbase/.git");
@@ -183,30 +170,29 @@ public class Main {
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
-		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
+		// changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
-		// snapshotFileList = dsmGenerator.getSnapshotFile("release-0.18.0");
-		// System.out.println("snapshotFileList.size(): " +
-		// snapshotFileList.size());
-		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 32, 3);
-		// hotspotFileList =
-		// HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
-		// System.out.println("snapshot");
-		// bugExtractor.computeAverageBFAndBC(snapshotFileList);
-		// System.out.println("ranmo hotspot");
-		// bugExtractor.computeAverageBFAndBC(hotspotFileList);
-		// hotspotDetector = new HotspotDetector(gitRepository);
-		// hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 8,
-		// 0.1);
-		// totalList = HotspotDetector.getTotalFileList(hotspotList);
-		// coreFileList = HotspotDetector.getCoreFileList(hotspotList);
-		// otherFileList = HotspotDetector.getOtherFileList(hotspotList);
-		// System.out.println("echo hotspot");
-		// bugExtractor.computeAverageBFAndBC(totalList);
-		// bugExtractor.computeAverageBFAndBC(coreFileList);
-		// bugExtractor.computeAverageBFAndBC(otherFileList);
+		snapshotFileList = dsmGenerator.getSnapshotFile("release-0.18.0");
+		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 64, 3);
+		hotspotFileList = HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		System.out.println("snapshot");
+		System.out.println(snapshotFileList.size());
+		bugExtractor.computeAverageBFAndBC(snapshotFileList);
+		System.out.println("ranmo hotspot");
+		System.out.println(hotspotFileList.size());
+		bugExtractor.computeAverageBFAndBC(hotspotFileList);
+		hotspotDetector = new HotspotDetector(gitRepository);
+		hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		totalList = HotspotDetector.getTotalFileList(hotspotList);
+		coreFileList = HotspotDetector.getCoreFileList(hotspotList);
+		otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);
+		System.out.println("echo hotspot");
+		System.out.println("totalList " + totalList.size());
+		bugExtractor.computeAverageBFAndBC(totalList);
+		bugExtractor.computeAverageBFAndBC(coreFileList);
+		bugExtractor.computeAverageBFAndBC(otherFileList);
 
 		System.out.println(6);
 		gitRepository = new GitRepository(6, "wicket", "D:/echo/lab/research/co-change/projects/wicket/.git");
@@ -219,30 +205,28 @@ public class Main {
 		changeRelationExtractor = new ChangeRelationExtractor(gitRepository);
 		// changeRelationExtractor.extractChangeRelation(3, 3);
 		changeRelationSumOutputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-sum";
-		changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
+		// changeRelationExtractor.sumChangeRelation(changeRelationSumOutputDir);
 		bugExtractor = new BugExtractor(gitRepository);
 		// bugExtractor.extractBug();
 		dsmGenerator = new DSMGenerator(gitRepository);
-		// snapshotFileList =
-		// dsmGenerator.getSnapshotFile("wicket_1_2_b2_before_charsequence");
-		// System.out.println("snapshotFileList.size(): " +
-		// snapshotFileList.size());
-		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 32, 3);
-		// hotspotFileList =
-		// HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
-		// System.out.println("snapshot");
-		// bugExtractor.computeAverageBFAndBC(snapshotFileList);
-		// System.out.println("ranmo hotspot");
-		// bugExtractor.computeAverageBFAndBC(hotspotFileList);
-		// hotspotDetector = new HotspotDetector(gitRepository);
-		// hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 8,
-		// 0.1);
-		// totalList = HotspotDetector.getTotalFileList(hotspotList);
-		// coreFileList = HotspotDetector.getCoreFileList(hotspotList);
-		// otherFileList = HotspotDetector.getOtherFileList(hotspotList);
-		// System.out.println("echo hotspot");
-		// bugExtractor.computeAverageBFAndBC(totalList);
-		// bugExtractor.computeAverageBFAndBC(coreFileList);
-		// bugExtractor.computeAverageBFAndBC(otherFileList);
+		snapshotFileList = dsmGenerator.getSnapshotFile("wicket_1_2_b2_before_charsequence");
+		// dsmGenerator.generateCRDSM(snapshotFileList, crdsmOutputDir, 64, 3);
+		hotspotFileList = HotspotFileDAO.selectByRepositoryId(gitRepository.getRepositoryId());
+		System.out.println("snapshot");
+		System.out.println(snapshotFileList.size());
+		bugExtractor.computeAverageBFAndBC(snapshotFileList);
+		System.out.println("ranmo hotspot");
+		System.out.println(hotspotFileList.size());
+		bugExtractor.computeAverageBFAndBC(hotspotFileList);
+		hotspotDetector = new HotspotDetector(gitRepository);
+		hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		totalList = HotspotDetector.getTotalFileList(hotspotList);
+		coreFileList = HotspotDetector.getCoreFileList(hotspotList);
+		otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);
+		System.out.println("echo hotspot");
+		System.out.println("totalList " + totalList.size());
+		bugExtractor.computeAverageBFAndBC(totalList);
+		bugExtractor.computeAverageBFAndBC(coreFileList);
+		bugExtractor.computeAverageBFAndBC(otherFileList);
 	}
 }

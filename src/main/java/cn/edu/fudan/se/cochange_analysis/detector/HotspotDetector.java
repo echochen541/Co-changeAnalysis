@@ -21,8 +21,8 @@ public class HotspotDetector {
 	public List<Hotspot> detectHotspot(String clusterDir, String crdsmDir, int threshold1, double threshold2) {
 		Parse2Tree parser = new Parse2Tree();
 		String repositoryName = gitRepository.getRepositoryName();
-		String clusterFile = clusterDir + repositoryName + "_32_3_cluster..clsx";
-		String crdsmFile = crdsmDir + repositoryName + "_32_3.dsm";
+		String clusterFile = clusterDir + repositoryName + "..clsx";
+		String crdsmFile = crdsmDir + repositoryName + "_64_3.dsm";
 
 		parser.rootNode = parser.parse(clusterFile);
 		parser.getFileList(clusterFile);
@@ -54,12 +54,14 @@ public class HotspotDetector {
 		return new ArrayList<String>(set);
 	}
 
-	public static List<String> getOtherFileList(List<Hotspot> hotspotList) {
+	public static List<String> getOtherFileList(List<Hotspot> hotspotList, List<String> coreFileList) {
 		Set<String> set = new HashSet<String>();
 		for (Hotspot hotspot : hotspotList) {
 			set.addAll(hotspot.getFileList());
 		}
-		return new ArrayList<String>(set);
+		List<String> rawOtherFileList = new ArrayList<String>(set);
+		rawOtherFileList.removeAll(coreFileList);
+		return rawOtherFileList;
 	}
 
 	public static List<String> getTotalFileList(List<Hotspot> hotspotList) {
