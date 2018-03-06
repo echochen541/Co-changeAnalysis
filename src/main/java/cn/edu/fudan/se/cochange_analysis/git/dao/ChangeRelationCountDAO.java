@@ -44,4 +44,8 @@ public class ChangeRelationCountDAO {
 		changeRelationCountMapper.insertBatch(changeRelationCounts);
 		sqlSession.commit();
 	}
+
+	public static List<ChangeRelationCount> selectDistinctByRepositoryId(int repositoryId) {
+		return changeRelationCountMapper.selectDistinctByRepositoryId(repositoryId);
+	}
 }

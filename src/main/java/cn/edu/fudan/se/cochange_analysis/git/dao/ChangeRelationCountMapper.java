@@ -61,4 +61,6 @@ public interface ChangeRelationCountMapper {
 			@Param(value = "filePair") String filePair);
 
 	int insertBatch(List<ChangeRelationCount> changeRelationCounts);
+
+	List<ChangeRelationCount> selectDistinctByRepositoryId(int repositoryId);
 }

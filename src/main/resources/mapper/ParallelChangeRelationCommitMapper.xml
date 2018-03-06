@@ -104,4 +104,32 @@
 		</foreach>
 	</insert>
 
+	<select id="selectDistinctByRepositoryId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		repository_id, commit_id,
+		file_pair,
+		change_type1,
+		change_type2, change_operation_id1,
+		change_operation_id2
+		from
+		parallel_change_relation_commit
+		where repository_id =
+		#{repositoryId,jdbcType=INTEGER}
+		group by file_pair
+	</select>
+
+	<select id="selectByRepositoryId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		repository_id, commit_id,
+		file_pair,
+		change_type1,
+		change_type2, change_operation_id1,
+		change_operation_id2
+		from
+		parallel_change_relation_commit
+		where repository_id =
+		#{repositoryId,jdbcType=INTEGER}
+	</select>
 </mapper>

@@ -71,4 +71,11 @@
 		jdbcType=VARCHAR}
 	</select>
 
+	<select id="selectFileByRepositoryId" resultType="java.lang.String">
+		select
+		file_name from snapshot_file where repository_id =
+		#{repositoryId,
+		jdbcType=VARCHAR}
+	</select>
+
 </mapper>

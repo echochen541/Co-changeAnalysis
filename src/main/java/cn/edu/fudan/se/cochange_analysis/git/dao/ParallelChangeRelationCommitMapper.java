@@ -22,4 +22,8 @@ public interface ParallelChangeRelationCommitMapper {
     int insertSelective(ParallelChangeRelationCommit record);
 
 	int insertBatch(List<ParallelChangeRelationCommit> parallelChangeRelationCommitList);
+
+	List<ParallelChangeRelationCommit> selectDistinctByRepositoryId(int repositoryId);
+
+	List<ParallelChangeRelationCommit> selectByRepositoryId(int repositoryId);
 }

@@ -32,4 +32,12 @@ public class ParallelChangeRelationCommitDAO {
 		parallelChangeRelationCommitMapper.insertBatch(parallelChangeRelationCommitList);
 		sqlSession.commit();
 	}
+
+	public static List<ParallelChangeRelationCommit> selectDistinctByRepositoryId(int repositoryId) {
+		return parallelChangeRelationCommitMapper.selectDistinctByRepositoryId(repositoryId);
+	}
+
+	public static List<ParallelChangeRelationCommit> selectByRepositoryId(int repositoryId) {
+		return parallelChangeRelationCommitMapper.selectByRepositoryId(repositoryId);
+	}
 }

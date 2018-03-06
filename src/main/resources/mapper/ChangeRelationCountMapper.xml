@@ -153,6 +153,17 @@
 		#{repositoryId,jdbcType=INTEGER}
 	</select>
 
+	<select id="selectDistinctByRepositoryId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from change_relation_count
+		where repository_id =
+		#{repositoryId,jdbcType=INTEGER}
+		group by file_pair
+	</select>
+
+
 	<select id="selectByRepositoryIdAndFilePair" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />

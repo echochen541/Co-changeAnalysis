@@ -27,4 +27,6 @@ public interface SnapshotFileMapper {
 
 	List<String> selectFileByRepositoryIdAndRelease(@Param(value = "repositoryId") Integer repositoryId,
 			@Param(value = "release") String release);
+
+	List<String> selectFileByRepositoryId(Integer repositoryId);
 }
