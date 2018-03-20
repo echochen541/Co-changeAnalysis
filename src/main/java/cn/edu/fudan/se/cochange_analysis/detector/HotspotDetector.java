@@ -33,7 +33,7 @@ public class HotspotDetector {
 	}
 
 	public static void main(String[] args) {
-		GitRepository gitRepository = new GitRepository(1, "camel",
+		GitRepository gitRepository = new GitRepository(2, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		HotspotDetector hotspotDetector = new HotspotDetector(gitRepository);
 		String clusterDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";

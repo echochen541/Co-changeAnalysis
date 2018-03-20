@@ -236,16 +236,15 @@ public class Parse2Tree {
 				hotspot.setCoreFile(tmp.name);
 				List<String> fileList = new ArrayList<String>();
 
-				// System.out.print("Core File: " + tmp.name + "(" +
-				// (fileIndexMap.get(tmp.name) + 1) + ")");
+				System.out.print("Core File: " + tmp.name + "(" + (fileIndexMap.get(tmp.name) + 1) + ")");
 				for (Integer item : subList) {
 					if (item != rootId) {
 						fileList.add(clusterFileList.get(item));
 					}
-					// System.out.print(" " + (item + 1));
+					System.out.print(" " + (item + 1));
 				}
 				hotspot.setFileList(fileList);
-				// System.out.println();
+				System.out.println();
 				// System.out.println(hotspot.getCoreFile());
 				// System.out.println(hotspot.getFileList());
 				hotspotList.add(hotspot);
@@ -259,17 +258,17 @@ public class Parse2Tree {
 		Parse2Tree parser = new Parse2Tree();
 		String inputDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
 
-		parser.rootNode = parser.parse(inputDir + "camel_32_3_cluster..clsx");
+		parser.rootNode = parser.parse(inputDir + "camel..clsx");
 
-		parser.getFileList(inputDir + "camel_32_3_cluster..clsx");
+		parser.getFileList(inputDir + "camel..clsx");
 
-		parser.parseDSM("D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/camel_32_3.dsm");
+		parser.parseDSM("D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/camel_64_3.dsm");
 
 		parser.dfs(parser.rootNode);
 
 		parser.pickGroups();
 
-		parser.findHotspots(parser.pickedGroups, 4, 0.25);
+		parser.findHotspots(parser.pickedGroups, 5, 0.2);
 	}
 
 	class TreeNode {
