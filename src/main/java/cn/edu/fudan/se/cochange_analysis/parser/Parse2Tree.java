@@ -13,8 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.edu.fudan.se.cochange_analysis.detector.Hotspot;
-import cn.edu.fudan.se.cochange_analysis.dsm.GenerateDSM;
-import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 
 public class Parse2Tree {
 	private int[][] dsmMatrixData;

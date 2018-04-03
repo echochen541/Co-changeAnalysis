@@ -26,13 +26,13 @@ import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.SnapshotFileDAO;
 import cn.edu.fudan.se.cochange_analysis.parser.Parse2Tree;
 
-public class HotspotDetector {
+public class HotspotDetectorToDB {
 	private GitRepository gitRepository;
 
-	public HotspotDetector() {
+	public HotspotDetectorToDB() {
 	}
 
-	public HotspotDetector(GitRepository gitRepository) {
+	public HotspotDetectorToDB(GitRepository gitRepository) {
 		this.gitRepository = gitRepository;
 	}
 
@@ -55,7 +55,7 @@ public class HotspotDetector {
 				"D:/echo/lab/research/co-change/projects/camel/.git");
 		// for (int i = 1; i <= 6; i++) {
 		gitRepository.setRepositoryId(2);
-		HotspotDetector hDetector = new HotspotDetector(gitRepository);
+		HotspotDetectorToDB hDetector = new HotspotDetectorToDB(gitRepository);
 		List<Hotspot> hotspots = hDetector.detectHotspot(3, 60, 5.0, 0.2);
 
 		// computeMetrics(hotspots);
@@ -214,9 +214,9 @@ public class HotspotDetector {
 
 		System.out.println(gitRepository.getRepositoryId());
 
-		List<String> totalList = HotspotDetector.getTotalFileList(hotspots);
-		List<String> coreFileList = HotspotDetector.getCoreFileList(hotspots);
-		List<String> otherFileList = HotspotDetector.getOtherFileList(hotspots, coreFileList);
+		List<String> totalList = HotspotDetectorToDB.getTotalFileList(hotspots);
+		List<String> coreFileList = HotspotDetectorToDB.getCoreFileList(hotspots);
+		List<String> otherFileList = HotspotDetectorToDB.getOtherFileList(hotspots, coreFileList);
 		System.out.println("echo hotspot");
 		System.out.println("total hotspot number: " + hotspots.size());
 		System.out.println("total file number: " + totalList.size());
@@ -271,13 +271,16 @@ public class HotspotDetector {
 			Hotspot instance = new Hotspot(coreFile, fileNames);
 			hotspots.add(instance);
 
-//			if (clusterSize == 6 && coreFile.equals("org/apache/cassandra/config/DatabaseDescriptor.java")) {
-//				DendrogramPanel.displaySingleCluster(cluster);
-//				System.out.println(coreFile);
-//				System.out.println(fileNames);
-//				computeCcFrequency(2, instance);
-//				printCCR(distances, coreFile, fileNames, fileIndexMap, maxDistance);
-//			}
+			// if (clusterSize == 6 &&
+			// coreFile.equals("org/apache/cassandra/config/DatabaseDescriptor.java"))
+			// {
+			// DendrogramPanel.displaySingleCluster(cluster);
+			// System.out.println(coreFile);
+			// System.out.println(fileNames);
+			// computeCcFrequency(2, instance);
+			// printCCR(distances, coreFile, fileNames, fileIndexMap,
+			// maxDistance);
+			// }
 			// System.out.println("hotspot size: " + clusterSize);
 		}
 
