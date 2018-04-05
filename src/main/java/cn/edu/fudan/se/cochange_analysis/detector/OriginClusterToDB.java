@@ -1,7 +1,6 @@
 package cn.edu.fudan.se.cochange_analysis.detector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,67 +12,54 @@ import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
 import com.apporiented.algorithm.clustering.Cluster;
 import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.DefaultClusteringAlgorithm;
-import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
-
-import cn.edu.fudan.se.cochange_analysis.extractor.BugExtractor;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationSum;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ClusterAncestor;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
+import cn.edu.fudan.se.cochange_analysis.git.bean.OriginCluster;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationSumDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.ClusterAncestorDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.OriginClusterDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.SnapshotFileDAO;
-import cn.edu.fudan.se.cochange_analysis.parser.Parse2Tree;
 
-public class HotspotDetectorToDB {
+public class OriginClusterToDB {
 	private GitRepository gitRepository;
+	static int globalClusterId = 0;
+	static List<OriginCluster> clusterDBList = new ArrayList<OriginCluster>();
+	static List<ClusterAncestor> clusterAncestorDBList = new ArrayList<ClusterAncestor>();
 
-	public HotspotDetectorToDB() {
+	public OriginClusterToDB() {
 	}
 
-	public HotspotDetectorToDB(GitRepository gitRepository) {
+	public OriginClusterToDB(GitRepository gitRepository) {
 		this.gitRepository = gitRepository;
-	}
-
-	public List<Hotspot> detectHotspot(String clusterDir, String crdsmDir, int threshold1, double threshold2) {
-		Parse2Tree parser = new Parse2Tree();
-		String repositoryName = gitRepository.getRepositoryName();
-		String clusterFile = clusterDir + repositoryName + "..clsx";
-		String crdsmFile = crdsmDir + repositoryName + "_64_3.dsm";
-
-		parser.rootNode = parser.parse(clusterFile);
-		parser.getFileList(clusterFile);
-		parser.parseDSM(crdsmFile);
-		parser.dfs(parser.rootNode);
-		parser.pickGroups();
-		return parser.findHotspots(parser.pickedGroups, threshold1, threshold2);
 	}
 
 	public static void main(String[] args) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
-		// for (int i = 1; i <= 6; i++) {
-		gitRepository.setRepositoryId(2);
-		HotspotDetectorToDB hDetector = new HotspotDetectorToDB(gitRepository);
-		List<Hotspot> hotspots = hDetector.detectHotspot(3, 60, 5.0, 0.2);
-
-		// computeMetrics(hotspots);
-		// }
+		for (int i = 1; i <= 6; i++) {
+			gitRepository.setRepositoryId(i);
+			OriginClusterToDB oc2DB = new OriginClusterToDB(gitRepository);
+			oc2DB.storeCluster(3, 60);
+		}
 	}
 
-	private static void computeMetrics(List<Hotspot> hotspots) {
+	private static void computeMetrics(List<HotspotModel> hotspots) {
 		if (hotspots == null)
 			return;
 
-		int minSize = 10000;
+		int minSize = 1000;
 		int maxSize = 0;
 		double sum = 0;
 		double mean = 0;
 		int median = 0;
 		List<Integer> sizeList = new ArrayList<Integer>();
 
-		for (Hotspot hotspot : hotspots) {
+		for (HotspotModel hotspot : hotspots) {
 			int size = hotspot.getSize();
 			minSize = Math.min(size, minSize);
 			maxSize = Math.max(size, maxSize);
@@ -99,8 +85,10 @@ public class HotspotDetectorToDB {
 		System.out.println();
 	}
 
-	public List<Hotspot> detectHotspot(int threshold1, int threshold2, double minSize, double minRatio) {
-		List<Hotspot> hotspots = new ArrayList<>();
+	public void storeCluster(int threshold1, int threshold2) {
+		globalClusterId = 1;
+		clusterDBList.clear();
+		clusterAncestorDBList.clear();
 
 		String[] clusterNames = null;
 		double[][] distances = null;
@@ -207,39 +195,39 @@ public class HotspotDetectorToDB {
 		// DendrogramPanel.displayMultipleClusters(clusters);
 
 		// select hotsopt
-		for (Cluster cluster : clusters) {
-			cluster.retrieveLeaves();
-			detectHotspotHelper(cluster, fileIndexMap, distances, hotspots, minSize, minRatio, threshold2 + 1.0);
+		int clusterThresholdId = -1;
+
+		if (threshold1 == 3 && threshold2 == 60) {
+			clusterThresholdId = 1;
 		}
 
-		System.out.println(gitRepository.getRepositoryId());
+		for (Cluster cluster : clusters) {
+			cluster.retrieveLeaves();
+			storeClusterHelper(clusterThresholdId, gitRepository.getRepositoryId(), new ArrayList<Integer>(),
+					globalClusterId, cluster, fileIndexMap, distances, threshold2 + 1.0);
+		}
 
-		List<String> totalList = HotspotDetectorToDB.getTotalFileList(hotspots);
-		List<String> coreFileList = HotspotDetectorToDB.getCoreFileList(hotspots);
-		List<String> otherFileList = HotspotDetectorToDB.getOtherFileList(hotspots, coreFileList);
-		System.out.println("echo hotspot");
-		System.out.println("total hotspot number: " + hotspots.size());
-		System.out.println("total file number: " + totalList.size());
-		BugExtractor bugExtractor = new BugExtractor(gitRepository);
-		System.out.println("total: ");
-		bugExtractor.computeAverageBFAndBC(totalList);
-		System.out.println("core: ");
-		bugExtractor.computeAverageBFAndBC(coreFileList);
-		System.out.println("other: ");
-		bugExtractor.computeAverageBFAndBC(otherFileList);
+		if (clusterDBList.size() > 0) {
+			// store, clear
+			OriginClusterDAO.insertBatch(clusterDBList);
+			clusterDBList.clear();
+		}
 
-		return hotspots;
+		if (clusterAncestorDBList.size() > 0) {
+			// store, clear
+			ClusterAncestorDAO.insertBatch(clusterAncestorDBList);
+			clusterAncestorDBList.clear();
+		}
 	}
 
-	private void detectHotspotHelper(Cluster cluster, Map<String, Integer> fileIndexMap, double[][] distances,
-			List<Hotspot> hotspots, double minSize, double minRatio, double maxDistance) {
+	private void storeClusterHelper(int clusterThresholdId, int repositoryId, List<Integer> ancestorIds, int clusterId,
+			Cluster cluster, Map<String, Integer> fileIndexMap, double[][] distances, double maxDistance) {
+		// System.out.println("cluster Id: " + clusterId);
+		globalClusterId++;
+
 		String coreFile = null;
 		List<String> fileNames = new ArrayList<String>(cluster.getLeafNames());
 		double clusterSize = fileNames.size();
-
-		if (clusterSize < minSize) {
-			return;
-		}
 
 		if (cluster.isLeaf()) {
 			return;
@@ -266,28 +254,59 @@ public class HotspotDetectorToDB {
 			}
 		}
 
-		if (maxCnt >= minRatio * (clusterSize - 1.0)) {
-			fileNames.remove(coreFile);
-			Hotspot instance = new Hotspot(coreFile, fileNames);
-			hotspots.add(instance);
+		// store cluster
+		for (String fileName : fileNames) {
+			OriginCluster originCluster = null;
 
-			// if (clusterSize == 6 &&
-			// coreFile.equals("org/apache/cassandra/config/DatabaseDescriptor.java"))
-			// {
-			// DendrogramPanel.displaySingleCluster(cluster);
-			// System.out.println(coreFile);
-			// System.out.println(fileNames);
-			// computeCcFrequency(2, instance);
-			// printCCR(distances, coreFile, fileNames, fileIndexMap,
-			// maxDistance);
+			if (fileName.equals(coreFile)) {
+				originCluster = new OriginCluster(clusterThresholdId, repositoryId, clusterId, clusterSize, maxCnt,
+						coreFile, 1);
+				// clusterDBList.add(originCluster);
+			} else {
+				originCluster = new OriginCluster(clusterThresholdId, repositoryId, clusterId, clusterSize, maxCnt,
+						fileName, 0);
+				// clusterDBList.add(originCluster);
+			}
+
+			// if (clusterDBList.size() >= 10) {
+			// store, clear
+			// OriginClusterDAO.insertBatch(clusterDBList);
+			// clusterDBList.clear();
 			// }
-			// System.out.println("hotspot size: " + clusterSize);
+
+			OriginClusterDAO.insert(originCluster);
 		}
 
-		detectHotspotHelper(cluster.getChildren().get(0), fileIndexMap, distances, hotspots, minSize, minRatio,
-				maxDistance);
-		detectHotspotHelper(cluster.getChildren().get(1), fileIndexMap, distances, hotspots, minSize, minRatio,
-				maxDistance);
+		// store cluster ancestor
+		if (ancestorIds.size() > 0) {
+			for (int i = ancestorIds.size() - 1; i >= 0; i--) {
+				ClusterAncestor clusterAncestor = null;
+
+				int ancestorId = ancestorIds.get(i);
+
+				if (i == ancestorIds.size() - 1) {
+					clusterAncestor = new ClusterAncestor(clusterThresholdId, repositoryId, clusterId, ancestorId, 1);
+					// clusterAncestorDBList.add(clusterAncestor);
+				} else {
+					clusterAncestor = new ClusterAncestor(clusterThresholdId, repositoryId, clusterId, ancestorId, 0);
+					// clusterAncestorDBList.add(clusterAncestor);
+				}
+
+				ClusterAncestorDAO.insert(clusterAncestor);
+			}
+		}
+
+		List<Integer> leftChildAncestorIds = new ArrayList<Integer>(ancestorIds);
+		leftChildAncestorIds.add(clusterId);
+
+		storeClusterHelper(clusterThresholdId, repositoryId, leftChildAncestorIds, globalClusterId,
+				cluster.getChildren().get(0), fileIndexMap, distances, maxDistance);
+
+		List<Integer> rightChildAncestorIds = new ArrayList<Integer>(ancestorIds);
+		rightChildAncestorIds.add(clusterId);
+
+		storeClusterHelper(clusterThresholdId, repositoryId, rightChildAncestorIds, globalClusterId,
+				cluster.getChildren().get(1), fileIndexMap, distances, maxDistance);
 	}
 
 	private void printCCR(double[][] distances, String coreFile, List<String> fileNames,
@@ -304,7 +323,7 @@ public class HotspotDetectorToDB {
 
 	}
 
-	private void computeCcFrequency(int repositoryId, Hotspot hotspot) {
+	private void computeCcFrequency(int repositoryId, HotspotModel hotspot) {
 		List<String> totalList = hotspot.getTotalList();
 		for (int i = 0; i < totalList.size(); i++) {
 			System.out.println(i + 1 + "  " + totalList.get(i));
@@ -346,17 +365,17 @@ public class HotspotDetectorToDB {
 
 	}
 
-	public static List<String> getCoreFileList(List<Hotspot> hotspotList) {
+	public static List<String> getCoreFileList(List<HotspotModel> hotspotList) {
 		Set<String> set = new HashSet<String>();
-		for (Hotspot hotspot : hotspotList) {
+		for (HotspotModel hotspot : hotspotList) {
 			set.add(hotspot.getCoreFile());
 		}
 		return new ArrayList<String>(set);
 	}
 
-	public static List<String> getOtherFileList(List<Hotspot> hotspotList, List<String> coreFileList) {
+	public static List<String> getOtherFileList(List<HotspotModel> hotspotList, List<String> coreFileList) {
 		Set<String> set = new HashSet<String>();
-		for (Hotspot hotspot : hotspotList) {
+		for (HotspotModel hotspot : hotspotList) {
 			set.addAll(hotspot.getFileList());
 		}
 		List<String> rawOtherFileList = new ArrayList<String>(set);
@@ -364,9 +383,9 @@ public class HotspotDetectorToDB {
 		return rawOtherFileList;
 	}
 
-	public static List<String> getTotalFileList(List<Hotspot> hotspotList) {
+	public static List<String> getTotalFileList(List<HotspotModel> hotspotList) {
 		Set<String> set = new HashSet<String>();
-		for (Hotspot hotspot : hotspotList) {
+		for (HotspotModel hotspot : hotspotList) {
 			set.add(hotspot.getCoreFile());
 			set.addAll(hotspot.getFileList());
 		}

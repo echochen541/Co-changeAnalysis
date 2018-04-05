@@ -12,7 +12,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.edu.fudan.se.cochange_analysis.detector.Hotspot;
+import cn.edu.fudan.se.cochange_analysis.detector.HotspotModel;
 
 public class Parse2Tree {
 	private int[][] dsmMatrixData;
@@ -220,8 +220,8 @@ public class Parse2Tree {
 		return res;
 	}
 
-	public List<Hotspot> findHotspots(List<TreeNode> list, int t1, double t2) {
-		List<Hotspot> hotspotList = new ArrayList<Hotspot>();
+	public List<HotspotModel> findHotspots(List<TreeNode> list, int t1, double t2) {
+		List<HotspotModel> hotspotList = new ArrayList<HotspotModel>();
 		for (TreeNode tmp : list) {
 			int rootId = this.clusterFileList.indexOf(tmp.name);
 			List<Integer> subList = tmp.subChildrenIndexList;
@@ -230,7 +230,7 @@ public class Parse2Tree {
 			int numx = result[0];
 			int numy = result[1];
 			if (m >= t1 && numx >= (m - 1) * t2 && numy >= (m - 1) * t2) {
-				Hotspot hotspot = new Hotspot();
+				HotspotModel hotspot = new HotspotModel();
 				hotspot.setCoreFile(tmp.name);
 				List<String> fileList = new ArrayList<String>();
 

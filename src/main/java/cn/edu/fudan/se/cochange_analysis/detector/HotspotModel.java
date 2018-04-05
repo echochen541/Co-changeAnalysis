@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Hotspot {
+public class HotspotModel {
 	private String coreFile;
 	private List<String> fileList;
 
-	public Hotspot(String coreFile, List<String> fileList) {
+	public HotspotModel(String coreFile, List<String> fileList) {
 		this.coreFile = coreFile;
 		this.fileList = fileList;
 	}
 
-	public Hotspot() {
+	public HotspotModel() {
 		// TODO Auto-generated constructor stub
 	}
 

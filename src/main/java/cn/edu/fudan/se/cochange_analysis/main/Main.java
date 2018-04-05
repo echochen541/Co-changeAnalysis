@@ -2,7 +2,7 @@ package cn.edu.fudan.se.cochange_analysis.main;
 
 import java.util.List;
 
-import cn.edu.fudan.se.cochange_analysis.detector.Hotspot;
+import cn.edu.fudan.se.cochange_analysis.detector.HotspotModel;
 import cn.edu.fudan.se.cochange_analysis.detector.HotspotDetector;
 import cn.edu.fudan.se.cochange_analysis.dsm.DSMGenerator;
 import cn.edu.fudan.se.cochange_analysis.extractor.BugExtractor;
@@ -44,7 +44,7 @@ public class Main {
 		String clusterDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
 		String crdsmDir = "D:/echo/lab/research/co-change/ICSE-2018/data/change-relation-dsm/";
 		HotspotDetector hotspotDetector = new HotspotDetector(gitRepository);
-		List<Hotspot> hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
+		List<HotspotModel> hotspotList = hotspotDetector.detectHotspot(clusterDir, crdsmDir, 5, 0.2);
 		List<String> totalList = HotspotDetector.getTotalFileList(hotspotList);
 		List<String> coreFileList = HotspotDetector.getCoreFileList(hotspotList);
 		List<String> otherFileList = HotspotDetector.getOtherFileList(hotspotList, coreFileList);

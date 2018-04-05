@@ -98,11 +98,30 @@
 			selectByExampleQueryId="false"></table> <table tableName="raw_parallel_change_relation_commit" 
 			domainObjectName="RawParallelChangeRelationCommit" enableCountByExample="false" 
 			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
+			selectByExampleQueryId="false"></table> <table tableName="parallel_change_relation_commit" 
+			domainObjectName="ParallelChangeRelationCommit" enableCountByExample="false" 
+			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" 
 			selectByExampleQueryId="false"></table> -->
 
-		<table tableName="parallel_change_relation_commit"
-			domainObjectName="ParallelChangeRelationCommit" enableCountByExample="false"
+		<table tableName="origin_cluster"
+			domainObjectName="OriginCluster" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"></table>
+			
+		<table tableName="cluster_ancestor"
+			domainObjectName="ClusterAncestor" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"></table>
+			
+		<table tableName="hotspot"
+			domainObjectName="Hotspot" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"></table>
+			
+		<table tableName="hotspot_relation_sum"
+			domainObjectName="HotspotRelationSum" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"></table>
+
 	</context>
 </generatorConfiguration>

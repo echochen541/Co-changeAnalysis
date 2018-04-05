@@ -36,5 +36,9 @@
 		<mapper resource="mapper/ChangeRelationSumMapper.xml" />
 		<mapper resource="mapper/RawParallelChangeRelationCommitMapper.xml" />
 		<mapper resource="mapper/ParallelChangeRelationCommitMapper.xml" />
+		<mapper resource="mapper/OriginClusterMapper.xml" />
+		<mapper resource="mapper/ClusterAncestorMapper.xml" />
+		<mapper resource="mapper/HotspotMapper.xml" />
+		<mapper resource="mapper/HotspotRelationSumMapper.xml" />
 	</mappers>
 </configuration>
