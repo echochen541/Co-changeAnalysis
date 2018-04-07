@@ -44,7 +44,7 @@ public class OriginClusterToDB {
 		for (int i = 1; i <= 6; i++) {
 			gitRepository.setRepositoryId(i);
 			OriginClusterToDB oc2DB = new OriginClusterToDB(gitRepository);
-			oc2DB.storeCluster(3, 60);
+			oc2DB.storeCluster(5, 60);
 		}
 	}
 
@@ -199,6 +199,14 @@ public class OriginClusterToDB {
 
 		if (threshold1 == 3 && threshold2 == 60) {
 			clusterThresholdId = 1;
+		}
+
+		if (threshold1 == 5 && threshold2 == 60) {
+			clusterThresholdId = 2;
+		}
+
+		if (clusterThresholdId < 0) {
+			return;
 		}
 
 		for (Cluster cluster : clusters) {

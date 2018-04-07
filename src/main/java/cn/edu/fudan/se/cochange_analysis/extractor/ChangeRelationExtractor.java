@@ -15,14 +15,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import cn.edu.fudan.se.cochange_analysis.detector.HotspotDetector;
+import cn.edu.fudan.se.cochange_analysis.detector.HotspotModel;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationSum;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationSumDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 
@@ -46,6 +50,87 @@ public class ChangeRelationExtractor {
 
 	public void setRepository(GitRepository repository) {
 		this.repository = repository;
+	}
+
+	public static void main(String[] args) {
+		GitRepository gitRepository = new GitRepository(1, "camel",
+				"D:/echo/lab/research/co-change/projects/camel/.git");
+		// for (int i = 1; i <= 6; i++) {
+		gitRepository.setRepositoryId(2);
+		ChangeRelationExtractor crDetector = new ChangeRelationExtractor(gitRepository);
+		crDetector.computeCoverage(60);
+	}
+
+	private void computeCoverage(int topN) {
+		Set<String> totalRelationSet = new HashSet<String>();
+
+		Set<String> relationSet1 = new HashSet<String>();
+		Set<String> relationSet2 = new HashSet<String>();
+		Set<String> relationSet3 = new HashSet<String>();
+		Set<String> relationSet4 = new HashSet<String>();
+		Set<String> relationSet5 = new HashSet<String>();
+		Set<String> relationSet6 = new HashSet<String>();
+
+		for (int i = 1; i <= 6; i++) {
+			List<ChangeRelationSum> crsList = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, i);
+			for (ChangeRelationSum crs : crsList) {
+				String relationType = crs.getRelationType();
+				totalRelationSet.add(relationType);
+
+				if (i == 1) {
+					relationSet1.add(relationType);
+				} else if (i == 2) {
+					relationSet2.add(relationType);
+				} else if (i == 3) {
+					relationSet3.add(relationType);
+				} else if (i == 4) {
+					relationSet4.add(relationType);
+				} else if (i == 5) {
+					relationSet5.add(relationType);
+				} else {
+					relationSet6.add(relationType);
+				}
+			}
+		}
+
+		List<Integer> occurenceList = new ArrayList<Integer>();
+
+		Map<Integer, Integer> occurenceMap = new HashMap<>();
+		occurenceMap.put(1, 0);
+		occurenceMap.put(2, 0);
+		occurenceMap.put(3, 0);
+		occurenceMap.put(4, 0);
+		occurenceMap.put(5, 0);
+		occurenceMap.put(6, 0);
+
+		for (String relationType : totalRelationSet) {
+			int occurence = 0;
+			if (relationSet1.contains(relationType)) {
+				occurence++;
+			}
+			if (relationSet2.contains(relationType)) {
+				occurence++;
+			}
+			if (relationSet3.contains(relationType)) {
+				occurence++;
+			}
+			if (relationSet4.contains(relationType)) {
+				occurence++;
+			}
+			if (relationSet5.contains(relationType)) {
+				occurence++;
+			}
+			if (relationSet6.contains(relationType)) {
+				occurence++;
+			}
+			occurenceMap.put(occurence, occurenceMap.get(occurence) + 1);
+			
+			if (occurence == 6) {
+				System.out.println(relationType);
+			} 
+		}
+
+		System.out.println(occurenceMap);
 	}
 
 	// file pair co-change >= threshold1 times, change relation occur >=
