@@ -40,5 +40,6 @@
 		<mapper resource="mapper/ClusterAncestorMapper.xml" />
 		<mapper resource="mapper/HotspotMapper.xml" />
 		<mapper resource="mapper/HotspotRelationSumMapper.xml" />
+		<mapper resource="mapper/GlobalRelationSumMapper.xml" />
 	</mappers>
 </configuration>

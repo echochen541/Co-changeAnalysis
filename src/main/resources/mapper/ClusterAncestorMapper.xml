@@ -87,4 +87,15 @@
 			</if>
 		</trim>
 	</insert>
+
+	<select id="selectByRepositoryIdAndThresholdIdAndAncestorId" resultMap="BaseResultMap">
+		select cluster_threshold_id, repository_id,
+		cluster_id,
+		ancestor_id, ancestor_type from cluster_ancestor
+		where repository_id =
+		#{repositoryId,jdbcType=INTEGER} and cluster_threshold_id =
+		#{clusterThresholdId,jdbcType=INTEGER}
+		and ancestor_id = #{ancestorId,
+		jdbcType = INTEGER}
+	</select>
 </mapper>

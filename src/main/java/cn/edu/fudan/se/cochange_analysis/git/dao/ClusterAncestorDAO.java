@@ -38,4 +38,10 @@ public class ClusterAncestorDAO {
 		clusterAncestorMapper.insertBatch(clusterAncestorList);
 		sqlSession.commit();
 	}
+
+	public static List<ClusterAncestor> selectByRepositoryIdAndThresholdIdAndAncestorId(int repositoryId,
+			int clusterThresholdId, int ancestorId) {
+		return clusterAncestorMapper.selectByRepositoryIdAndThresholdIdAndAncestorId(repositoryId, clusterThresholdId,
+				ancestorId);
+	}
 }

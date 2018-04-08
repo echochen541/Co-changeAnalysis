@@ -18,6 +18,7 @@ import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
 import cn.edu.fudan.se.cochange_analysis.extractor.BugExtractor;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationSum;
+import cn.edu.fudan.se.cochange_analysis.git.bean.ClusterAncestor;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
 import cn.edu.fudan.se.cochange_analysis.git.bean.Hotspot;
@@ -25,6 +26,7 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.HotspotRelationSum;
 import cn.edu.fudan.se.cochange_analysis.git.bean.OriginCluster;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationSumDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.ClusterAncestorDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.HotspotDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.HotspotRelationSumDAO;
@@ -63,17 +65,211 @@ public class HotspotDetector {
 	public static void main(String[] args) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
-		// for (int i = 1; i <= 6; i++) {
-		gitRepository.setRepositoryId(2);
-		HotspotDetector hDetector = new HotspotDetector(gitRepository);
-		List<HotspotModel> hotspots = hDetector.detectHotspot(5, 60, 5, 0.4);
-		// computeMetrics(hotspots);
-		// hDetector.sumRelationInHotspot(i, 5, 60, 5.0, 0.4);
-		// hDetector.classifyRelations(i);
-		// }
-		System.out.println("minDistance: " + minDistance);
-		System.out.println("maxDistance: " + maxDistance);
-		System.out.println("specificSimilarity: " + specificSimilarity);
+		for (int i = 1; i <= 6; i++) {
+			gitRepository.setRepositoryId(i);
+			HotspotDetector hDetector = new HotspotDetector(gitRepository);
+			// List<HotspotModel> hotspots = hDetector.detectHotspot(5, 60, 5,
+			// 0.4);
+			// computeMetrics(hotspots);
+//			hDetector.sumRelationInHotspot(i, 5, 60, 5.0, 0.4);
+			// hDetector.classifyRelations(i);
+			// hDetector.countSpecificHotspot(i, 5, 60, 5.0, 0.4, 6, false);
+			
+			hDetector.sumRelationWithCoreFileInHotspot(i, 5, 60, 5.0, 0.4);
+		}
+		// System.out.println("minDistance: " + minDistance);
+		// System.out.println("maxDistance: " + maxDistance);
+		// System.out.println("specificSimilarity: " + specificSimilarity);
+	}
+
+	private void sumRelationWithCoreFileInHotspot(int repositoryId, int minCCF, int topN, double minSize, double minRatio) {
+		List<HotspotRelationSum> hrsList = new ArrayList<>();
+
+		int clusterThresholdId = -1, hotspotThresholdId = -1;
+		if (minCCF == 3 && topN == 60) {
+			clusterThresholdId = 1;
+		}
+
+		if (minCCF == 5 && topN == 60) {
+			clusterThresholdId = 2;
+		}
+
+		if (minSize == 5.0 && minRatio == 0.2) {
+			hotspotThresholdId = 1;
+		}
+
+		if (minSize == 5.0 && minRatio == 0.4) {
+			hotspotThresholdId = 2;
+		}
+
+		if (clusterThresholdId < 0 || hotspotThresholdId < 0) {
+			return;
+		}
+
+		List<Hotspot> hotspotList = HotspotDAO.selectByThresholds(repositoryId, clusterThresholdId, hotspotThresholdId);
+		System.out.println("repository id: " + repositoryId);
+		System.out.println("hotspot size: " + hotspotList.size());
+
+		// get top threshold2 co-change relations
+		List<ChangeRelationSum> relationSumList = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, repositoryId);
+
+		Map<String, Integer> relationIndexMap = new HashMap<String, Integer>();
+		for (int i = 0; i < relationSumList.size(); i++) {
+			relationIndexMap.put(relationSumList.get(i).getRelationType(), i);
+		}
+
+		// cache
+		Map<String, Map<String, Integer>> filePairRelationSumMap = new HashMap<>();
+
+		for (Hotspot hotspot : hotspotList) {
+			// System.out.println("hotspot: " + hotspot);
+
+			int clusterId = hotspot.getClusterId();
+			List<OriginCluster> oClusterList = OriginClusterDAO
+					.selectByRepositoryIdAndClusterThresholdIdAndClusterId(repositoryId, clusterThresholdId, clusterId);
+
+			Map<String, Integer> singleClusterRelationSumMap = new HashMap<>();
+
+			for (int i = 0; i < oClusterList.size(); i++) {
+				String fileName1 = oClusterList.get(i).getFileName();
+
+				for (int j = i + 1; j < oClusterList.size(); j++) {
+					String fileName2 = oClusterList.get(j).getFileName();
+					String filePair = null;
+
+					if (fileName1.compareTo(fileName2) < 0) {
+						filePair = fileName1 + "||" + fileName2;
+					} else {
+						filePair = fileName2 + "||" + fileName1;
+					}
+
+					// System.out.println("filePair: " + filePair);
+					// file pair in cache
+					if (filePairRelationSumMap.containsKey(filePair)) {
+						Map<String, Integer> singleFilePairRelationSumMap = filePairRelationSumMap.get(filePair);
+						for (Entry<String, Integer> entry : singleFilePairRelationSumMap.entrySet()) {
+							String relationType = entry.getKey();
+							Integer sum = entry.getValue();
+
+							if (singleClusterRelationSumMap.containsKey(relationType)) {
+								singleClusterRelationSumMap.put(relationType,
+										singleClusterRelationSumMap.get(relationType) + sum);
+							} else {
+								singleClusterRelationSumMap.put(relationType, sum);
+							}
+						}
+					} else { // file pair not in cache
+						Map<String, Integer> singleFilePairRelationSumMap = new HashMap<>();
+
+						List<ChangeRelationCount> crcList = ChangeRelationCountDAO
+								.selectByRepositoryIdAndFilePair(repositoryId, filePair);
+
+						for (ChangeRelationCount crc : crcList) {
+							String changeType1 = crc.getChangeType1();
+							String changeType2 = crc.getChangeType2();
+							int sum = crc.getCount();
+
+							int compareResult = changeType1.compareTo(changeType2);
+							String relationType = null;
+
+							if (compareResult <= 0) {
+								relationType = changeType1 + "--" + changeType2;
+							} else {
+								relationType = changeType2 + "--" + changeType1;
+							}
+
+							if (relationIndexMap.containsKey(relationType)) {
+								if (singleClusterRelationSumMap.containsKey(relationType)) {
+									singleClusterRelationSumMap.put(relationType,
+											singleClusterRelationSumMap.get(relationType) + sum);
+								} else {
+									singleClusterRelationSumMap.put(relationType, sum);
+								}
+								singleFilePairRelationSumMap.put(relationType, sum);
+							}
+						}
+
+						filePairRelationSumMap.put(filePair, singleFilePairRelationSumMap);
+						// System.out.println(singleFilePairRelationSumMap);
+					}
+				}
+			}
+
+			// store singleClusterRelationSumMap to db
+			for (Entry<String, Integer> entry : singleClusterRelationSumMap.entrySet()) {
+				String relationType = entry.getKey();
+				int sum = entry.getValue();
+				HotspotRelationSum hrs = new HotspotRelationSum(clusterThresholdId, hotspotThresholdId, repositoryId,
+						clusterId, relationType, sum);
+				hrsList.add(hrs);
+				if (hrsList.size() >= 100) {
+					HotspotRelationSumDAO.insertBatch(hrsList);
+					hrsList.clear();
+				}
+			}
+		}
+
+		if (hrsList.size() > 0) {
+			HotspotRelationSumDAO.insertBatch(hrsList);
+			hrsList.clear();
+		}
+	}
+
+	private void countSpecificHotspot(int repositoryId, int minCCF, int topN, double minSize, double minRatio,
+			int maxSize, boolean nested) {
+		int clusterThresholdId = -1, hotspotThresholdId = -1;
+
+		if (minCCF == 5 && topN == 60) {
+			clusterThresholdId = 2;
+		}
+
+		if (minSize == 5.0 && minRatio == 0.4) {
+			hotspotThresholdId = 2;
+		}
+
+		if (clusterThresholdId < 0 || hotspotThresholdId < 0) {
+			return;
+		}
+
+		// get all the clusters whose size <= maxSize
+		List<OriginCluster> clusterList = OriginClusterDAO.selectByClusterThresholdIdAndMaxSize(repositoryId,
+				clusterThresholdId, maxSize);
+		Set<Integer> clusterIdSet = new HashSet<>();
+		for (OriginCluster oc : clusterList) {
+			clusterIdSet.add(oc.getClusterId());
+		}
+
+		// get all the hotspots
+		List<Hotspot> hotspotList = HotspotDAO.selectByThresholds(repositoryId, clusterThresholdId, hotspotThresholdId);
+		Set<Integer> hotspotIdSet = new HashSet<>();
+		for (Hotspot hotspot : hotspotList) {
+			hotspotIdSet.add(hotspot.getClusterId());
+		}
+
+		List<Integer> nonNestedHotspotList = new ArrayList<Integer>();
+
+		for (Hotspot hotspot : hotspotList) {
+			int clusterId = hotspot.getClusterId();
+			List<ClusterAncestor> cAncestorList = ClusterAncestorDAO
+					.selectByRepositoryIdAndThresholdIdAndAncestorId(repositoryId, clusterThresholdId, clusterId);
+			boolean isAncestor = false;
+
+			for (ClusterAncestor ca : cAncestorList) {
+				int clusterId2 = ca.getClusterId();
+				if (hotspotIdSet.contains(clusterId2)) {
+					isAncestor = true;
+					break;
+				}
+			}
+
+			if (!isAncestor) {
+				nonNestedHotspotList.add(clusterId);
+			}
+		}
+		System.out.println("clusterIdSet.size(): " + clusterIdSet.size());
+		System.out.println("hotspotIdSet.size(): " + hotspotIdSet.size());
+		System.out.println("nonNestedHotspotList.size(): " + nonNestedHotspotList.size());
+		System.out.println();
 	}
 
 	private void classifyRelations(int repositoryId) {
@@ -261,30 +457,34 @@ public class HotspotDetector {
 						relationType = changeType1 + "--" + changeType2;
 						if (relationIndexMap.containsKey(relationType)) {
 							similarity += relationCnt / totalCnt;
-							if (filePair.equals(
-									"org/apache/cassandra/config/Config.java||org/apache/cassandra/config/DatabaseDescriptor.java")) {
-								System.out.println("==============");
-								System.out.println(relationType);
-								System.out.println("totalCnt: " + totalCnt);
-								System.out.println("relationCnt: " + relationCnt);
-								specificSimilarity += relationCnt / totalCnt;
-								System.out.println("==============");
-							}
+							// if (filePair.equals(
+							// "org/apache/cassandra/config/Config.java||org/apache/cassandra/config/DatabaseDescriptor.java"))
+							// {
+							// System.out.println("==============");
+							// System.out.println(relationType);
+							// System.out.println("totalCnt: " + totalCnt);
+							// System.out.println("relationCnt: " +
+							// relationCnt);
+							// specificSimilarity += relationCnt / totalCnt;
+							// System.out.println("==============");
+							// }
 						}
 
 					} else {
 						relationType = changeType2 + "--" + changeType1;
 						if (relationIndexMap.containsKey(relationType)) {
 							similarity += relationCnt / totalCnt;
-							if (filePair.equals(
-									"org/apache/cassandra/config/Config.java||org/apache/cassandra/config/DatabaseDescriptor.java")) {
-								System.out.println("==============");
-								System.out.println(relationType);
-								System.out.println("totalCnt: " + totalCnt);
-								System.out.println("relationCnt: " + relationCnt);
-								specificSimilarity += relationCnt / totalCnt;
-								System.out.println("==============");
-							}
+							// if (filePair.equals(
+							// "org/apache/cassandra/config/Config.java||org/apache/cassandra/config/DatabaseDescriptor.java"))
+							// {
+							// System.out.println("==============");
+							// System.out.println(relationType);
+							// System.out.println("totalCnt: " + totalCnt);
+							// System.out.println("relationCnt: " +
+							// relationCnt);
+							// specificSimilarity += relationCnt / totalCnt;
+							// System.out.println("==============");
+							// }
 						}
 
 					}
@@ -377,15 +577,20 @@ public class HotspotDetector {
 			HotspotModel instance = new HotspotModel(coreFile, fileNames);
 			hotspots.add(instance);
 
-			if (clusterSize == 6 && coreFile.equals("org/apache/cassandra/config/DatabaseDescriptor.java")) {
+			// if (clusterSize == 6 &&
+			// coreFile.equals("org/apache/cassandra/config/DatabaseDescriptor.java"))
+			// {
+			if (coreFile.equals("org/apache/cassandra/config/DatabaseDescriptor.java")) {
 				DendrogramPanel.displaySingleCluster(cluster);
 				System.out.println(coreFile);
 				System.out.println(fileNames);
-				computeCcFrequency(2, instance);
-				computeDistance(fileIndexMap, distances, instance);
-				printCCR(distances, coreFile, fileNames, fileIndexMap, maxDistance);
+				// computeCcFrequency(2, instance);
+				// computeDistance(fileIndexMap, distances, instance);
+				// printCCR(distances, coreFile, fileNames, fileIndexMap,
+				// maxDistance);
 			}
-			System.out.println("hotspot size: " + clusterSize);
+
+			// System.out.println("hotspot size: " + clusterSize);
 		}
 
 		detectHotspotHelper(cluster.getChildren().get(0), fileIndexMap, distances, hotspots, minSize, minRatio,

@@ -46,7 +46,12 @@ public class OriginClusterDAO {
 
 	public static List<OriginCluster> selectByRepositoryIdAndClusterThresholdIdAndClusterId(int repositoryId,
 			int clusterThresholdId, int clusterId) {
-		return originClusterMapper.selectByRepositoryIdAndClusterThresholdIdAndClusterId(
-				repositoryId, clusterThresholdId, clusterId);
+		return originClusterMapper.selectByRepositoryIdAndClusterThresholdIdAndClusterId(repositoryId,
+				clusterThresholdId, clusterId);
+	}
+
+	public static List<OriginCluster> selectByClusterThresholdIdAndMaxSize(int repositoryId, int clusterThresholdId,
+			int maxSize) {
+		return originClusterMapper.selectByClusterThresholdIdAndMaxSize(repositoryId, clusterThresholdId, maxSize);
 	}
 }

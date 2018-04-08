@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.csvreader.CsvWriter;
+
 import cn.edu.fudan.se.cochange_analysis.detector.HotspotDetector;
 import cn.edu.fudan.se.cochange_analysis.detector.HotspotModel;
 import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationCommit;
@@ -23,12 +26,15 @@ import cn.edu.fudan.se.cochange_analysis.git.bean.ChangeRelationSum;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCommit;
 import cn.edu.fudan.se.cochange_analysis.git.bean.FilePairCount;
 import cn.edu.fudan.se.cochange_analysis.git.bean.GitRepository;
+import cn.edu.fudan.se.cochange_analysis.git.bean.GlobalRelationSum;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeOperationDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationCountDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.ChangeRelationSumDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCommitDAO;
 import cn.edu.fudan.se.cochange_analysis.git.dao.FilePairCountDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.GlobalRelationSumDAO;
+import cn.edu.fudan.se.cochange_analysis.git.dao.SnapshotFileDAO;
 
 /**
  * @author echo
@@ -55,10 +61,317 @@ public class ChangeRelationExtractor {
 	public static void main(String[] args) {
 		GitRepository gitRepository = new GitRepository(1, "camel",
 				"D:/echo/lab/research/co-change/projects/camel/.git");
+
 		// for (int i = 1; i <= 6; i++) {
-		gitRepository.setRepositoryId(2);
+		// gitRepository.setRepositoryId(i);
+		// ChangeRelationExtractor crDetector = new
+		// ChangeRelationExtractor(gitRepository);
+		// crDetector.computeAllRelationCoverage(gitRepository.getRepositoryId());
+		// crDetector.computeTopRelationCoverage(gitRepository.getRepositoryId(),
+		// 60);
+		// }
+
 		ChangeRelationExtractor crDetector = new ChangeRelationExtractor(gitRepository);
-		crDetector.computeCoverage(60);
+		// crDetector.detectGlobalTopN(20);
+		crDetector.sumRelationsInAllTopN(60);
+
+		// List<String> fileList = new ArrayList<>();
+		// fileList.add("org/apache/cassandra/config/Config.java");
+		// fileList.add("org/apache/cassandra/config/DatabaseDescriptor.java");
+		// fileList.add("org/apache/cassandra/service/CassandraDaemon.java");
+		// fileList.add("org/apache/cassandra/service/ReadCallback.java");
+		// fileList.add("org/apache/cassandra/service/StorageProxyMBean.java");
+		// fileList.add("org/apache/cassandra/utils/FBUtilities.java");
+
+		// crDetector.displayRelations(2, 60, fileList);
+	}
+
+	private void sumRelationsInAllTopN(int topN) {
+		Map<String, Integer> relationSumMap = new HashMap<String, Integer>();
+
+		List<ChangeRelationSum> crsList1 = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, 1);
+
+		for (ChangeRelationSum crs : crsList1) {
+			String relationType = crs.getRelationType();
+			int sum = crs.getSum();
+			if (relationSumMap.containsKey(relationType)) {
+				relationSumMap.put(relationType, relationSumMap.get(relationType) + sum);
+			} else {
+				relationSumMap.put(relationType, sum);
+			}
+		}
+
+		List<ChangeRelationSum> crsList2 = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, 2);
+		for (ChangeRelationSum crs : crsList2) {
+			String relationType = crs.getRelationType();
+			int sum = crs.getSum();
+			if (relationSumMap.containsKey(relationType)) {
+				relationSumMap.put(relationType, relationSumMap.get(relationType) + sum);
+			} else {
+				relationSumMap.put(relationType, sum);
+			}
+		}
+
+		List<ChangeRelationSum> crsList3 = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, 3);
+		for (ChangeRelationSum crs : crsList3) {
+			String relationType = crs.getRelationType();
+			int sum = crs.getSum();
+			if (relationSumMap.containsKey(relationType)) {
+				relationSumMap.put(relationType, relationSumMap.get(relationType) + sum);
+			} else {
+				relationSumMap.put(relationType, sum);
+			}
+		}
+
+		List<ChangeRelationSum> crsList4 = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, 4);
+		for (ChangeRelationSum crs : crsList4) {
+			String relationType = crs.getRelationType();
+			int sum = crs.getSum();
+			if (relationSumMap.containsKey(relationType)) {
+				relationSumMap.put(relationType, relationSumMap.get(relationType) + sum);
+			} else {
+				relationSumMap.put(relationType, sum);
+			}
+		}
+
+		List<ChangeRelationSum> crsList5 = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, 5);
+		for (ChangeRelationSum crs : crsList5) {
+			String relationType = crs.getRelationType();
+			int sum = crs.getSum();
+			if (relationSumMap.containsKey(relationType)) {
+				relationSumMap.put(relationType, relationSumMap.get(relationType) + sum);
+			} else {
+				relationSumMap.put(relationType, sum);
+			}
+		}
+
+		List<ChangeRelationSum> crsList6 = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, 6);
+		for (ChangeRelationSum crs : crsList6) {
+			String relationType = crs.getRelationType();
+			int sum = crs.getSum();
+			if (relationSumMap.containsKey(relationType)) {
+				relationSumMap.put(relationType, relationSumMap.get(relationType) + sum);
+			} else {
+				relationSumMap.put(relationType, sum);
+			}
+		}
+
+		System.out.println(relationSumMap.size());
+		System.out.println(relationSumMap);
+
+		String csvFilePath = "C:/Users/echo/Desktop/relationSum.csv";
+		try {
+			// 创建CSV写对象 例如:CsvWriter(文件路径，分隔符，编码格式);
+			CsvWriter csvWriter = new CsvWriter(csvFilePath, ',', Charset.forName("UTF-8"));
+			// 写表头
+			String[] csvHeaders = { "Relation", "Sum" };
+			csvWriter.writeRecord(csvHeaders);
+			// 写内容
+			for (Entry<String, Integer> entry : relationSumMap.entrySet()) {
+				String[] csvContent = { entry.getKey(), entry.getValue() + "" };
+				csvWriter.writeRecord(csvContent);
+			}
+			csvWriter.close();
+			System.out.println("--------CSV文件已经写入--------");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void displayRelations(int repositoryId, int topN, List<String> fileList) {
+		List<ChangeRelationSum> crsList = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, repositoryId);
+		Set<String> relationSet = new HashSet<>();
+		for (ChangeRelationSum crs : crsList) {
+			relationSet.add(crs.getRelationType());
+		}
+		System.out.println(crsList);
+
+		for (int i = 0; i < fileList.size() - 1; i++) {
+			for (int j = i + 1; j < fileList.size(); j++) {
+				System.out.println((char) (i - 0 + 'A') + "--" + (char) (j - 0 + 'A'));
+
+				String fileName1 = fileList.get(i);
+				String fileName2 = fileList.get(j);
+				String filePair = "";
+				if (fileName1.compareTo(fileName2) < 0) {
+					filePair = fileName1 + "||" + fileName2;
+				} else {
+					filePair = fileName2 + "||" + fileName1;
+				}
+				List<ChangeRelationCount> crcList = ChangeRelationCountDAO.selectByRepositoryIdAndFilePair(repositoryId,
+						filePair);
+				for (ChangeRelationCount crc : crcList) {
+					String changeType1 = crc.getChangeType1();
+					String changeType2 = crc.getChangeType2();
+					String changeType = "";
+					if (changeType1.compareTo(changeType2) < 0) {
+						changeType = changeType1 + "--" + changeType2;
+					} else {
+						changeType = changeType2 + "--" + changeType1;
+					}
+					// System.out.print(changeType);
+					boolean exist = relationSet.contains(changeType);
+					// if (exist) {
+					// System.out.println(exist);
+					System.out.print("[" + changeType1.toLowerCase() + ", " + changeType2.toLowerCase() + "]" + " : ");
+					System.out.println(crc.getCount());
+					// }
+				}
+				System.out.println();
+			}
+		}
+
+	}
+
+	private void detectGlobalTopN(int topN) {
+		List<GlobalRelationSum> grsList = GlobalRelationSumDAO.selectByTopN(topN);
+		// System.out.println(grsList);
+
+		List<ChangeRelationSum> crsList1 = ChangeRelationSumDAO.selectTopNByRepositoryId(60, 1);
+		Set<String> relationSet1 = new HashSet<>();
+		for (ChangeRelationSum crs : crsList1) {
+			relationSet1.add(crs.getRelationType());
+		}
+
+		List<ChangeRelationSum> crsList2 = ChangeRelationSumDAO.selectTopNByRepositoryId(60, 2);
+		Set<String> relationSet2 = new HashSet<>();
+		for (ChangeRelationSum crs : crsList2) {
+			relationSet2.add(crs.getRelationType());
+		}
+
+		List<ChangeRelationSum> crsList3 = ChangeRelationSumDAO.selectTopNByRepositoryId(60, 3);
+		Set<String> relationSet3 = new HashSet<>();
+		for (ChangeRelationSum crs : crsList3) {
+			relationSet3.add(crs.getRelationType());
+		}
+
+		List<ChangeRelationSum> crsList4 = ChangeRelationSumDAO.selectTopNByRepositoryId(60, 4);
+		Set<String> relationSet4 = new HashSet<>();
+		for (ChangeRelationSum crs : crsList4) {
+			relationSet4.add(crs.getRelationType());
+		}
+
+		List<ChangeRelationSum> crsList5 = ChangeRelationSumDAO.selectTopNByRepositoryId(60, 5);
+		Set<String> relationSet5 = new HashSet<>();
+		for (ChangeRelationSum crs : crsList5) {
+			relationSet5.add(crs.getRelationType());
+		}
+
+		List<ChangeRelationSum> crsList6 = ChangeRelationSumDAO.selectTopNByRepositoryId(60, 6);
+		Set<String> relationSet6 = new HashSet<>();
+		for (ChangeRelationSum crs : crsList6) {
+			relationSet6.add(crs.getRelationType());
+		}
+
+		for (GlobalRelationSum grs : grsList) {
+			String relationType = grs.getRelationType();
+			System.out.print("[" + relationType.replace("--", ", ").toLowerCase() + "] ");
+			int occurrence = 0;
+			if (relationSet1.contains(relationType)) {
+				occurrence++;
+			}
+
+			if (relationSet2.contains(relationType)) {
+				occurrence++;
+			}
+
+			if (relationSet3.contains(relationType)) {
+				occurrence++;
+			}
+
+			if (relationSet4.contains(relationType)) {
+				occurrence++;
+			}
+
+			if (relationSet5.contains(relationType)) {
+				occurrence++;
+			}
+			if (relationSet6.contains(relationType)) {
+				occurrence++;
+			}
+			System.out.println(occurrence);
+		}
+	}
+
+	private void computeTopRelationCoverage(Integer repositoryId, int topN) {
+		List<String> snapshotFileList = SnapshotFileDAO.selectFileByRepositoryId(repositoryId);
+		Set<String> snapshotFileSet = new HashSet<>(snapshotFileList);
+
+		List<ChangeRelationSum> topRelationList = ChangeRelationSumDAO.selectTopNByRepositoryId(topN, repositoryId);
+		Set<String> topRelationSet = new HashSet<>();
+		for (ChangeRelationSum crs : topRelationList) {
+			topRelationSet.add(crs.getRelationType());
+		}
+
+		Set<String> allRelationFileSet = new HashSet<>();
+		Set<String> topRelationFileSet = new HashSet<>();
+		List<ChangeRelationCount> crcList = ChangeRelationCountDAO.selectByRepositoryId(repositoryId);
+
+		for (ChangeRelationCount crc : crcList) {
+			String filePair = crc.getFilePair();
+			String fileName1 = filePair.split("\\|\\|")[0];
+			String fileName2 = filePair.split("\\|\\|")[1];
+			if (snapshotFileSet.contains(fileName1)) {
+				allRelationFileSet.add(fileName1);
+			}
+			if (snapshotFileSet.contains(fileName2)) {
+				allRelationFileSet.add(fileName2);
+			}
+
+			String changeType1 = crc.getChangeType1();
+			String changeType2 = crc.getChangeType2();
+			String relationType = "";
+
+			if (changeType1.compareTo(changeType2) < 0) {
+				relationType = changeType1 + "--" + changeType2;
+			} else {
+				relationType = changeType2 + "--" + changeType1;
+			}
+
+			if (topRelationSet.contains(relationType)) {
+				if (snapshotFileSet.contains(fileName1)) {
+					topRelationFileSet.add(fileName1);
+				}
+				if (snapshotFileSet.contains(fileName2)) {
+					topRelationFileSet.add(fileName2);
+				}
+			}
+		}
+
+		System.out.println(repositoryId);
+		System.out.println(snapshotFileSet.size());
+		System.out.println(allRelationFileSet.size());
+		System.out.println(topRelationFileSet.size());
+
+		System.out.println(
+				(int) ((double) topRelationFileSet.size() / (double) allRelationFileSet.size() * 10000) / 100.0 + "%");
+		System.out.println();
+
+	}
+
+	private void computeAllRelationCoverage(int repositoryId) {
+		List<String> snapshotFileList = SnapshotFileDAO.selectFileByRepositoryId(repositoryId);
+		Set<String> snapshotFileSet = new HashSet<>(snapshotFileList);
+		Set<String> allRelationFileSet = new HashSet<>();
+		List<ChangeRelationCount> crcList = ChangeRelationCountDAO.selectByRepositoryId(repositoryId);
+
+		for (ChangeRelationCount crc : crcList) {
+			String filePair = crc.getFilePair();
+			String fileName1 = filePair.split("\\|\\|")[0];
+			String fileName2 = filePair.split("\\|\\|")[1];
+			if (snapshotFileSet.contains(fileName1)) {
+				allRelationFileSet.add(fileName1);
+			}
+			if (snapshotFileSet.contains(fileName2)) {
+				allRelationFileSet.add(fileName2);
+			}
+		}
+		System.out.println(repositoryId);
+		System.out.println(snapshotFileSet.size());
+		System.out.println(allRelationFileSet.size());
+		System.out.println(
+				(int) ((double) allRelationFileSet.size() / (double) snapshotFileSet.size() * 10000) / 100.0 + "%");
+		System.out.println();
 	}
 
 	private void computeCoverage(int topN) {
@@ -124,10 +437,10 @@ public class ChangeRelationExtractor {
 				occurence++;
 			}
 			occurenceMap.put(occurence, occurenceMap.get(occurence) + 1);
-			
+
 			if (occurence == 6) {
 				System.out.println(relationType);
-			} 
+			}
 		}
 
 		System.out.println(occurenceMap);

@@ -23,12 +23,15 @@ public interface OriginClusterMapper {
 	 */
 	int insertSelective(OriginCluster record);
 
-	void insertBatch(List<OriginCluster> originClusterList);
-
 	List<Integer> selectByClusterThresholdIdAndMinSizeAndMinRatio(@Param("repositoryId") int repositoryId,
 			@Param("clusterThresholdId") int clusterThresholdId, @Param("minSize") double minSize,
 			@Param("minRatio") double minRatio);
 
 	List<OriginCluster> selectByRepositoryIdAndClusterThresholdIdAndClusterId(@Param("repositoryId") int repositoryId,
 			@Param("clusterThresholdId") int clusterThresholdId, @Param("clusterId") int clusterId);
+
+	List<OriginCluster> selectByClusterThresholdIdAndMaxSize(@Param("repositoryId") int repositoryId,
+			@Param("clusterThresholdId") int clusterThresholdId, @Param("maxSize") int maxSize);
+
+	void insertBatch(List<OriginCluster> originClusterList);
 }
